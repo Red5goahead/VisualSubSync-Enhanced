@@ -1,0 +1,1 @@
+A quick modification of VSFilter to allow VSS to load a defined subtitles file and to update the subtitles.

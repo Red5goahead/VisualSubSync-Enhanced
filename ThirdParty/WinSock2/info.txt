@@ -1,0 +1,76 @@
+[API]
+Name=WinSock2
+Version=2.2.x (corresponds to specification in MSDN Jan 2000)
+Date=05 Jan 2000
+Originated=Windows Sockets Version 2
+URL=mdsn.microsoft.com
+Description=Version 2 of Winsock API
+
+[CONVERSION]
+FileName=winsock2.pas
+FileDate=Feb 1998
+Status=READY-FOR-TESTING
+Version=2
+LastModify=03 Apr 2000
+OriginalFile=winsock2.h
+
+[CONVERSION]
+FileName=ws2tcpip.inc
+FileDate=Feb 2000
+Status=READY-FOR-TESTING
+Version=1
+LastModify=04 Mar 2000
+OriginalFile=ws2tcpip.h
+
+[CONVERSION]
+FileName=wsipx.inc
+FileDate=Feb 2000
+Status=READY-FOR-TESTING
+Version=1
+LastModify=02 Mar 2000
+OriginalFile=wsipx.h
+
+[CONVERSION]
+FileName=wsnwlink.inc
+FileDate=Feb 2000
+Status=READY-FOR-TESTING
+Version=1
+LastModify=05 Mar 2000
+OriginalFile=wsnwlink.h
+
+[CONVERSION]
+FileName=wsnetbs.inc
+FileDate=Feb 2000
+Status=READY-FOR-TESTING
+Version=1
+LastModify=09 Mar 2000
+OriginalFile=wsnetbs.h
+
+[CONVERSION]
+FileName=svcguid.pas
+FileDate=Feb 2000
+Status=READY-FOR-TESTING
+Version=1
+LastModify=04 Mar 2000
+OriginalFile=svcguid.h
+
+[Platform]
+Win31=NO
+Win95=YES
+Win98=YES
+Win2000=YES
+WinNT3=YES
+WinNT4=YES
+
+[Requirements]
+Req1=Windows95: Requires Windows Sockets 2 SDK for Windows 95
+
+[Captain]
+Name=Alex Konshin
+Email=alexk@mtgroup.ru
+
+[Converters]
+Converter1=Alex Konshin;alexk@mtgroup.ru;http://www.mtgroup.ru/~alexk/
+
+[Testers]
+

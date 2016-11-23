@@ -1,0 +1,4 @@
+LVUP                    BITMAP  DISCARDABLE     "lvup.bmp"
+LVDOWN                  BITMAP  DISCARDABLE     "lvdown.bmp"
+FOLDER_SMALL            BITMAP  DISCARDABLE     "FOLDER_SMALL.bmp"
+FOLDER_BIG              BITMAP  DISCARDABLE     "FOLDER_BIG.bmp"

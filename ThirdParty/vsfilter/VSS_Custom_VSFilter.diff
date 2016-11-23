@@ -1,0 +1,385 @@
+Index: guliverkli/src/filters/transform/vsfilter/DirectVobSub.cpp
+===================================================================
+--- guliverkli/src/filters/transform/vsfilter/DirectVobSub.cpp	(revision 611)
++++ guliverkli/src/filters/transform/vsfilter/DirectVobSub.cpp	(working copy)
+@@ -88,8 +88,15 @@
+ 
+ 	if(!fn) return E_POINTER;
+ 
+-	CString tmp = fn;
+-	if(!m_FileName.Left(m_FileName.ReverseFind('.')+1).CompareNoCase(tmp.Left(tmp.ReverseFind('.')+1))) return S_FALSE;
++	// If subtitle reloader is locked allow manual reload of the same file
++	bool fLocked = false;
++	IsSubtitleReloaderLocked(&fLocked);
++	CString oldFileName = m_FileName.Left(m_FileName.ReverseFind('.')+1);
++	CString newFilename = fn;
++	newFilename = newFilename.Left(newFilename.ReverseFind('.')+1); 
++	if(!fLocked && !oldFileName.CompareNoCase(newFilename)) {
++		return S_FALSE;
++	}
+ 
+ #ifdef UNICODE
+ 	m_FileName = fn;
+Index: guliverkli/src/filters/transform/vsfilter/DirectVobSubFilter.cpp
+===================================================================
+--- guliverkli/src/filters/transform/vsfilter/DirectVobSubFilter.cpp	(revision 611)
++++ guliverkli/src/filters/transform/vsfilter/DirectVobSubFilter.cpp	(working copy)
+@@ -124,6 +124,16 @@
+ 		__super::NonDelegatingQueryInterface(riid, ppv);
+ }
+ 
++STDMETHODIMP CDirectVobSubFilter::QueryVendorInfo(LPWSTR* pVendorInfo) {
++    CheckPointer(pVendorInfo, E_POINTER);
++	
++	CStringW vendorInfo = "VSS Custom VSFilter v100";
++	if(!(*pVendorInfo = (WCHAR*)CoTaskMemAlloc((vendorInfo.GetLength() + 1) * sizeof(WCHAR))))
++		return E_OUTOFMEMORY;
++	wcscpy(*pVendorInfo, vendorInfo);
++	return S_OK;
++}
++
+ // CBaseVideoFilter
+ 
+ void CDirectVobSubFilter::GetOutputSize(int& w, int& h, int& arx, int& ary)
+@@ -1325,6 +1335,15 @@
+ 
+ ///////////////////////////////////////////////////////////////////////////////
+ 
++bool SubtitleFileExists(CString fn) {
++	if(FILE* f = _tfopen(fn, _T("rb+"))) 
++	{
++		fclose(f);
++		return true;
++	}
++	return false;
++}
++
+ bool CDirectVobSubFilter::Open()
+ {
+ 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
+@@ -1335,19 +1354,27 @@
+ 
+ 	m_frd.files.RemoveAll();
+ 
+-	CAtlArray<CString> paths;
++	CAtlArray<SubFile> ret;
++	if (IsSubtitleFilename(m_FileName) && SubtitleFileExists(m_FileName)) {
++		// We are loading a subtitle file directly, no need to search for the subtitle file name
++		SubFile subFile;
++		subFile.fn = m_FileName;
++		ret.Add(subFile);
++	} else {
++		// We are loading subtitles based on the video file name
++		CAtlArray<CString> paths;
+ 
+-	for(int i = 0; i < 10; i++)
+-	{
+-		CString tmp;
+-		tmp.Format(IDS_RP_PATH, i);
+-		CString path = theApp.GetProfileString(ResStr(IDS_R_DEFTEXTPATHES), tmp);
+-		if(!path.IsEmpty()) paths.Add(path);
++		for(int i = 0; i < 10; i++)
++		{
++			CString tmp;
++			tmp.Format(IDS_RP_PATH, i);
++			CString path = theApp.GetProfileString(ResStr(IDS_R_DEFTEXTPATHES), tmp);
++			if(!path.IsEmpty()) paths.Add(path);
++		}
++
++		GetSubFileNames(m_FileName, paths, ret);
+ 	}
+ 
+-	CAtlArray<SubFile> ret;
+-	GetSubFileNames(m_FileName, paths, ret);
+-
+ 	for(int i = 0; i < ret.GetCount(); i++)
+ 	{
+ 		if(m_frd.files.Find(ret[i].fn))
+@@ -1357,6 +1384,16 @@
+ 
+ 		if(!pSubStream)
+ 		{
++			CAutoPtr<CRenderedTextSubtitle> pRTS(new CRenderedTextSubtitle(&m_csSubLock));
++			if(pRTS && pRTS->Open(ret[i].fn, DEFAULT_CHARSET) && pRTS->GetStreamCount() > 0)
++			{
++				pSubStream = pRTS.Detach();
++				m_frd.files.AddTail(ret[i].fn + _T(".style"));
++			}
++		}
++
++		if(!pSubStream)
++		{
+ 			CAutoPtr<CVobSubFile> pVSF(new CVobSubFile(&m_csSubLock));
+ 			if(pVSF && pVSF->Open(ret[i].fn) && pVSF->GetStreamCount() > 0)
+ 			{
+@@ -1373,17 +1410,7 @@
+ 				pSubStream = pSSF.Detach();
+ 			}
+ 		}
+-	    
+-		if(!pSubStream)
+-		{
+-			CAutoPtr<CRenderedTextSubtitle> pRTS(new CRenderedTextSubtitle(&m_csSubLock));
+-			if(pRTS && pRTS->Open(ret[i].fn, DEFAULT_CHARSET) && pRTS->GetStreamCount() > 0)
+-			{
+-				pSubStream = pRTS.Detach();
+-				m_frd.files.AddTail(ret[i].fn + _T(".style"));
+-			}
+-		}
+-	    
++	       
+ 		if(pSubStream)
+ 		{
+ 			m_pSubStreams.AddTail(pSubStream);
+@@ -1578,6 +1605,9 @@
+ 
+ void CDirectVobSubFilter::SetupFRD(CStringArray& paths, CAtlArray<HANDLE>& handles)
+ {
++	// Totally disable subtitle reloader to avoid infinite loop problem
++
++#ifdef SUB_RELOADER
+     CAutoLock cAutolock(&m_csSubLock);
+ 
+ 	for(int i = 2; i < handles.GetCount(); i++)
+@@ -1620,12 +1650,17 @@
+ 			if(h != INVALID_HANDLE_VALUE) handles.Add(h);
+ 		}
+ 	}
++#endif
+ }
+ 
+ DWORD CDirectVobSubFilter::ThreadProc()
+-{	
+-	SetThreadPriority(m_hThread, THREAD_PRIORITY_LOWEST/*THREAD_PRIORITY_BELOW_NORMAL*/);
++{
++	SetThreadPriority(m_hThread, THREAD_PRIORITY_LOWEST);
+ 
++	// Totally disable subtitle reloader to avoid infinite loop problem
++
++#ifdef SUB_RELOADER
++
+ 	CStringArray paths;
+ 	CAtlArray<HANDLE> handles;
+ 
+@@ -1633,6 +1668,8 @@
+ 
+ 	while(1)
+ 	{ 
++		OutputDebugString(TEXT("CDirectVobSubFilter::ThreadProc 0"));
++
+ 		DWORD idx = WaitForMultipleObjects(handles.GetCount(), handles.GetData(), FALSE, INFINITE);
+ 
+ 		if(idx == (WAIT_OBJECT_0 + 0)) // m_frd.hEndThreadEvent
+@@ -1712,5 +1749,7 @@
+ 		FindCloseChangeNotification(handles[i]);
+ 	}
+ 
++#endif
++
+ 	return 0;
+ }
+Index: guliverkli/src/filters/transform/vsfilter/DirectVobSubFilter.h
+===================================================================
+--- guliverkli/src/filters/transform/vsfilter/DirectVobSubFilter.h	(revision 611)
++++ guliverkli/src/filters/transform/vsfilter/DirectVobSubFilter.h	(working copy)
+@@ -73,6 +73,7 @@
+ 
+ 	STDMETHODIMP JoinFilterGraph(IFilterGraph* pGraph, LPCWSTR pName);
+ 	STDMETHODIMP QueryFilterInfo(FILTER_INFO* pInfo);
++	STDMETHODIMP QueryVendorInfo(LPWSTR* pVendorInfo);
+ 
+     // CTransformFilter
+ 	HRESULT SetMediaType(PIN_DIRECTION dir, const CMediaType* pMediaType),
+Index: guliverkli/src/filters/transform/vsfilter/VSFilter.rc
+===================================================================
+--- guliverkli/src/filters/transform/vsfilter/VSFilter.rc	(revision 611)
++++ guliverkli/src/filters/transform/vsfilter/VSFilter.rc	(working copy)
+@@ -13,32 +13,6 @@
+ #undef APSTUDIO_READONLY_SYMBOLS
+ 
+ /////////////////////////////////////////////////////////////////////////////
+-// Hungarian resources
+-
+-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_HUN)
+-#ifdef _WIN32
+-LANGUAGE LANG_HUNGARIAN, SUBLANG_DEFAULT
+-#pragma code_page(1250)
+-#endif //_WIN32
+-
+-#ifdef APSTUDIO_INVOKED
+-/////////////////////////////////////////////////////////////////////////////
+-//
+-// TEXTINCLUDE
+-//
+-
+-3 TEXTINCLUDE 
+-BEGIN
+-    "\r\n"
+-END
+-
+-#endif    // APSTUDIO_INVOKED
+-
+-#endif    // Hungarian resources
+-/////////////////////////////////////////////////////////////////////////////
+-
+-
+-/////////////////////////////////////////////////////////////////////////////
+ // English (U.S.) resources
+ 
+ #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+@@ -77,9 +51,9 @@
+  PRODUCTVERSION 1,0,1,3
+  FILEFLAGSMASK 0x3fL
+ #ifdef _DEBUG
+- FILEFLAGS 0x1L
++ FILEFLAGS 0x21L
+ #else
+- FILEFLAGS 0x0L
++ FILEFLAGS 0x20L
+ #endif
+  FILEOS 0x4L
+  FILETYPE 0x2L
+@@ -98,6 +72,7 @@
+             VALUE "OriginalFilename", "VSFilter.DLL"
+             VALUE "ProductName", "VSFilter"
+             VALUE "ProductVersion", "1, 0, 1, 3"
++            VALUE "SpecialBuild", "Special build for VisualSubSync"
+         END
+     END
+     BLOCK "VarFileInfo"
+@@ -117,7 +92,7 @@
+ FONT 8, "MS Sans Serif", 400, 0, 0x1
+ BEGIN
+     GROUPBOX        "",IDC_STATIC,7,7,232,151
+-    LTEXT           "DirectVobSub 2.37\nCopyright 2001-2006 Gabest",IDC_STATIC,13,17,183,19
++    LTEXT           "DirectVobSub 2.37 (for VisualSubSync)\nCopyright 2001-2006 Gabest",IDC_STATIC,13,17,183,19
+     LTEXT           "Credits:\n- SAMI format support by Sanger && Wilowisp of SPKOR\n- Handling of some basic html style modifier tags in SAMI done by [maven]",IDC_STATIC,14,39,218,32
+     LTEXT           "- Advanced Text Renderer is using the 'Rasterizer' class \nof Avery Lee's subtitler plugin\n- Command line ppage launcher by @livier",IDC_STATIC,14,70,219,26
+     PUSHBUTTON      "Homepage",IDC_HOMEPAGEBTN,63,132,50,14,BS_FLAT
+@@ -586,7 +561,33 @@
+ /////////////////////////////////////////////////////////////////////////////
+ 
+ 
++/////////////////////////////////////////////////////////////////////////////
++// French (France) resources
+ 
++#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
++#ifdef _WIN32
++LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
++#pragma code_page(1252)
++#endif //_WIN32
++
++#ifdef APSTUDIO_INVOKED
++/////////////////////////////////////////////////////////////////////////////
++//
++// TEXTINCLUDE
++//
++
++3 TEXTINCLUDE 
++BEGIN
++    "\r\n"
++END
++
++#endif    // APSTUDIO_INVOKED
++
++#endif    // French (France) resources
++/////////////////////////////////////////////////////////////////////////////
++
++
++
+ #ifndef APSTUDIO_INVOKED
+ /////////////////////////////////////////////////////////////////////////////
+ //
+Index: guliverkli/src/filters/transform/vsfilter/VSFilter_vs2005.vcproj
+===================================================================
+--- guliverkli/src/filters/transform/vsfilter/VSFilter_vs2005.vcproj	(revision 611)
++++ guliverkli/src/filters/transform/vsfilter/VSFilter_vs2005.vcproj	(working copy)
+@@ -1,4 +1,4 @@
+-<?xml version="1.0" encoding="windows-1250"?>
++<?xml version="1.0" encoding="Windows-1252"?>
+ <VisualStudioProject
+ 	ProjectType="Visual C++"
+ 	Version="8,00"
+@@ -60,8 +60,8 @@
+ 				Name="VCLinkerTool"
+ 				RegisterOutput="true"
+ 				AdditionalOptions="/MACHINE:I386"
+-				AdditionalDependencies="strmbaseDU.lib dsutilDU.lib subtitlesDU.lib subpicDU.lib basevideofilterDU.lib"
+-				OutputFile="$(OutDir)/$(ProjectName).dll"
++				AdditionalDependencies="strmbasDU.lib dsutilDU.lib subtitlesDU.lib subpicDU.lib basevideofilterDU.lib strmiids.lib winmm.lib"
++				OutputFile="D:\Dev\Delphi\VisualSubSync\Release\VSSCustomVSFilter.dll"
+ 				AdditionalLibraryDirectories="..\..\..\..\lib"
+ 				ModuleDefinitionFile=".\VSFilter.def"
+ 				SubSystem="2"
+@@ -175,6 +175,7 @@
+ 			UseOfATL="0"
+ 			ATLMinimizesCRunTimeLibraryUsage="false"
+ 			CharacterSet="1"
++			WholeProgramOptimization="1"
+ 			>
+ 			<Tool
+ 				Name="VCPreBuildEventTool"
+@@ -211,14 +212,17 @@
+ 			/>
+ 			<Tool
+ 				Name="VCLinkerTool"
++				RegisterOutput="true"
+ 				AdditionalOptions="/MACHINE:I386"
+-				AdditionalDependencies="delayimp.lib strmbaseRU.lib dsutilRU.lib subtitlesRU.lib subpicRU.lib basevideofilterRU.lib"
+-				OutputFile="$(OutDir)/$(ProjectName).dll"
++				AdditionalDependencies="delayimp.lib strmbaseU.lib dsutilRU.lib subtitlesRU.lib subpicRU.lib basevideofilterRU.lib winmm.lib strmiids.lib"
++				OutputFile="D:\Dev\Delphi\VisualSubSync\Release\VSSCustomVSFilter.dll"
+ 				Version=""
+ 				AdditionalLibraryDirectories="..\..\..\..\lib"
+ 				ModuleDefinitionFile=".\VSFilter.def"
+ 				DelayLoadDLLs="oleacc.dll"
+ 				SubSystem="2"
++				OptimizeForWindows98="1"
++				LinkTimeCodeGeneration="0"
+ 			/>
+ 			<Tool
+ 				Name="VCALinkTool"
+Index: guliverkli/src/subtitles/GFN.cpp
+===================================================================
+--- guliverkli/src/subtitles/GFN.cpp	(revision 611)
++++ guliverkli/src/subtitles/GFN.cpp	(working copy)
+@@ -52,6 +52,17 @@
+ 	return(((SubFile*)elem1)->fn.CompareNoCase(((SubFile*)elem2)->fn));
+ }
+ 
++bool IsSubtitleFilename(CString fn) {
++	int extnum = countof(exttypestr);
++	for(int i = 0; i < extnum; i++) {
++		CString ext = exttypestr[i];
++		if(fn.Right(ext.GetLength()).CompareNoCase(ext) == 0) {
++			return true;
++		}
++	}
++	return false;
++}
++
+ void GetSubFileNames(CString fn, CAtlArray<CString>& paths, CAtlArray<SubFile>& ret)
+ {
+ 	ret.RemoveAll();
+@@ -101,8 +112,10 @@
+ 			// CAtlList<CString> sl;
+ 
+ 			bool fEmpty = true;
+-
+-			if((hFile = FindFirstFile(path + title + "*", &wfd)) != INVALID_HANDLE_VALUE)
++			CString fullPath = path;
++			fullPath += title;
++			fullPath += "*";
++			if((hFile = FindFirstFile(fullPath, &wfd)) != INVALID_HANDLE_VALUE)
+ 			{
+ 				do
+ 				{
+Index: guliverkli/src/subtitles/GFN.h
+===================================================================
+--- guliverkli/src/subtitles/GFN.h	(revision 611)
++++ guliverkli/src/subtitles/GFN.h	(working copy)
+@@ -27,3 +27,4 @@
+ extern TCHAR* exttypestr[];
+ typedef struct {CString fn; /*exttype ext;*/} SubFile;
+ extern void GetSubFileNames(CString fn, CAtlArray<CString>& paths, CAtlArray<SubFile>& ret);
++extern bool IsSubtitleFilename(CString fn);
