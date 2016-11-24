@@ -5,7 +5,7 @@ The natural enhanced extension of the awesome ToffParis project at https://sourc
 for italiansubs.net  community (no traslation, the whole project is in English).
 
 Visualsubsync Enhanced is fully compatible with Windows Xp, Windows Vista, Windows 7, Windows 8/8.1 and now for Windows 10, 
-also on **Windows Universal Platform**. Visit Microsoft Store here https://www.microsoft.com/store/apps/9nblggh4401s
+also on **Windows Universal Platform**. Visit Microsoft Store here https://www.microsoft.com/store/apps/9nblggh4401s.
 It includes new functions like a complete internal filter graph support via mpc-home cinema and lav codecs, online dictionary 
 automatic search (Italian language), new tools for resync, a new tool for progressive desync issues, new updated vsfilter for 
 improved subtitles quality and much more...
