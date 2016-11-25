@@ -544,7 +544,6 @@ type
     TntSpeedButtonResynchToolsReset: TTntSpeedButton;
     TntSpeedButtonResynchShowHide: TTntSpeedButton;
     ActionResynchShowHide: TTntAction;
-    MenuItemGoogleSpaces: TTntMenuItem;
     N32: TTntMenuItem;
     SubMenuCustomDictionary: TTntMenuItem;
     MenuCustomDictionaryCopyToClipboard: TTntMenuItem;
@@ -833,7 +832,6 @@ type
     procedure MenuItemGooglePageClick(Sender: TObject);
     procedure ActionSaveSelectedAsExecute(Sender: TObject);
     procedure ActionResynchShowHideExecute(Sender: TObject);
-    procedure MenuItemGoogleSpacesClick(Sender: TObject);
     procedure MenuCustomDictionaryCopyToClipboardClick(Sender: TObject);
     procedure MenuCustomDictionaryPasteFromClipboardClick(Sender: TObject);
     procedure MenuCustomDictionaryAppendFromClipboardClick(
@@ -13226,13 +13224,6 @@ if (Length(RichEdit.Text) >= 6) AND
 
   RichEdit.Tag := 1;
 
-end;
-
-procedure TMainForm.MenuItemGoogleSpacesClick(Sender: TObject);
-var s : string;
-begin
-  s := 'https://goo.gl/spaces/YkWUrtDeixjWoSRb8';
-  ShellExecute(Self.WindowHandle, 'open', PAnsiChar(s), nil, nil, SW_SHOWNORMAL);
 end;
 
 procedure TMainForm.MenuCustomDictionaryCopyToClipboardClick(
