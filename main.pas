@@ -8496,7 +8496,7 @@ begin
   TmpDstFilename := GetTemporaryFolder;
   if (Length(TmpDstFilename) > 0) then
   begin
-    TmpDstFilename := TmpDstFilename + RootAppData ;
+    TmpDstFilename := TmpDstFilename + WideIncludeTrailingBackslash(RootAppData) ;
     // Create directory
     if not WideDirectoryExists(TmpDstFilename) then
       WideCreateDir(TmpDstFilename);

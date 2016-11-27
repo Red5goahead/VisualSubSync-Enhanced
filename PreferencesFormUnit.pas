@@ -2268,11 +2268,11 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFNDEF enhanced}
+{$IFDEF enhanced}
 procedure TPreferencesForm.bttOpenBackupTempDirClick(Sender: TObject);
 var TmpFolder : WideString;
 begin
-  TmpFolder := GetTemporaryFolder + RootAppData;
+  TmpFolder := GetTemporaryFolder + WideIncludeTrailingBackslash(RootAppData);
   if WideDirectoryExists(TmpFolder) then
   begin
     Tnt_ShellExecuteW(Handle, 'explore', PWideChar(TmpFolder), nil,
