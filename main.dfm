@@ -2632,6 +2632,7 @@ object MainForm: TMainForm
       end
       object MenuItemRecentChanges: TTntMenuItem
         Caption = 'Recent changes'
+        Enabled = False
         ImageIndex = 54
         OnClick = MenuItemRecentChangesClick
       end
@@ -2642,13 +2643,6 @@ object MainForm: TMainForm
         Caption = 'Google+ page'
         ImageIndex = 53
         OnClick = MenuItemGooglePageClick
-      end
-      object MenuItemGoogleSpaces: TTntMenuItem
-        Caption = 
-          'Share your experience with Visualsubsync for Italiansubs on Goog' +
-          'le Spaces'
-        ImageIndex = 53
-        OnClick = MenuItemGoogleSpacesClick
       end
       object N31: TTntMenuItem
         Caption = '-'
