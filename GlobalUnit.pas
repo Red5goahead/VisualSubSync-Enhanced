@@ -60,6 +60,10 @@ var
   g_VideoGraphDebugInfo : WideString;
   g_AudioGraphDebugInfo : WideString;
   g_ItaliansubsAuthorization : Boolean;
+  // enhanced Flag
+  IsEnhanced : Boolean = False;
+  // universal app enviroment
+  IsUniversalAppEnviroment : Boolean = False;
   {$IFNDEF enhanced}
   RootAppData : String = 'VisualSubSync';
   {$ELSE}
@@ -196,8 +200,10 @@ end;
 initialization
   g_ApplicationPath := WideIncludeTrailingBackslash(WideExtractFilePath(TntApplication.ExeName));
   {$IFDEF enhanced}
+  IsEnhanced := True;
   if Pos('windowsapp', lowercase(g_ApplicationPath)) > 0 then
   begin
+    IsUniversalAppEnviroment := True;
     RootAppData := '';
   end;
   if not WideDirectoryExists(WideIncludeTrailingBackslash(GetUserApplicationDataFolder) + RootAppData) then
@@ -208,6 +214,9 @@ initialization
    begin
      WideForceDirectories(WideIncludeTrailingBackslash(GetUserDocumentsFolder) + 'VisualSubSync\Backup\');
    end;
+  {$ELSE}
+  IsEnhanced := False;
+  IsUniversalAppEnviroment := False;
   {$ENDIF}
   if WideDirectoryExists(WideIncludeTrailingBackslash(GetUserApplicationDataFolder) + RootAppData) then Deploy;
   g_ApplicationVersion := TFileVersion.Create(Application.ExeName);

@@ -185,10 +185,6 @@ type
     ForceDefaultPath:Boolean;
     // Mod string
     ModString : WideString;
-    // enhanced Flag
-    IsEnhanced : Boolean;
-    // universal app enviroment
-    IsUniversalAppEnviroment : Boolean;
 
     constructor Create;
     destructor Destroy; override;

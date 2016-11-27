@@ -1691,7 +1691,6 @@ begin
   N29.Visible := False;
   N31.Visible := False;
   MenuItemGooglePage.Visible := False;
-  MenuItemGoogleSpaces.Visible := False;
   MenuItemGetMoreDictionaries.Enabled := False;
   {$ENDIF}
 
@@ -5361,10 +5360,13 @@ begin
   PreferencesFormInstance.ChkFlippedSubtitles.Enabled := not ActionClose.Enabled;
 
   {$IFDEF enhanced}
-  PreferencesFormInstance.chkAssociateExtVSSPRJ.Enabled := False;
-  PreferencesFormInstance.chkAssociateExtSRT.Enabled := False;
-  PreferencesFormInstance.chkAssociateExtSSA.Enabled := False;
-  PreferencesFormInstance.chkAssociateExtASS.Enabled := False;
+  if IsUniversalAppEnviroment = True then
+  begin
+    PreferencesFormInstance.chkAssociateExtVSSPRJ.Enabled := False;
+    PreferencesFormInstance.chkAssociateExtSRT.Enabled := False;
+    PreferencesFormInstance.chkAssociateExtSSA.Enabled := False;
+    PreferencesFormInstance.chkAssociateExtASS.Enabled := False;
+  end;
   {$ENDIF}
 
   PrefFormResult := PreferencesFormInstance.ShowModal;
