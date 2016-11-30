@@ -883,7 +883,6 @@ type
 
     StartupShowVideo, StartupDetachVideo : Boolean;
 
-    FSpellChecker : THunspellChecker;
     StartupDictionary : WideString;
 
     HiddenByUserCoreColumnsList : TStrings;
@@ -1027,7 +1026,8 @@ type
     CurrentProject : TVSSProject;
     ConfigObject : TConfigObject;
     VideoRenderer : TDShowRenderer;
-
+    FSpellChecker : THunspellChecker;
+    
     { Public declarations }
     procedure ShowStatusBarMessage(const Text : WideString; const Duration : Integer = 4000);
     procedure SelectNode(Node : PVirtualNode);
@@ -1154,7 +1154,7 @@ uses ActiveX, Math, StrUtils, FindFormUnit, AboutFormUnit,
   SceneChangeUnit, SilentZoneFormUnit, RegExpr, SRTParserUnit, ShellAPI,
   VSSClipboardUnit, BgThreadTaskUnit, SpellCheckFormUnit, TntClipBrd, DeCAL,MediaInfoDll,
   ResynchToolFormUnit, DSiWin32, DiffSubsFormUnit, SendToItasaFormUnit, SendToItasaMiscUnit,
-  SubtitleTimingFormUnit, KAZip, mshtml, ClipBrd;
+  SubtitleTimingFormUnit, KAZip, mshtml, ClipBrd, uLkJSON, WinINet;
 
 {$R *.dfm}
 
@@ -1686,7 +1686,7 @@ begin
   N29.Visible := ( lowercase(ConfigObject.ModString) = 'for italiansubs');
   {$ELSE}
   MenuItemHelp.Visible := False;
-  MenuItemCheckUpdates.Visible := False;
+  if IsUniversalAppEnviroment = True then MenuItemCheckUpdates.Visible := False;
   MenuItemRecentChanges.Visible := False;
   N29.Visible := False;
   N31.Visible := False;
@@ -12262,6 +12262,7 @@ begin
  Result := ConfigObject.UTF8AsDefault;
 end;
 
+{$IFNDEF enhanced}
 procedure TMainForm.CheckUpdates(Silent:Boolean);
   var
     ChannelNode,StartItemNode : IXMLNode;
@@ -12310,6 +12311,107 @@ begin
    except
    end;
 end;
+{$ELSE}
+procedure TMainForm.CheckUpdates(Silent:Boolean);
+var
+  sJSonRelease : String;
+  oReleases, oAssets, Item: TlkJSONBase;
+  Release, Assets: Integer;
+  DownloadLink, ReleaseNotes, ReleaseVersion, ReleaseDate : String;
+
+  function WebGetData(const UserAgent: string; const URL: string): string;
+  var
+    hInet: HINTERNET;
+    hURL: HINTERNET;
+    Buffer: array[0..1023] of AnsiChar;
+    BufferLen: cardinal;
+  begin
+    result := '';
+    hInet := InternetOpen(PChar(UserAgent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+    if hInet = nil then RaiseLastOSError;
+    try
+      hURL := InternetOpenUrl(hInet, PChar(URL), nil, 0, 0, 0);
+      if hURL = nil then RaiseLastOSError;
+      try
+        repeat
+          if not InternetReadFile(hURL, @Buffer, SizeOf(Buffer), BufferLen) then
+            RaiseLastOSError;
+          result := result + UTF8Decode(Copy(Buffer, 1, BufferLen))
+        until BufferLen = 0;
+      finally
+        InternetCloseHandle(hURL);
+      end;
+    finally
+      InternetCloseHandle(hInet);
+    end;
+  end;
+
+  Function FormatVersionString(sOriginal : String) : String;
+  var sFinal : String; sNumber:String;
+  begin
+   While Pos('.',sOriginal) > 0 do
+   begin
+    sNumber := copy(sOriginal,1,Pos('.',sOriginal)-1);
+    sFinal := sFinal + RightPad(sNumber, '0', 2) + '.';
+    sOriginal := copy(sOriginal,Pos('.',sOriginal)+1,100);
+   end;
+   sNumber := copy(sOriginal,1,100);
+   sFinal := sFinal + RightPad(sNumber, '0', 2);
+   Result := sFinal;
+  end;
+
+begin
+   try
+    begin
+
+      if IsUniversalAppEnviroment = true then Exit;
+
+      sJSonRelease := WebGetData('Visualsubsync Enhanced', 'https://api.github.com/repos/red5goahead/VisualSubSync-Enhanced/releases');
+
+      oReleases := TlkJSON.ParseText(sJSonRelease);
+      for Release := 0 to Pred(oReleases.Count) do
+      begin
+        oAssets := oReleases.Child[Release].Field['assets'];
+        ReleaseNotes := VarToStr(oReleases.Child[Release].Field['body'].Value);
+        ReleaseVersion := VarToStr(oReleases.Child[Release].Field['tag_name'].Value);
+        ReleaseDate := Copy(VarToStr(oReleases.Child[Release].Field['published_at'].Value),9,2) + '-' +
+          Copy(VarToStr(oReleases.Child[Release].Field['published_at'].Value),6,2) + '-' +
+          Copy(VarToStr(oReleases.Child[Release].Field['published_at'].Value),1,4) + ' ' +
+          Copy(VarToStr(oReleases.Child[Release].Field['published_at'].Value),12,5);
+
+
+        for Assets := 0 to Pred(oAssets.Count) do
+        begin
+          DownloadLink := VarToStr(oAssets.Child[Assets].Field['browser_download_url'].Value);
+          break;
+        end;
+
+        if DownloadLink > '' then
+        begin
+          break;
+        end;
+
+      end;
+
+      if FormatVersionString(ReleaseVersion) > FormatVersionString(g_ApplicationVersion.VersionString) then
+        begin
+          if MessageDlg('A new version of VisualSubSync Enhanced (' + ReleaseVersion + ') is avaiable on Github repository. ' + chr(13) +
+            'Do you want to download it? ' + chr(13) + chr(13) +
+            'Release notes (' + ReleaseDate + ')' + chr(13) + chr(13) +
+            ReleaseNotes + chr(13), mtInformation, [MbYes, MbNo], 0) = mrYes then
+           ShellExecute(Handle, 'open', PChar(DownloadLink),nil,nil, SW_SHOWNORMAL);
+        end
+      else
+        begin
+          if not Silent then
+            MessageDlg('No new updates are avaiable.', mtInformation, [MbOk], 0);
+        end;
+
+    end;
+   except
+   end;
+end;
+{$ENDIF}
 
 procedure TMainForm.ChangeFpsTrueCinemaToPalClick(Sender: TObject);
 begin

@@ -28,7 +28,7 @@ uses
   Dialogs, StdCtrls, TntStdCtrls, ComCtrls, TntComCtrls, CheckLst,
   TntCheckLst, IniFiles, ExtCtrls, TntExtCtrls, TntActnList, Menus,
   WAVDisplayerUnit, VirtualTrees, JavaScriptPluginUnit,
-  Buttons, TntButtons;
+  Buttons, TntButtons, TntDialogs;
 
 const
   WM_ENDEDITING = WM_USER + 736;
@@ -435,6 +435,9 @@ type
     ChkZipPath: TCheckBox;
     LabelZipPath: TTntLabel;
     ChkZipOnlyCP: TCheckBox;
+    bttBackupConfiguration: TButton;
+    bttRestoreConfiguration: TButton;
+    TntRestoreConfigurationOpenDialog: TTntOpenDialog;
     procedure bttOkClick(Sender: TObject);
     procedure bttCancelClick(Sender: TObject);
     procedure ListErrorCheckingClick(Sender: TObject);
@@ -504,6 +507,8 @@ type
     procedure ButtonDefaultSubtitlesVideoClick(Sender: TObject);
     procedure chkOnLineSearchDict1Click(Sender: TObject);
     procedure TimerCheckCodecTimer(Sender: TObject);
+    procedure bttBackupConfigurationClick(Sender: TObject);
+    procedure bttRestoreConfigurationClick(Sender: TObject);
   private
     { Private declarations }
     ListDefaultHotkeys : TList;
@@ -556,7 +561,7 @@ implementation
 
 uses MiscToolsUnit, GlobalUnit, ActnList, TntWindows, TntSysUtils,
   TntForms, Mask, TntClasses, LogWindowFormUnit, FileCtrl,
-  main, Renderer, HTTPSend, DsiWin32, Md5;
+  main, Renderer, HTTPSend, DsiWin32, Md5, KAZip, EZCrypt;
 
 {$R *.dfm}
 
@@ -923,13 +928,13 @@ begin
   ModString := 'for Italiansubs';
 
   {$IFNDEF enhanced}
-  IsEnhanced := False;
-  IsUniversalAppEnviroment := False;
+  //IsEnhanced := False;
+  //IsUniversalAppEnviroment := False;
   {$ELSE}
-  IsEnhanced := True;
-  IsUniversalAppEnviroment := False;
-  if Pos('windowsapp', lowercase(g_ApplicationPath)) > 0 then
-    IsUniversalAppEnviroment := True;
+  //IsEnhanced := True;
+  //IsUniversalAppEnviroment := False;
+  //if Pos('windowsapp', lowercase(g_ApplicationPath)) > 0 then
+  //  IsUniversalAppEnviroment := True;
   {$ENDIF}
 
 end;
@@ -1540,10 +1545,13 @@ begin
    end;
   ChkUpdates.Checked := Config.CheckUpdates;
   {$IFDEF enhanced}
-  ChkUpdates.Checked := False;
-  ChkUpdates.Enabled := False;
-  ChkUpdates.Visible := False;
-  Config.CheckUpdates := False;
+  if IsUniversalAppEnviroment = true then
+  begin
+    ChkUpdates.Checked := False;
+    ChkUpdates.Enabled := False;
+    ChkUpdates.Visible := False;
+    Config.CheckUpdates := False;
+  end;
   {$ENDIF}
   ChkOnLineSearchDict1.Checked := Config.OnLineSearchDict1;
   cbbWordReferenceLanguage.ItemIndex := cbbWordReferenceLanguage.Items.IndexOf(Config.WordReferenceLanguage);
@@ -2876,6 +2884,118 @@ begin
  ChkDefaultInternalCodecClick(self);
  ChkAlternativeInternalCodecClick(self);
  TimerCheckCodec.enabled := False;
+end;
+
+procedure TPreferencesForm.bttBackupConfigurationClick(Sender: TObject);
+const
+  EngDayName : array[1..7] of string = ('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
+  EngMonthName : array[1..12] of string = ('Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
+var
+  Zip: TKAZip;
+  ConfigurationFile, CustomDictionary, BackupConfigurationFile : String;
+  ApplicationPath, ApplicationDataPath, IniFilename : WideString;
+  CryptTag : TWordTriple;
+  Year, Month, Day, DOW, Hour, Min, Sec, MSec : Word;
+begin
+
+ DOW := DayOfWeek(Now);
+ DecodeDate(Now, Year, Month, Day);
+ DecodeTime(Now, Hour, Min, Sec, MSec);
+
+ ConfigurationFile := GetUserApplicationDataFolder + '\' + RootAppData;
+ ConfigurationFile := WideIncludeTrailingPathDelimiter(ConfigurationFile);
+ ConfigurationFile := ConfigurationFile + 'VisualSubSync.ini';
+ CustomDictionary := WideIncludeTrailingPathDelimiter(g_AppDataDictPath);
+ CustomDictionary := CustomDictionary + 'perso.dic';
+
+ BackupConfigurationFile := g_AppDataBackupDirectory + 'Visualsubsync-' +
+   Format('%4.4d%2.2d%2.2d%2.2d%2.2d%2.2d',
+    [Year, Month, Day, Hour, Min, Sec ])+
+   '.saved';
+
+ try
+   Zip := TKAZip.Create(nil);
+   Zip.StoreRelativePath := False;
+   Zip.CreateZip(BackupConfigurationFile);
+   Zip.Open(BackupConfigurationFile);
+
+   Zip.AddFile(ConfigurationFile);
+   Zip.AddFile(CustomDictionary);
+   Zip.Close;
+ finally
+   Zip.Free;
+
+   CryptTag[0] := 1500;
+   CryptTag[1] := 4070;
+   CryptTag[2] := 4053;
+   FileEncrypt(BackupConfigurationFile, BackupConfigurationFile, CryptTag);
+
+   if MessageDlg('The configuration has been stored in ' + ExtractFileName(BackupConfigurationFile) + '. ' +
+    'Do you want to open backup folder?', mtConfirmation,[mbYes,mbNo],0) = mrYes then
+    begin
+      bttOpenBackupDirClick(Nil);
+    end;
+ end;
+end;
+
+procedure TPreferencesForm.bttRestoreConfigurationClick(Sender: TObject);
+var
+  Zip: TKAZip;
+  ConfigurationFile, ConfigurationFileTemp, CustomDictionary, BackupConfigurationFile : String;
+  ApplicationPath, ApplicationDataPath, IniFilename : WideString;
+  CryptTag : TWordTriple;
+  IsZipFile : Boolean;
+begin
+
+ TntRestoreConfigurationOpenDialog.InitialDir := GetUserDocumentsFolder;
+
+ if TntRestoreConfigurationOpenDialog.Execute = True then
+ begin
+  ConfigurationFile := TntRestoreConfigurationOpenDialog.FileName;
+  ConfigurationFileTemp := GetTemporaryFolder + ExtractFileName(ConfigurationFile);
+  try
+  CryptTag[0] := 1500;
+  CryptTag[1] := 4070;
+  CryptTag[2] := 4053;
+  FileDecrypt(ConfigurationFile, ConfigurationFileTemp, CryptTag);
+  Zip := TKAZip.Create(nil);
+  Zip.Open(ConfigurationFileTemp);
+  if not Zip.IsZipFile then
+   begin
+    IsZipFile := False;
+    MessageDlg('The configuration file selected is not valid.', mtError,[mbOk],0);
+   end
+  else
+    begin
+      if MessageDlg('Are you sure to restore configuration file selected?', mtConfirmation,[mbOk, MbNo],0) = mrOk then
+       begin
+         IsZipFile := True;
+         ConfigurationFile := GetUserApplicationDataFolder + '\' + RootAppData;
+         ConfigurationFile := WideIncludeTrailingPathDelimiter(ConfigurationFile);
+         ConfigurationFile := ConfigurationFile + 'VisualSubSync.ini';
+         CustomDictionary := WideIncludeTrailingPathDelimiter(g_AppDataDictPath);
+         CustomDictionary := CustomDictionary + 'perso.dic';
+         Zip.OverwriteAction := (oaOverwriteAll);
+         Zip.ExtractToFile('VisualSubSync.ini',ConfigurationFile);
+         Zip.ExtractToFile('perso.dic',CustomDictionary);
+         {$IFNDEF enhanced}
+         MainForm.FSpellChecker.LoadPersonalDict(g_DictPath + 'perso.dic');
+         {$ELSE}
+         MainForm.FSpellChecker.LoadPersonalDict(WideIncludeTrailingBackslash(g_AppDataDictPath) + 'perso.dic');
+         {$ENDIF}
+       end
+      else IsZipFile := False;
+    end;
+  finally
+   Zip.Free;
+   DeleteFile(ConfigurationFileTemp);
+   if IsZipFile = True then
+   begin
+     MessageDlg('The configuration file and custom dictionary have been restored. The application will now close to let changes take effect.', mtInformation, [mbOk],0);
+     Application.Terminate;
+   end;
+  end;
+ end;
 end;
 
 end.

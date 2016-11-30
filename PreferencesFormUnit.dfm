@@ -28,7 +28,7 @@ object PreferencesForm: TPreferencesForm
     Top = 0
     Width = 746
     Height = 507
-    ActivePage = tsItasa
+    ActivePage = tsGeneral
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTntTabSheet
@@ -258,9 +258,9 @@ object PreferencesForm: TPreferencesForm
         object ChkUpdates: TCheckBox
           Left = 16
           Top = 290
-          Width = 239
+          Width = 145
           Height = 17
-          Caption = 'Check updates on sourceforge project page'
+          Caption = 'Check for updates on start'
           ParentShowHint = False
           ShowHint = True
           TabOrder = 14
@@ -346,6 +346,30 @@ object PreferencesForm: TPreferencesForm
           ShowHint = True
           TabOrder = 5
           OnClick = bttOpenBackupTempDirClick
+        end
+        object bttBackupConfiguration: TButton
+          Left = 618
+          Top = 49
+          Width = 98
+          Height = 20
+          Hint = 'Save configuration and custom dictionary'
+          Caption = 'Save configuration'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 6
+          OnClick = bttBackupConfigurationClick
+        end
+        object bttRestoreConfiguration: TButton
+          Left = 506
+          Top = 49
+          Width = 108
+          Height = 20
+          Hint = 'Restore configuration from saved file'
+          Caption = 'Restore configuration'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 7
+          OnClick = bttRestoreConfigurationClick
         end
       end
     end
@@ -2326,5 +2350,13 @@ object PreferencesForm: TPreferencesForm
     OnTimer = TimerCheckCodecTimer
     Left = 454
     Top = 440
+  end
+  object TntRestoreConfigurationOpenDialog: TTntOpenDialog
+    DefaultExt = '*.saved'
+    Filter = '*.saved'
+    Options = [ofHideReadOnly, ofFileMustExist, ofEnableSizing]
+    Title = 'Select a valid .saved file that contain configuration'
+    Left = 544
+    Top = 144
   end
 end
