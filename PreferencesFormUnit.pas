@@ -2898,6 +2898,8 @@ var
   Year, Month, Day, DOW, Hour, Min, Sec, MSec : Word;
 begin
 
+ MainForm.SaveSettings;
+
  DOW := DayOfWeek(Now);
  DecodeDate(Now, Year, Month, Day);
  DecodeTime(Now, Hour, Min, Sec, MSec);
