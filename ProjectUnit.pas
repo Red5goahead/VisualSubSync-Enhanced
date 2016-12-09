@@ -1024,7 +1024,7 @@ var
     MediaInfoHandle : Cardinal;
     FFMpegPath, FFMpegPathCommand : String;
     SubtitleParametersCommand : String;
-    I, OrdinalSub: Integer;
+    I, OrdinalSub, OrdinalFFMpeg: Integer;
     resultMd5Calculation : String;
 begin
 
@@ -1145,6 +1145,7 @@ begin
       Screen.Cursor:=crHourglass;
 
       MkvExtractPath := ExtractFileDir(ParamStr(0))+'\mkvtoolnix\mkvextract.exe';
+      FFMpegPath := uppercase(ExtractFileDir(ParamStr(0))+'\mkvtoolnix\ffmpeg.exe');
 
       MediaInfoHandle := 0;
       if (MediaInfoDLL_Load('MediaInfo.dll') = True) Then
@@ -1158,6 +1159,7 @@ begin
             For I := 0 to StrToInt(TextStreamCount)-1 do
              begin
               OrdinalSub := I + 1;
+              OrdinalFFMpeg := I;
 
               if RightPad(IntToStr(OrdinalSub),'0',2) <> Copy(cbbVideoSourceOperationTracks.Text,1,2) Then
                 Continue;
@@ -1198,11 +1200,11 @@ begin
 
              end;
 
-            MkvExtractPathCommand := Format('tracks "%s" %s',[EditVideoFilename.Text,SubtitleParametersCommand]);
+            FFMpegPathCommand := Format('-y -stats -i "%s" -map 0:s:%s "%s"',[EditVideoFilename.Text,IntToStr(OrdinalFFMpeg),NewSubtitleFile]);
 
             Screen.Cursor:=crHourglass;
 
-            ExecAndWaitConsoleExtended(MkvExtractPath, MkvExtractPathCommand, '(using Mkvextract / tnk to MKVToolNix project) (https://mkvtoolnix.download)', 110,5,
+            ExecAndWaitConsoleExtended(FFMpegPath, FFMpegPathCommand, 'using FFMpeg / tnk to Zeranoe FFmpeg project (https://ffmpeg.zeranoe.com)', 110,5,
               VideoSourceOperationExecute.ClientOrigin.X - 5,
               VideoSourceOperationExecute.ClientOrigin.Y + VideoSourceOperationExecute.Height + 5);
 

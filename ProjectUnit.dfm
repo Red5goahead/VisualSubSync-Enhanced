@@ -124,8 +124,8 @@ object ProjectForm: TProjectForm
         Width = 160
         Height = 17
         Hint = 
-          'Extract subtitle track as Reference VO/Other (using Mkvextract /' +
-          ' tnk to MKVToolNix project)'
+          'Extract subtitle track as Reference VO/Other (using FFMpeg / tnk' +
+          ' to Zeranoe FFmpeg project)'
         Caption = 'Extract subtitle track Ref. VO'
         Enabled = False
         ParentShowHint = False
@@ -139,8 +139,8 @@ object ProjectForm: TProjectForm
         Width = 120
         Height = 17
         Hint = 
-          'Extract subtitle track as Subtitle file (using Mkvextract / tnk ' +
-          'to MKVToolNix project)'
+          'Extract subtitle track as Subtitle file (using FFMpeg / tnk to Z' +
+          'eranoe FFmpeg project)'
         Caption = 'Extract subtitle track'
         Enabled = False
         ParentShowHint = False
