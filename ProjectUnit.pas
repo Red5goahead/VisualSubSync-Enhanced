@@ -526,7 +526,7 @@ var WAVFilename, PeakFilename : WideString;
   MediaInfoHandle : Cardinal; TextStreamCount : WideString;
   I, OrdinalSub : Integer; Format,Language:WideString;
 begin
-  cbbVideoSourceOperationTracks.Items.Clear;
+
   TntOpenDialogBrowseGenericFile.FileName := EditVideoFilename.Text;
   TntOpenDialogBrowseGenericFile.Filter :=
     'Video files|*.AVI;*.OGM;*.MKV;*.MKA;*.MP4;*.DIVX;*.RM;' +
@@ -569,6 +569,8 @@ begin
       EditProjectFilename.Text := WideChangeFileExt(EditVideoFilename.Text,'.vssprj');
     end;
 
+    VideoSourceOperationRemux.Enabled := False;
+    VideoSourceOperationRemux.Checked :=False;
     if ( (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.mkv') OR (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.mp4') OR
          (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.ts')
        )
@@ -579,6 +581,10 @@ begin
        VideoSourceOperationRemux.Enabled := True;
      end;
 
+    VideoSourceOperationRecodeAudio1.Enabled := False;
+    VideoSourceOperationRecodeAudio1.Checked :=False;
+    VideoSourceOperationRecodeAudio2.Enabled := False;
+    VideoSourceOperationRecodeAudio2.Checked :=False;
     if ( (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.mkv') OR (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.mp4') OR
          (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.ts') OR (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.m2ts') OR
          (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.avi'))
@@ -591,6 +597,12 @@ begin
      end;
 
     // Check for text tracks ASS and UTF-8
+    cbbVideoSourceOperationTracks.Items.Clear;
+    cbbVideoSourceOperationTracks.Enabled := False;
+    VideoSourceOperationSetSubtitleFile.Enabled := False;
+    VideoSourceOperationSetSubtitleFile.Checked :=False;
+    VideoSourceOperationSetSubtitleVO.Enabled := False;
+    VideoSourceOperationSetSubtitleVO.Checked :=False;
     if DirectoryExists(ExtractFileDir(ParamStr(0))+'\mkvtoolnix') AND
        (FileExists(ExtractFileDir(ParamStr(0))+'\mkvtoolnix\mkvmerge.exe')) then
        begin
@@ -616,8 +628,8 @@ begin
                    cbbVideoSourceOperationTracks.Items.Add(RightPad(IntToStr(OrdinalSub),'0',2) + ': ' + Language + ', ' + Format);
                    cbbVideoSourceOperationTracks.Enabled := True;
                    VideoSourceOperationSetSubtitleFile.Enabled := True;
-
                    VideoSourceOperationSetSubtitleVO.Enabled := True;
+
                    break;
                  end;
                end;
@@ -628,7 +640,9 @@ begin
        end;
 
      VideoSourceOperationMD5.Enabled := True;
+     VideoSourceOperationMD5.Checked :=False;
 
+     VideoSourceOperationExecute.Enabled := False;
      bttCreateNewProject.Enabled := True;
 
    end;
