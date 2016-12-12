@@ -524,7 +524,7 @@ end;
 procedure TProjectForm.bttBrowseVideoFileClick(Sender: TObject);
 var WAVFilename, PeakFilename : WideString;
   MediaInfoHandle : Cardinal; TextStreamCount : WideString;
-  I, OrdinalSub : Integer; Format,Language:WideString;
+  I, OrdinalSub : Integer; Format,Language,Title:WideString;
 begin
 
   TntOpenDialogBrowseGenericFile.FileName := EditVideoFilename.Text;
@@ -621,7 +621,11 @@ begin
                 if (Format = 'ASS') Or
                    (Format = 'UTF-8') then
                  begin
-                   Language:= MediaInfo_Get(MediaInfoHandle, Stream_Text, I, 'Language/String', Info_Text, Info_Name);
+                   Title := MediaInfo_Get(MediaInfoHandle, Stream_Text, I, 'Title', Info_Text, Info_Name);
+                   if Title = '' then
+                    Language:= MediaInfo_Get(MediaInfoHandle, Stream_Text, I, 'Language/String', Info_Text, Info_Name)
+                   else Language := Title;
+
                    if Language = '' Then Language := '<not defined>'
                      else Language := '<' + Language + '>';
 
@@ -630,7 +634,6 @@ begin
                    VideoSourceOperationSetSubtitleFile.Enabled := True;
                    VideoSourceOperationSetSubtitleVO.Enabled := True;
 
-                   break;
                  end;
                end;
               if cbbVideoSourceOperationTracks.Items.Count > 0 Then cbbVideoSourceOperationTracks.ItemIndex:=0;
@@ -1193,12 +1196,13 @@ begin
                 begin
                   SubtitleParametersCommand := SubtitleParametersCommand + '_' + Title;
                   NewSubtitleFile := NewSubtitleFile + '_' + Title;
-                end;
-              if Language <> '' then
-                begin
-                  SubtitleParametersCommand := SubtitleParametersCommand + '_' + Language;
-                  NewSubtitleFile := NewSubtitleFile + '_' + Language;
-                end;
+                end
+              else
+                if Language <> '' then
+                  begin
+                    SubtitleParametersCommand := SubtitleParametersCommand + '_' + Language;
+                    NewSubtitleFile := NewSubtitleFile + '_' + Language;
+                  end;
               if CodecID = 'S_TEXT/ASS' then
                 begin
                   SubtitleParametersCommand := SubtitleParametersCommand + '.ass';
@@ -1224,21 +1228,18 @@ begin
 
             Screen.Cursor:=crDefault;
 
-            if (TextStreamCount <> '') And (StrToInt(TextStreamCount) = 1) Then
-            begin
-              if FileExists(NewSubtitleFile) then
-                begin
-                  if VideoSourceOperationSetSubtitleFile.Checked Then
-                    EditSubtitleFilename.Text := NewSubtitleFile;
-                  if VideoSourceOperationSetSubtitleVO.Checked Then
-                    EditSubtitleVO.Text := NewSubtitleFile;
-                  if CodecID = 'S_TEXT/UTF8' then cbSubtitleFormat.ItemIndex := 0;
-                  if CodecID = 'S_TEXT/ASS' then cbSubtitleFormat.ItemIndex := 2;
-                  bttCreateNewProject.Enabled := True;
-                  MessageBoxW(Handle, PWideChar(WideString('Operation complete.')),
-                   PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
-                end;
-            end;
+            if FileExists(NewSubtitleFile) then
+              begin
+                if VideoSourceOperationSetSubtitleFile.Checked Then
+                  EditSubtitleFilename.Text := NewSubtitleFile;
+                if VideoSourceOperationSetSubtitleVO.Checked Then
+                  EditSubtitleVO.Text := NewSubtitleFile;
+                if CodecID = 'S_TEXT/UTF8' then cbSubtitleFormat.ItemIndex := 0;
+                if CodecID = 'S_TEXT/ASS' then cbSubtitleFormat.ItemIndex := 2;
+                bttCreateNewProject.Enabled := True;
+                MessageBoxW(Handle, PWideChar(WideString('Operation complete.')),
+                 PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
+              end;
 
           end;
          MediaInfo_Close(MediaInfoHandle);

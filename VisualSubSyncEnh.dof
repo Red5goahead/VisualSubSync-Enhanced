@@ -116,7 +116,7 @@ IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
 MinorVer=2
-Release=13
+Release=14
 Build=0
 Debug=0
 PreRelease=0
@@ -128,7 +128,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Italiansubs.net
 FileDescription=VisualSubSync
-FileVersion=1.2.13.0
+FileVersion=1.2.14.0
 InternalName=
 LegalCopyright=
 LegalTrademarks=
