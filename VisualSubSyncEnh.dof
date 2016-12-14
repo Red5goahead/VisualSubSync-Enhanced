@@ -94,10 +94,10 @@ OutputDir=C:\Program Files (x86)\VisualSubSyncEnh
 UnitOutputDir=dcu
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=.\ThirdParty;.\ThirdParty\DirectX;.\ThirdParty\jsbridge;.\ThirdParty\WinSock2;.\ThirdParty\FastMM
+SearchPath=.\ThirdParty;.\ThirdParty\DirectX-2012;.\ThirdParty\jsbridge;.\ThirdParty\WinSock2;.\ThirdParty\FastMM
 Packages=vcl;rtl;vclx;indy;inet;xmlrtl;vclie;inetdbbde;inetdbxpress;dbrtl;dsnap;dsnapcon;vcldb;VclSmp;dbexpress;dbxcds;inetdb;bdertl;vcldbx;webdsnap;websnap;adortl;ibxpress;teeui;teedb;tee;dss;visualclx;visualdbclx;vclactnband;vclshlctrls;MiscCompo;FlatStyle_D6;CCCompo;RegComponents6;CoolTrayIcon_D6;SxMagD5
 Conditionals=enhanced
-DebugSourceDirs=.\ThirdParty;.\ThirdParty\DirectX;.\ThirdParty\jsbridge;.\ThirdParty\WinSock2;.\ThirdParty\FastMM;.\ThirdParty\DirectX
+DebugSourceDirs=.\ThirdParty;.\ThirdParty\DirectX-2012;.\ThirdParty\jsbridge;.\ThirdParty\WinSock2;.\ThirdParty\FastMM;.\ThirdParty\DirectX
 UsePackages=0
 [Parameters]
 RunParams=
@@ -137,8 +137,9 @@ ProductName=VisualSubSync
 ProductVersion=1.0.0.0
 Comments=https://sourceforge.net/projects/vss-itasa/
 [HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=.\ThirdParty;.\ThirdParty\DirectX;.\ThirdParty\jsbridge;.\ThirdParty\WinSock2;.\ThirdParty\FastMM;.\ThirdParty\DirectX
+Count=2
+Item0=.\ThirdParty;.\ThirdParty\DirectX-2012;.\ThirdParty\jsbridge;.\ThirdParty\WinSock2;.\ThirdParty\FastMM;.\ThirdParty\DirectX
+Item1=.\ThirdParty;.\ThirdParty\DirectX;.\ThirdParty\jsbridge;.\ThirdParty\WinSock2;.\ThirdParty\FastMM;.\ThirdParty\DirectX
 [HistoryLists\hlConditionals]
 Count=2
 Item0=enhanced
@@ -148,8 +149,8 @@ Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
 Count=2
-Item0=.\ThirdParty;.\ThirdParty\DirectX;.\ThirdParty\jsbridge;.\ThirdParty\WinSock2;.\ThirdParty\FastMM
-Item1=.\ThirdParty;.\ThirdParty\DirectX-2012;.\ThirdParty\jsbridge;.\ThirdParty\WinSock2;.\ThirdParty\FastMM
+Item0=.\ThirdParty;.\ThirdParty\DirectX-2012;.\ThirdParty\jsbridge;.\ThirdParty\WinSock2;.\ThirdParty\FastMM
+Item1=.\ThirdParty;.\ThirdParty\DirectX;.\ThirdParty\jsbridge;.\ThirdParty\WinSock2;.\ThirdParty\FastMM
 [HistoryLists\hlUnitOutputDirectory]
 Count=1
 Item0=dcu
