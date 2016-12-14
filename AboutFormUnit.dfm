@@ -247,10 +247,12 @@ object AboutForm: TAboutForm
   object TntLabel14: TTntLabel
     Left = 7
     Top = 273
-    Width = 287
+    Width = 322
     Height = 14
     AutoSize = False
-    Caption = '- Lav Filter (http://1f0.de)'
+    Caption = 
+      '- Lav Filter 0.69 (https://github.com/Nevcairiel/LAVFilters/rele' +
+      'ases)'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11

@@ -91,6 +91,8 @@ type
    Codec_TrueMotion,
    Codec_VP7,
    Codec_H264MVC,
+   Codec_CineformHD,
+   Codec_MagicYUV,
    Codec_NB);
 
   // Codecs with hardware acceleration
