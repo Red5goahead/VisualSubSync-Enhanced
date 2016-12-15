@@ -2087,8 +2087,7 @@ begin
     MainForm.ConfigObject.Passwd);
   ActionReload.Enabled := Enable;
   ActionSaveAs.Enabled := Enable;
-  ActionZipSubtitle.Enabled := Enable AND ItaliansubsAuthorization(MainForm.ConfigObject.Username,
-    MainForm.ConfigObject.Passwd);
+  ActionZipSubtitle.Enabled := Enable;
   ActionExportToSSA.Enabled := Enable;
   ActionExportToWAV.Enabled := Enable;
   ActionShowStartFrame.Enabled := Enable and VideoRenderer.IsOpen;
