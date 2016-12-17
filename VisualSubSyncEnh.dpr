@@ -64,9 +64,10 @@ uses
   SendToItasaMiscUnit in 'SendToItasaMiscUnit.pas',
   blcksock in 'ThirdParty\Synapse\blcksock.pas',
   httpsend in 'ThirdParty\Synapse\httpsend.pas',
-  SubtitleTimingFormUnit in 'SubtitleTimingFormUnit.pas', {SubtitleTimingForm}
+  SubtitleTimingFormUnit in 'SubtitleTimingFormUnit.pas',
   Md5 in 'ThirdParty\MD5.pas',
-  MidasLib;
+  MidasLib,
+  SourceFileOperationCancel in 'SourceFileOperationCancel.pas' {SourceFileOperationCancel};
 
 {$R *.res}
 {$R Resources\resources.RES}

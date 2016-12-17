@@ -1027,8 +1027,9 @@ type
     ConfigObject : TConfigObject;
     VideoRenderer : TDShowRenderer;
     FSpellChecker : THunspellChecker;
-    
+
     { Public declarations }
+
     procedure ShowStatusBarMessage(const Text : WideString; const Duration : Integer = 4000);
     procedure SelectNode(Node : PVirtualNode);
     procedure SelectNodeFromTimestamps(Start, Stop : Integer);

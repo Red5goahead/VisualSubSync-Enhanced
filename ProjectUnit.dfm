@@ -1,10 +1,10 @@
 object ProjectForm: TProjectForm
   Left = 350
   Top = 135
-  BorderIcons = [biSystemMenu, biMinimize]
+  BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'New Project'
-  ClientHeight = 531
+  ClientHeight = 561
   ClientWidth = 714
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,7 +20,7 @@ object ProjectForm: TProjectForm
   TextHeight = 13
   object bttCreateNewProject: TTntButton
     Left = 489
-    Top = 494
+    Top = 524
     Width = 131
     Height = 26
     Caption = 'Create new project'
@@ -29,7 +29,7 @@ object ProjectForm: TProjectForm
   end
   object bttCancel: TTntButton
     Left = 625
-    Top = 494
+    Top = 524
     Width = 75
     Height = 26
     Caption = 'Cancel'
@@ -40,11 +40,11 @@ object ProjectForm: TProjectForm
     Left = 6
     Top = 8
     Width = 695
-    Height = 187
+    Height = 213
     Caption = ' Video source file (optional) : '
     TabOrder = 0
     object bttBrowseVideoFile: TSpeedButton
-      Left = 656
+      Left = 655
       Top = 16
       Width = 23
       Height = 22
@@ -60,7 +60,7 @@ object ProjectForm: TProjectForm
     end
     object bttExtractWAVFromVideo: TTntButton
       Left = 17
-      Top = 153
+      Top = 182
       Width = 621
       Height = 24
       Caption = 'Extract WAV/Peak file from video'
@@ -71,12 +71,12 @@ object ProjectForm: TProjectForm
       Left = 8
       Top = 42
       Width = 636
-      Height = 107
+      Height = 135
       Caption = 'Avaiable operations on video source file'
       TabOrder = 2
       object VideoSourceOperationRemux: TTntRadioButton
         Left = 7
-        Top = 21
+        Top = 45
         Width = 67
         Height = 17
         Hint = 
@@ -85,12 +85,12 @@ object ProjectForm: TProjectForm
         Caption = 'Remux'
         ParentShowHint = False
         ShowHint = True
-        TabOrder = 0
-        OnClick = VideoSourceOperationRemuxClick
+        TabOrder = 3
+        OnClick = VideoSourceOperationGeneratePeakFileClick
       end
       object VideoSourceOperationRecodeAudio1: TTntRadioButton
         Left = 66
-        Top = 21
+        Top = 45
         Width = 219
         Height = 17
         Hint = 
@@ -100,12 +100,12 @@ object ProjectForm: TProjectForm
         Enabled = False
         ParentShowHint = False
         ShowHint = True
-        TabOrder = 1
-        OnClick = VideoSourceOperationRecodeAudio1Click
+        TabOrder = 4
+        OnClick = VideoSourceOperationGeneratePeakFileClick
       end
       object VideoSourceOperationRecodeAudio2: TTntRadioButton
         Left = 277
-        Top = 21
+        Top = 45
         Width = 183
         Height = 17
         Hint = 
@@ -115,12 +115,12 @@ object ProjectForm: TProjectForm
         Enabled = False
         ParentShowHint = False
         ShowHint = True
-        TabOrder = 2
-        OnClick = VideoSourceOperationRecodeAudio2Click
+        TabOrder = 5
+        OnClick = VideoSourceOperationGeneratePeakFileClick
       end
       object VideoSourceOperationSetSubtitleVO: TTntRadioButton
         Left = 141
-        Top = 47
+        Top = 71
         Width = 160
         Height = 17
         Hint = 
@@ -130,12 +130,12 @@ object ProjectForm: TProjectForm
         Enabled = False
         ParentShowHint = False
         ShowHint = True
-        TabOrder = 3
-        OnClick = VideoSourceOperationSetSubtitleVOClick
+        TabOrder = 7
+        OnClick = VideoSourceOperationGeneratePeakFileClick
       end
       object VideoSourceOperationSetSubtitleFile: TTntRadioButton
         Left = 7
-        Top = 47
+        Top = 71
         Width = 120
         Height = 17
         Hint = 
@@ -145,12 +145,12 @@ object ProjectForm: TProjectForm
         Enabled = False
         ParentShowHint = False
         ShowHint = True
-        TabOrder = 4
-        OnClick = VideoSourceOperationSetSubtitleFileClick
+        TabOrder = 8
+        OnClick = VideoSourceOperationGeneratePeakFileClick
       end
       object VideoSourceOperationMD5: TTntRadioButton
         Left = 463
-        Top = 21
+        Top = 45
         Width = 162
         Height = 17
         Hint = 'Calculate the MD5 checksum of the video source file'
@@ -158,34 +158,72 @@ object ProjectForm: TProjectForm
         Enabled = False
         ParentShowHint = False
         ShowHint = True
-        TabOrder = 5
-        OnClick = VideoSourceOperationMD5Click
+        TabOrder = 6
+        OnClick = VideoSourceOperationGeneratePeakFileClick
       end
       object VideoSourceOperationExecute: TTntButton
-        Left = 8
-        Top = 74
-        Width = 622
+        Left = 10
+        Top = 99
+        Width = 619
         Height = 24
         Caption = 'Start selected operation on video source file'
         Enabled = False
-        TabOrder = 6
+        TabOrder = 10
         OnClick = VideoSourceOperationExecuteClick
       end
-      object cbbVideoSourceOperationTracks: TTntComboBox
+      object cbbVideoSourceOperationTextTracks: TTntComboBox
         Left = 314
-        Top = 44
+        Top = 68
         Width = 179
         Height = 21
+        Hint = 'Text track to use'
         Style = csDropDownList
         ItemHeight = 13
-        TabOrder = 7
+        TabOrder = 9
+        Visible = False
+      end
+      object VideoSourceOperationGeneratePeakFile: TTntRadioButton
+        Left = 7
+        Top = 21
+        Width = 162
+        Height = 17
+        Hint = 
+          'Generate audio waveform / Peak file (using FFMpeg / tnk to Zeran' +
+          'oe FFmpeg project)'
+        Caption = 'Audio waveform / Peak file'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 0
+        OnClick = VideoSourceOperationGeneratePeakFileClick
+      end
+      object cbbVideoSourceOperationAudioTracks: TTntComboBox
+        Left = 170
+        Top = 19
+        Width = 303
+        Height = 21
+        Hint = 'Audio track to use'
+        Style = csDropDownList
+        ItemHeight = 13
+        TabOrder = 1
+        Visible = False
+      end
+      object VideoSourceOperationAudioTracksOnlyCenter: TTntCheckBox
+        Left = 486
+        Top = 21
+        Width = 137
+        Height = 17
+        Hint = 'Include only center/dialog channel (FC), when avaiable'
+        Caption = 'Only dialog channel (FC)'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 2
         Visible = False
       end
     end
   end
   object gbWAVFile: TTntGroupBox
     Left = 6
-    Top = 196
+    Top = 226
     Width = 695
     Height = 106
     Caption = ' Audio waveform / Audio only preview (optional) : '
@@ -273,13 +311,13 @@ object ProjectForm: TProjectForm
   end
   object gbSubtitleFile: TTntGroupBox
     Left = 6
-    Top = 313
+    Top = 343
     Width = 695
     Height = 66
     Caption = ' Subtitle file : '
     TabOrder = 2
     object bttBrowseSubtitleFile: TSpeedButton
-      Left = 653
+      Left = 655
       Top = 16
       Width = 23
       Height = 22
@@ -332,13 +370,13 @@ object ProjectForm: TProjectForm
   end
   object gbProjectFile: TTntGroupBox
     Left = 6
-    Top = 439
+    Top = 469
     Width = 695
     Height = 50
     Caption = ' Project file : '
     TabOrder = 4
     object bttBrowseProjectFile: TSpeedButton
-      Left = 653
+      Left = 655
       Top = 16
       Width = 23
       Height = 22
@@ -355,7 +393,7 @@ object ProjectForm: TProjectForm
   end
   object bttOk: TTntButton
     Left = 546
-    Top = 494
+    Top = 524
     Width = 75
     Height = 26
     Caption = 'OK'
@@ -365,13 +403,13 @@ object ProjectForm: TProjectForm
   end
   object gbVO: TTntGroupBox
     Left = 6
-    Top = 384
+    Top = 414
     Width = 695
     Height = 50
     Caption = 'Reference VO/Other : '
     TabOrder = 3
     object bttBrowseSubtitleVO: TSpeedButton
-      Left = 653
+      Left = 655
       Top = 16
       Width = 23
       Height = 22

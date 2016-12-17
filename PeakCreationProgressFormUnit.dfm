@@ -7,7 +7,7 @@ object PeakCreationProgressForm: TPeakCreationProgressForm
   BorderWidth = 4
   Caption = 'Creating peak file...'
   ClientHeight = 25
-  ClientWidth = 250
+  ClientWidth = 261
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -23,7 +23,7 @@ object PeakCreationProgressForm: TPeakCreationProgressForm
   object ProgressBar1: TProgressBar
     Left = 0
     Top = 0
-    Width = 250
+    Width = 261
     Height = 25
     TabOrder = 0
   end

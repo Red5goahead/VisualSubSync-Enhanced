@@ -26,7 +26,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, TntStdCtrls, TntDialogs, Renderer,
-  TntButtons;
+  TntButtons,
+  ComCtrls, TntComCtrls, ExtCtrls;
 
 type
   TProjectWAVMode = (pwmNoWaveform, pwmExternal, pwmPeakOnly);
@@ -128,7 +129,10 @@ type
     VideoSourceOperationSetSubtitleFile: TTntRadioButton;
     VideoSourceOperationMD5: TTntRadioButton;
     VideoSourceOperationExecute: TTntButton;
-    cbbVideoSourceOperationTracks: TTntComboBox;
+    cbbVideoSourceOperationTextTracks: TTntComboBox;
+    VideoSourceOperationGeneratePeakFile: TTntRadioButton;
+    cbbVideoSourceOperationAudioTracks: TTntComboBox;
+    VideoSourceOperationAudioTracksOnlyCenter: TTntCheckBox;
     procedure bttCreateNewProjectClick(Sender: TObject);
     procedure bttCancelClick(Sender: TObject);
     procedure bttBrowseVideoFileClick(Sender: TObject);
@@ -153,6 +157,7 @@ type
     procedure VideoSourceOperationMD5Click(Sender: TObject);
     procedure VideoSourceOperationSetSubtitleFileClick(Sender: TObject);
     procedure VideoSourceOperationSetSubtitleVOClick(Sender: TObject);
+    procedure VideoSourceOperationGeneratePeakFileClick(Sender: TObject);
   private
     { Private declarations }
     procedure WAVSelectMode(WavMode : TProjectWAVMode);
@@ -183,7 +188,10 @@ implementation
 {$R *.dfm}
 
 uses WAVExtractFormUnit, TntSysUtils, MiscToolsUnit, TntIniFiles, TntWindows, MediaInfoDll, CursorManager,ShellApi,
-     MD5,ClipBrd;
+     MD5,ClipBrd, main, SourceFileOperationCancel, Types;
+
+function GetFileSizeEx(hFile: THandle; var FileSize: Int64): BOOL; stdcall;
+  external kernel32;
 
 //==============================================================================
 
@@ -523,8 +531,9 @@ end;
 
 procedure TProjectForm.bttBrowseVideoFileClick(Sender: TObject);
 var WAVFilename, PeakFilename : WideString;
-  MediaInfoHandle : Cardinal; TextStreamCount : WideString;
-  I, OrdinalSub : Integer; Format,Language,Title:WideString;
+  MediaInfoHandle : Cardinal; AudioStreamCount, TextStreamCount, TextStreamAudio: WideString;
+  iAudioStreamCount : Word;
+  I, OrdinalSub, OrdinalAudio : Integer; Format,Language,Title:WideString;
 begin
 
   TntOpenDialogBrowseGenericFile.FileName := EditVideoFilename.Text;
@@ -569,6 +578,40 @@ begin
       EditProjectFilename.Text := WideChangeFileExt(EditVideoFilename.Text,'.vssprj');
     end;
 
+    // Check for audio tracks
+    MediaInfoHandle := 0;
+    if (MediaInfoDLL_Load('MediaInfo.dll') = True) Then
+     begin
+       MediaInfoHandle := MediaInfo_New();
+       MediaInfo_Open(MediaInfoHandle, @TntOpenDialogBrowseGenericFile.FileName[1]);
+       AudioStreamCount := MediaInfo_Get(MediaInfoHandle, Stream_Audio, 0, 'StreamCount', Info_Text, Info_Name);
+       if AudioStreamCount <> '' then
+        iAudioStreamCount := StrToInt(AudioStreamCount);
+
+       cbbVideoSourceOperationAudioTracks.Items.Clear;
+
+       For I := 0 to iAudioStreamCount-1 do
+       begin
+         OrdinalAudio := I + 1;
+
+         Language := MediaInfo_Get(MediaInfoHandle, Stream_Audio, I, 'Language/String', Info_Text, Info_Name);
+         if Language > '' then Language := '[' + Language + '] ';
+         AudioStreamCount := MediaInfo_Get(MediaInfoHandle, Stream_Audio, I, 'StreamCount', Info_Text, Info_Name);
+         TextStreamAudio := RightPad(IntToStr(OrdinalAudio),'0',2) + ': ' + MediaInfo_Get(MediaInfoHandle, Stream_Audio, I, 'Format', Info_Text, Info_Name) + ' ' +
+           MediaInfo_Get(MediaInfoHandle, Stream_Audio, I, 'Channel(s)/String', Info_Text, Info_Name) + ' ' +
+           MediaInfo_Get(MediaInfoHandle, Stream_Audio, I, 'BitRate/String', Info_Text, Info_Name) + ' ' +
+           MediaInfo_Get(MediaInfoHandle, Stream_Audio, I, 'SamplingRate/String', Info_Text, Info_Name) + ' ' +
+           Language;
+         cbbVideoSourceOperationAudioTracks.Items.Add(TextStreamAudio);
+       end;
+       if cbbVideoSourceOperationAudioTracks.Items.Count > 0 then cbbVideoSourceOperationAudioTracks.ItemIndex := 0;
+     end;
+
+    if iAudioStreamCount > 0 then
+    begin
+     VideoSourceOperationGeneratePeakFile.Enabled := True;
+    end;
+
     VideoSourceOperationRemux.Enabled := False;
     VideoSourceOperationRemux.Checked :=False;
     if ( (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.mkv') OR (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.mp4') OR
@@ -585,20 +628,21 @@ begin
     VideoSourceOperationRecodeAudio1.Checked :=False;
     VideoSourceOperationRecodeAudio2.Enabled := False;
     VideoSourceOperationRecodeAudio2.Checked :=False;
-    if ( (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.mkv') OR (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.mp4') OR
-         (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.ts') OR (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.m2ts') OR
-         (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.avi'))
-        AND (DirectoryExists(ExtractFileDir(ParamStr(0))+'\mkvtoolnix') ) AND
-       (FileExists(ExtractFileDir(ParamStr(0))+'\mkvtoolnix\ffmpeg.exe') )
-        then
+    if iAudioStreamCount > 0 Then
+      if ( (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.mkv') OR (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.mp4') OR
+           (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.ts') OR (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.m2ts') OR
+           (ExtractFileExt(TntOpenDialogBrowseGenericFile.FileName) = '.avi'))
+          AND (DirectoryExists(ExtractFileDir(ParamStr(0))+'\mkvtoolnix') ) AND
+        (FileExists(ExtractFileDir(ParamStr(0))+'\mkvtoolnix\ffmpeg.exe') )
+         then
      begin
        VideoSourceOperationRecodeAudio1.Enabled := True;
        VideoSourceOperationRecodeAudio2.Enabled := True;
      end;
 
     // Check for text tracks ASS and UTF-8
-    cbbVideoSourceOperationTracks.Items.Clear;
-    cbbVideoSourceOperationTracks.Enabled := False;
+    cbbVideoSourceOperationTextTracks.Items.Clear;
+    cbbVideoSourceOperationTextTracks.Enabled := False;
     VideoSourceOperationSetSubtitleFile.Enabled := False;
     VideoSourceOperationSetSubtitleFile.Checked :=False;
     VideoSourceOperationSetSubtitleVO.Enabled := False;
@@ -629,14 +673,14 @@ begin
                    if Language = '' Then Language := '<not defined>'
                      else Language := '<' + Language + '>';
 
-                   cbbVideoSourceOperationTracks.Items.Add(RightPad(IntToStr(OrdinalSub),'0',2) + ': ' + Language + ', ' + Format);
-                   cbbVideoSourceOperationTracks.Enabled := True;
+                   cbbVideoSourceOperationTextTracks.Items.Add(RightPad(IntToStr(OrdinalSub),'0',2) + ': ' + Language + ', ' + Format);
+                   cbbVideoSourceOperationTextTracks.Enabled := True;
                    VideoSourceOperationSetSubtitleFile.Enabled := True;
                    VideoSourceOperationSetSubtitleVO.Enabled := True;
 
                  end;
                end;
-              if cbbVideoSourceOperationTracks.Items.Count > 0 Then cbbVideoSourceOperationTracks.ItemIndex:=0;
+              if cbbVideoSourceOperationTextTracks.Items.Count > 0 Then cbbVideoSourceOperationTextTracks.ItemIndex:=0;
             end;
            MediaInfo_Close(MediaInfoHandle);
          end;
@@ -800,7 +844,11 @@ begin
   bttCreateNewProject.Visible := True;
   bttOk.Visible := False;
   WAVSelectMode(pwmNoWaveform);
-  cbbVideoSourceOperationTracks.Items.Clear;
+  cbbVideoSourceOperationTextTracks.Items.Clear;
+  VideoSourceOperationGeneratePeakFile.Enabled :=False;
+  VideoSourceOperationGeneratePeakFile.Checked :=False;
+  cbbVideoSourceOperationAudioTracks.Visible:= False;
+  VideoSourceOperationAudioTracksOnlyCenter.Visible:= False;
   VideoSourceOperationRemux.Enabled :=False;
   VideoSourceOperationRemux.Checked :=False;
   VideoSourceOperationRecodeAudio1.Enabled:=False;
@@ -813,8 +861,8 @@ begin
   VideoSourceOperationSetSubtitleFile.Checked :=False;
   VideoSourceOperationSetSubtitleVO.Enabled:=False;
   VideoSourceOperationSetSubtitleVO.Checked :=False;
-  cbbVideoSourceOperationTracks.Enabled:=False;
-  cbbVideoSourceOperationTracks.Visible:= False;
+  cbbVideoSourceOperationTextTracks.Enabled:=False;
+  cbbVideoSourceOperationTextTracks.Visible:= False;
   VideoSourceOperationExecute.Enabled:=False;
   Self.Clear;
 end;
@@ -841,6 +889,10 @@ begin
   WAVSelectMode(Project.WAVMode);
   chkSaveAsUTF8.Checked := Project.IsUTF8;
 
+  VideoSourceOperationGeneratePeakFile.Enabled :=False;
+  VideoSourceOperationGeneratePeakFile.Checked :=False;
+  cbbVideoSourceOperationAudioTracks.Visible:= False;
+  VideoSourceOperationAudioTracksOnlyCenter.Visible:= False;
   VideoSourceOperationRemux.Enabled :=False;
   VideoSourceOperationRemux.Checked :=False;
   VideoSourceOperationRecodeAudio1.Enabled:=False;
@@ -853,8 +905,8 @@ begin
   VideoSourceOperationSetSubtitleFile.Checked :=False;
   VideoSourceOperationSetSubtitleVO.Enabled:=False;
   VideoSourceOperationSetSubtitleVO.Checked :=False;
-  cbbVideoSourceOperationTracks.Enabled:=False;
-  cbbVideoSourceOperationTracks.Visible:= False;
+  cbbVideoSourceOperationTextTracks.Enabled:=False;
+  cbbVideoSourceOperationTextTracks.Visible:= False;
   VideoSourceOperationExecute.Enabled:=False;
 
   UpdateFormatCombobox;
@@ -1033,9 +1085,10 @@ end;
 
 procedure TProjectForm.VideoSourceOperationExecuteClick(Sender: TObject);
 var
+    SourceFileOperationCancel : TSourceFileOperationCancel;
     Language, Title, CodecID, StreamOrder : String;
     ExitCode: DWORD;
-    NewVideoFileName, NewAudioFileName, ParameterF : String;
+    NewVideoFileName, NewAudioWavFileName, ParameterF : String;
     MkvMergePath, MkvMergePathCommand: String;
     MkvExtractPath, MkvExtractPathCommand, NewSubtitleFile, TextStreamCount: String;
     MediaInfoHandle : Cardinal;
@@ -1043,7 +1096,87 @@ var
     SubtitleParametersCommand : String;
     I, OrdinalSub, OrdinalFFMpeg: Integer;
     resultMd5Calculation : String;
+    ExitForced, PeekFileGenerated : Boolean;
+    Duration : String;
+    DurationMs : LongWord;
+    HH,MM,SS : Integer;
 begin
+
+ VideoSourceOperationExecute.Enabled := False;
+
+ ExitForced := False;
+
+ MediaInfoHandle := 0;
+ if (MediaInfoDLL_Load('MediaInfo.dll') = True) Then
+  begin
+    MediaInfoHandle := MediaInfo_New();
+    MediaInfo_Open(MediaInfoHandle, @TntOpenDialogBrowseGenericFile.FileName[1]);
+    Duration := MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'Duration/String3', Info_Text, Info_Name);
+    HH := StrToInt(copy(Duration,1,2));
+    MM := StrToInt(copy(Duration,4,2));
+    SS := StrToInt(copy(Duration,7,2));
+    DurationMs := (HH*3600+MM*60+SS)*1000;
+  end;
+
+ if VideoSourceOperationGeneratePeakFile.Checked then
+ begin
+  try
+   VideoSourceOperationExecute.Enabled := False;
+   FFMpegPath := uppercase(ExtractFileDir(ParamStr(0))+'\mkvtoolnix\ffmpeg.exe');
+   NewAudioWavFileName := ChangeFileExt(EditVideoFilename.Text,'') + '.wav';
+
+   FFMpegPathCommand := Format('-y -i "%s" -ac 1 -ar 8k "%s"',[EditVideoFilename.Text,NewAudioWavFileName]);
+   if VideoSourceOperationAudioTracksOnlyCenter.checked then
+   begin
+    FFMpegPathCommand := Format('-y -i "%s" -af "pan=mono|c0=FC" -ac 1 -ar 8k "%s"',[EditVideoFilename.Text,NewAudioWavFileName]);
+   end;
+
+   Screen.Cursor:=crHourglass;
+
+   SourceFileOperationCancel := TSourceFileOperationCancel.Create(self);
+   SourceFileOperationCancel.FFMpegPath := FFMpegPath;
+   SourceFileOperationCancel.FFMpegPathCommand := FFMpegPathCommand;
+   SourceFileOperationCancel.DurationMs := DurationMs;
+   SourceFileOperationCancel.OutputFile := NewAudioWavFileName;
+   SourceFileOperationCancel.GeneratePeek := True;
+   SourceFileOperationCancel.ShowModal;
+   if SourceFileOperationCancel.ExitForced then
+    ExitForced := True
+   else PeekFileGenerated := SourceFileOperationCancel.PeekFileGenerated;
+   SourceFileOperationCancel.Free;
+
+   if not ExitForced And FileExists(NewAudioWavFileName) then
+   begin
+    if PeekFileGenerated then
+    begin
+      rbPeakOnly.checked := True;
+      rbInternalWAVClick(rbPeakOnly);
+      EditPeakFilename.Text := WideChangeFileExt(NewAudioWavFileName,'.peak');
+      DeleteFile(NewAudioWavFileName);
+    end
+    else
+    begin
+     rbExternal.checked := True;
+     rbInternalWAVClick(rbExternal);
+     EditWAVFilename.Text := NewAudioWavFileName;
+    end;
+    ProjectForm.SelectedAudioTrackOnExtract := cbbVideoSourceOperationAudioTracks.ItemIndex+1;
+    bttCreateNewProject.Enabled := True;
+    MessageBoxW(Handle, PWideChar(WideString('Operation complete.')),
+     PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
+   end
+   else if ExitForced And FileExists(NewAudioWavFileName) then
+   begin
+    MessageBoxW(Handle, PWideChar(WideString('Operation aborted.')),
+     PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
+    DeleteFile(NewAudioWavFileName);
+   end;
+
+   Screen.Cursor:=crDefault;
+
+  except
+  end;
+ end;
 
  if VideoSourceOperationRemux.Checked then
   begin
@@ -1057,19 +1190,30 @@ begin
 
       MkvMergePathCommand := Format('-o "%s" "%s"',[NewVideoFileName,EditVideoFilename.Text]);
 
-      ExecAndWaitConsoleExtended(MkvMergePath, MkvMergePathCommand, '(using Mkvmerge / tnk to MKVToolNix project) (https://mkvtoolnix.download)', 110,5,
-        VideoSourceOperationExecute.ClientOrigin.X - 5,
-        VideoSourceOperationExecute.ClientOrigin.Y + VideoSourceOperationExecute.Height + 5);
-
+      SourceFileOperationCancel := TSourceFileOperationCancel.Create(self);
+      SourceFileOperationCancel.MkvMergePath := MkvMergePath;
+      SourceFileOperationCancel.MkvMergePathCommand := MkvMergePathCommand;
+      SourceFileOperationCancel.ShowModal;
+      if SourceFileOperationCancel.ExitForced then
+       ExitForced := True;
+      SourceFileOperationCancel.Free; 
+
       Screen.Cursor:=crDefault;
 
-      if FileExists(NewVideoFileName) then
+      if not ExitForced And FileExists(NewVideoFileName) then
        begin
         EditVideoFilename.Text := NewVideoFileName;
         bttCreateNewProject.Enabled := True;
         MessageBoxW(Handle, PWideChar(WideString('Operation complete.')),
          PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
+       end
+      else if ExitForced And FileExists(NewVideoFileName) then
+       begin
+         MessageBoxW(Handle, PWideChar(WideString('Operation aborted.')),
+          PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
+         DeleteFile(NewVideoFileName);
        end;
+
     except
      Screen.Cursor:=crDefault;
     end;
@@ -1114,18 +1258,29 @@ begin
 
       Screen.Cursor:=crHourglass;
 
-      ExecAndWaitConsoleExtended(FFMpegPath, FFMpegPathCommand, 'using FFMpeg / tnk to Zeranoe FFmpeg project (https://ffmpeg.zeranoe.com)', 110,5,
-        VideoSourceOperationExecute.ClientOrigin.X - 5,
-        VideoSourceOperationExecute.ClientOrigin.Y + VideoSourceOperationExecute.Height + 5);
-
+      SourceFileOperationCancel := TSourceFileOperationCancel.Create(self);
+      SourceFileOperationCancel.FFMpegPath := FFMpegPath;
+      SourceFileOperationCancel.FFMpegPathCommand := FFMpegPathCommand;
+      SourceFileOperationCancel.DurationMs := DurationMs;
+      SourceFileOperationCancel.ShowModal;
+      if SourceFileOperationCancel.ExitForced then
+       ExitForced := True;
+      SourceFileOperationCancel.Free; 
+
       Screen.Cursor:=crDefault;
 
-      if FileExists(NewVideoFileName) then
+      if not ExitForced And FileExists(NewVideoFileName) then
        begin
         EditVideoFilename.Text := NewVideoFileName;
         bttCreateNewProject.Enabled := True;
         MessageBoxW(Handle, PWideChar(WideString('Operation complete.')),
          PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
+       end
+      else if ExitForced And FileExists(NewVideoFileName) then
+       begin
+         MessageBoxW(Handle, PWideChar(WideString('Operation aborted.')),
+          PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
+         DeleteFile(NewVideoFileName);
        end;
     except
       Screen.Cursor:=crDefault;
@@ -1151,6 +1306,7 @@ begin
     except
       Screen.Cursor:=crDefault;
     end;
+
   end;
 
  if VideoSourceOperationSetSubtitleFile.Checked Or VideoSourceOperationSetSubtitleVO.Checked then
@@ -1161,7 +1317,6 @@ begin
 
       Screen.Cursor:=crHourglass;
 
-      MkvExtractPath := ExtractFileDir(ParamStr(0))+'\mkvtoolnix\mkvextract.exe';
       FFMpegPath := uppercase(ExtractFileDir(ParamStr(0))+'\mkvtoolnix\ffmpeg.exe');
 
       MediaInfoHandle := 0;
@@ -1178,7 +1333,7 @@ begin
               OrdinalSub := I + 1;
               OrdinalFFMpeg := I;
 
-              if RightPad(IntToStr(OrdinalSub),'0',2) <> Copy(cbbVideoSourceOperationTracks.Text,1,2) Then
+              if RightPad(IntToStr(OrdinalSub),'0',2) <> Copy(cbbVideoSourceOperationTextTracks.Text,1,2) Then
                 Continue;
 
               StreamOrder := MediaInfo_Get(MediaInfoHandle, Stream_Text, I, 'StreamOrder', Info_Text, Info_Name);
@@ -1222,13 +1377,18 @@ begin
 
             Screen.Cursor:=crHourglass;
 
-            ExecAndWaitConsoleExtended(FFMpegPath, FFMpegPathCommand, 'using FFMpeg / tnk to Zeranoe FFmpeg project (https://ffmpeg.zeranoe.com)', 110,5,
-              VideoSourceOperationExecute.ClientOrigin.X - 5,
-              VideoSourceOperationExecute.ClientOrigin.Y + VideoSourceOperationExecute.Height + 5);
+            SourceFileOperationCancel := TSourceFileOperationCancel.Create(self);
+            SourceFileOperationCancel.FFMpegPath := FFMpegPath;
+            SourceFileOperationCancel.FFMpegPathCommand := FFMpegPathCommand;
+            SourceFileOperationCancel.DurationMs := DurationMs;
+            SourceFileOperationCancel.ShowModal;
+            if SourceFileOperationCancel.ExitForced then
+             ExitForced := True;
+            SourceFileOperationCancel.Free;
 
             Screen.Cursor:=crDefault;
 
-            if FileExists(NewSubtitleFile) then
+            if not ExitForced And FileExists(NewSubtitleFile) then
               begin
                 if VideoSourceOperationSetSubtitleFile.Checked Then
                   EditSubtitleFilename.Text := NewSubtitleFile;
@@ -1239,7 +1399,13 @@ begin
                 bttCreateNewProject.Enabled := True;
                 MessageBoxW(Handle, PWideChar(WideString('Operation complete.')),
                  PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
-              end;
+              end
+            else if ExitForced And FileExists(NewSubtitleFile) then
+             begin
+               MessageBoxW(Handle, PWideChar(WideString('Operation aborted.')),
+               PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
+               DeleteFile(NewSubtitleFile);
+             end;
 
           end;
          MediaInfo_Close(MediaInfoHandle);
@@ -1249,16 +1415,20 @@ begin
     end;
   end;
 
-
 end;
 
 procedure TProjectForm.VideoSourceOperationRemuxClick(Sender: TObject);
 begin
  VideoSourceOperationExecute.Enabled := True;
- cbbVideoSourceOperationTracks.Visible:= False;
+ cbbVideoSourceOperationAudioTracks.Visible:= False;
+ if VideoSourceOperationGeneratePeakFile.Checked Then
+ begin
+   cbbVideoSourceOperationAudioTracks.Visible:= True;
+ end;
+ cbbVideoSourceOperationTextTracks.Visible:= False;
  if VideoSourceOperationSetSubtitleFile.Checked Or VideoSourceOperationSetSubtitleVO.Checked Then
   begin
-    cbbVideoSourceOperationTracks.Visible:= True;
+    cbbVideoSourceOperationTextTracks.Visible:= True;
   end;
 end;
 
@@ -1266,10 +1436,15 @@ procedure TProjectForm.VideoSourceOperationRecodeAudio1Click(
   Sender: TObject);
 begin
  VideoSourceOperationExecute.Enabled := True;
- cbbVideoSourceOperationTracks.Visible:= False;
+ cbbVideoSourceOperationAudioTracks.Visible:= False;
+ if VideoSourceOperationGeneratePeakFile.Checked Then
+ begin
+   cbbVideoSourceOperationAudioTracks.Visible:= True;
+ end;
+ cbbVideoSourceOperationTextTracks.Visible:= False;
  if VideoSourceOperationSetSubtitleFile.Checked Or VideoSourceOperationSetSubtitleVO.Checked Then
   begin
-   cbbVideoSourceOperationTracks.Visible:= True;
+   cbbVideoSourceOperationTextTracks.Visible:= True;
   end;
 end;
 
@@ -1277,20 +1452,30 @@ procedure TProjectForm.VideoSourceOperationRecodeAudio2Click(
   Sender: TObject);
 begin
  VideoSourceOperationExecute.Enabled := True;
- cbbVideoSourceOperationTracks.Visible:= False;
+ cbbVideoSourceOperationAudioTracks.Visible:= False;
+ if VideoSourceOperationGeneratePeakFile.Checked Then
+ begin
+   cbbVideoSourceOperationAudioTracks.Visible:= True;
+ end;
+ cbbVideoSourceOperationTextTracks.Visible:= False;
  if VideoSourceOperationSetSubtitleFile.Checked Or VideoSourceOperationSetSubtitleVO.Checked Then
   begin
-    cbbVideoSourceOperationTracks.Visible:= True;
+    cbbVideoSourceOperationTextTracks.Visible:= True;
   end;
 end;
 
 procedure TProjectForm.VideoSourceOperationMD5Click(Sender: TObject);
 begin
  VideoSourceOperationExecute.Enabled := True;
- cbbVideoSourceOperationTracks.Visible:= False;
+ cbbVideoSourceOperationAudioTracks.Visible:= False;
+ if VideoSourceOperationGeneratePeakFile.Checked Then
+ begin
+   cbbVideoSourceOperationAudioTracks.Visible:= True;
+ end;
+ cbbVideoSourceOperationTextTracks.Visible:= False;
  if VideoSourceOperationSetSubtitleFile.Checked Or VideoSourceOperationSetSubtitleVO.Checked Then
   begin
-    cbbVideoSourceOperationTracks.Visible:= True;
+    cbbVideoSourceOperationTextTracks.Visible:= True;
   end;
 end;
 
@@ -1298,10 +1483,15 @@ procedure TProjectForm.VideoSourceOperationSetSubtitleFileClick(
   Sender: TObject);
 begin
  VideoSourceOperationExecute.Enabled := True;
- cbbVideoSourceOperationTracks.Visible:= False;
+ cbbVideoSourceOperationAudioTracks.Visible:= False;
+ if VideoSourceOperationGeneratePeakFile.Checked Then
+ begin
+   cbbVideoSourceOperationAudioTracks.Visible:= True;
+ end;
+ cbbVideoSourceOperationTextTracks.Visible:= False;
  if VideoSourceOperationSetSubtitleFile.Checked Or VideoSourceOperationSetSubtitleVO.Checked Then
   begin
-    cbbVideoSourceOperationTracks.Visible:= True;
+    cbbVideoSourceOperationTextTracks.Visible:= True;
   end;
 end;
 
@@ -1309,9 +1499,32 @@ procedure TProjectForm.VideoSourceOperationSetSubtitleVOClick(
   Sender: TObject);
 begin
  VideoSourceOperationExecute.Enabled := True;
- cbbVideoSourceOperationTracks.Visible:= False;
+ cbbVideoSourceOperationAudioTracks.Visible:= False;
+ if VideoSourceOperationGeneratePeakFile.Checked Then
+ begin
+   cbbVideoSourceOperationAudioTracks.Visible:= True;
+ end;
+ cbbVideoSourceOperationTextTracks.Visible:= False;
   begin
-    cbbVideoSourceOperationTracks.Visible:= True;
+    cbbVideoSourceOperationTextTracks.Visible:= True;
+  end;
+end;
+
+procedure TProjectForm.VideoSourceOperationGeneratePeakFileClick(
+  Sender: TObject);
+begin
+ VideoSourceOperationExecute.Enabled := True;
+ cbbVideoSourceOperationAudioTracks.Visible:= False;
+ VideoSourceOperationAudioTracksOnlyCenter.Visible:= False;
+ if VideoSourceOperationGeneratePeakFile.Checked Then
+ begin
+   cbbVideoSourceOperationAudioTracks.Visible:= True;
+   VideoSourceOperationAudioTracksOnlyCenter.Visible:= True;
+ end;
+ cbbVideoSourceOperationTextTracks.Visible:= False;
+ if VideoSourceOperationSetSubtitleFile.Checked Or VideoSourceOperationSetSubtitleVO.Checked Then
+  begin
+    cbbVideoSourceOperationTextTracks.Visible:= True;
   end;
 end;
 
