@@ -604,7 +604,11 @@ begin
            Language;
          cbbVideoSourceOperationAudioTracks.Items.Add(TextStreamAudio);
        end;
-       if cbbVideoSourceOperationAudioTracks.Items.Count > 0 then cbbVideoSourceOperationAudioTracks.ItemIndex := 0;
+       if cbbVideoSourceOperationAudioTracks.Items.Count > 0 then
+       begin
+         cbbVideoSourceOperationAudioTracks.ItemIndex := 0;
+         VideoSourceOperationGeneratePeakFile.Checked := True;
+       end;
      end;
 
     if iAudioStreamCount > 0 then
@@ -689,7 +693,6 @@ begin
      VideoSourceOperationMD5.Enabled := True;
      VideoSourceOperationMD5.Checked :=False;
 
-     VideoSourceOperationExecute.Enabled := False;
      bttCreateNewProject.Enabled := True;
 
    end;
@@ -1162,9 +1165,9 @@ begin
     end;
     ProjectForm.SelectedAudioTrackOnExtract := cbbVideoSourceOperationAudioTracks.ItemIndex+1;
     bttCreateNewProject.Enabled := True;
-    MessageBoxW(Handle, PWideChar(WideString('Operation complete.')),
+    MessageBoxW(Handle, PWideChar(WideString('Operation complete. The audio waveform peak file is being created.')),
      PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
-   end
+   end
    else if ExitForced And FileExists(NewAudioWavFileName) then
    begin
     MessageBoxW(Handle, PWideChar(WideString('Operation aborted.')),
@@ -1204,9 +1207,10 @@ begin
        begin
         EditVideoFilename.Text := NewVideoFileName;
         bttCreateNewProject.Enabled := True;
-        MessageBoxW(Handle, PWideChar(WideString('Operation complete.')),
+        EditVideoFilename.SetFocus;
+        MessageBoxW(Handle, PWideChar(WideString('Operation complete. A new video source file is being created remuxing the original one.')),
          PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
-       end
+       end
       else if ExitForced And FileExists(NewVideoFileName) then
        begin
          MessageBoxW(Handle, PWideChar(WideString('Operation aborted.')),
@@ -1273,9 +1277,9 @@ begin
        begin
         EditVideoFilename.Text := NewVideoFileName;
         bttCreateNewProject.Enabled := True;
-        MessageBoxW(Handle, PWideChar(WideString('Operation complete.')),
+        MessageBoxW(Handle, PWideChar(WideString('Operation complete. A new video source file is being created enconding the original one.')),
          PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
-       end
+       end
       else if ExitForced And FileExists(NewVideoFileName) then
        begin
          MessageBoxW(Handle, PWideChar(WideString('Operation aborted.')),
@@ -1397,9 +1401,13 @@ begin
                 if CodecID = 'S_TEXT/UTF8' then cbSubtitleFormat.ItemIndex := 0;
                 if CodecID = 'S_TEXT/ASS' then cbSubtitleFormat.ItemIndex := 2;
                 bttCreateNewProject.Enabled := True;
-                MessageBoxW(Handle, PWideChar(WideString('Operation complete.')),
-                 PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
-              end
+                if VideoSourceOperationSetSubtitleFile.Checked Then
+                  MessageBoxW(Handle, PWideChar(WideString('Operation complete. A subtitle is being extracted from the video source file.')),
+                    PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
+                if VideoSourceOperationSetSubtitleVO.Checked Then
+                  MessageBoxW(Handle, PWideChar(WideString('Operation complete. A subtitle VO/Other is being extracted from the video source file.')),
+                    PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
+              end
             else if ExitForced And FileExists(NewSubtitleFile) then
              begin
                MessageBoxW(Handle, PWideChar(WideString('Operation aborted.')),

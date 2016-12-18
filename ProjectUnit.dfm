@@ -63,7 +63,7 @@ object ProjectForm: TProjectForm
       Top = 182
       Width = 621
       Height = 24
-      Caption = 'Extract WAV/Peak file from video'
+      Caption = 'Extract WAV/Peak file from video (legacy)'
       TabOrder = 1
       OnClick = bttExtractWAVFromVideoClick
     end
@@ -96,7 +96,7 @@ object ProjectForm: TProjectForm
         Hint = 
           'Create a new video source file (mkv) + convert audio to Pcm G.71' +
           '1 / mono (using FFMpeg / tnk to Zeranoe FFmpeg project)'
-        Caption = 'Recode with audio (Pcm G.711 / mono)'
+        Caption = 'Encode with audio (Pcm G.711 / mono)'
         Enabled = False
         ParentShowHint = False
         ShowHint = True
@@ -111,7 +111,7 @@ object ProjectForm: TProjectForm
         Hint = 
           'Create a new video source file (mkv) + convert audio to Pcm / st' +
           'ereo (using FFMpeg / tnk to Zeranoe FFmpeg project)'
-        Caption = 'Recode with audio (Pcm / stereo)'
+        Caption = 'Encode with audio (Pcm / stereo)'
         Enabled = False
         ParentShowHint = False
         ShowHint = True
@@ -289,6 +289,8 @@ object ProjectForm: TProjectForm
       Top = 46
       Width = 561
       Height = 21
+      Ctl3D = True
+      ParentCtl3D = False
       TabOrder = 3
       OnChange = EditUpdateColor
       OnEnter = EditPeakFilenameEnter
