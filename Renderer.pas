@@ -92,6 +92,7 @@ type
     destructor Destroy; override;
     function GetLastErrorString : string;
     function Open(filename : WideString; AudioOnly : Boolean) : Boolean;
+    function OpenLavCodedBasedFilterGraph(filename : WideString) : Boolean;
     function PlayRange(Start, Stop : Cardinal; Loop : Boolean = False) : Boolean; override;
     procedure Pause; override;
     procedure Resume; override;
@@ -715,7 +716,7 @@ var
   FHMPCMatroskaSplitter, FHMPCAviSplitter, FHMPCMp4Splitter, FHMPCFlvSplitter, FHMPCMpegSplitter,
   FHLAVVideoFilterInst, FHLavAudioFilterInst, FHLavSplitter : THandle;
   VideoDecoderFilter, AudioDecoderFilter, FileSourceAsyncFilter, SourceAsyncFilter,
-  SplitterFilter,Reclock, StandardRenderer,Renderer : IBaseFilter;
+  SplitterFilter,Reclock,StandardRenderer,Renderer : IBaseFilter;
   PinOut,PinIn : IPin;
   PinInVideo,PinOutVideo,PinInVideoConnectedTo, PinOutVideoConnectedTo : IPin;
   PinInVsFilter,PinOutVsFilter,PinOutSubtitleSource,PinInVsFilterConnectedTo,PinOutVsFilterConnectedTo : IPin;
@@ -731,6 +732,12 @@ var
   CodecPath : WideString;
   pLanguages : WideString;
 begin
+
+  if not AudioOnly AND NOT (MainForm.CurrentProject.VideoStreamCount < '1') AND MainForm.ConfigObject.UseInternalFilters AND MainForm.ConfigObject.UseAlternativeInternalCodec then
+  begin
+    Result := OpenLavCodedBasedFilterGraph(filename);
+    EXIT;
+  end;
 
   if Assigned(FGraphBuilder) then
     Close;
@@ -1205,37 +1212,6 @@ begin
    begin
     FLastResult := FGraphBuilder.RenderFile(@filename[1], nil);
    end;
-
-  // ------- substitute Video renderer with Video Renderer (legacy)
-  if MainForm.ConfigObject.UseInternalFilters AND MainForm.ConfigObject.PreferLegacyVideoRenderer then
-  begin
-    if not AudioOnly then
-     begin
-      if Assigned(VSFilter) then
-       begin
-        StandardRenderer := FindFilterByCLSID(FGraphBuilder, CLSID_EnhRenderer);
-        if Assigned(StandardRenderer) then
-         begin
-          GetFilterPin(VSFilter,PINDIR_OUTPUT,PinOutVsFilter);
-          GetFilterPin(VSFilter,PINDIR_INPUT,PinInVsFilter);
-          GetFilterPin(StandardRenderer,PINDIR_INPUT,PinInStandardRenderer);
-          if Assigned(PinOutVsFilter) then
-           begin
-            FLastResult := CoCreateInstance(CLSID_VideoRenderer, nil, CLSCTX_INPROC_SERVER, IID_IBaseFilter, Renderer);
-            if Succeeded(FLastResult) then
-            begin
-              FLastResult := FGraphBuilder.AddFilter(Renderer, 'Video Renderer (legacy)');
-              FGraphBuilder.Disconnect(PinOutVsFilter);
-              FGraphBuilder.Disconnect(PinInStandardRenderer);
-              GetFilterPin(Renderer,PINDIR_INPUT,PinInRenderer);
-              FGraphBuilder.Connect(PinOutVsFilter,PinInRenderer);
-            end;
-           end;
-         end;
-       end;
-     end;
-  end;
-  // -------------------------------------------
 
   // ------- substitute Video renderer with Vmr9
   if MainForm.ConfigObject.UseInternalFilters AND MainForm.ConfigObject.PreferVmr9VideoRenderer then
@@ -3263,6 +3239,303 @@ begin
   end;
 
 end;
+
+function TDShowRenderer.OpenLavCodedBasedFilterGraph(filename : WideString) : Boolean;
+Const
+  CLSID_Reclock: TGuid = '{9DC15360-914C-46B8-B9DF-BFE67FD36C6A}';
+  CLSID_VideoRenderer: TGuid = '{70E102B0-5556-11CE-97C0-00AA0055595A}';
+  CLSID_AudioRenderer: TGuid = '{79376820-07D0-11CF-A24D-0020AFD79767}';
+  CLSID_Vmr7Renderer: TGuid = '{B87BEB7B-8D29-423F-AE4D-6582C10175AC}';
+  CLSID_Vmr9Renderer: TGuid = '{51B4ABF3-748F-4E3B-A276-C828330E926A}';
+  CLSID_EnhRenderer: TGuid = '{FA10746C-9B63-4B6C-BC49-FC300EA5F256}';
+  CLSID_LavAudioDecoder: TGuid = '{E8E73B6B-4CB3-44A4-BE99-4F7BCB96E491}';
+  CLSID_LavSplitter: TGuid = '{171252A0-8820-4AFE-9DF8-5C92B2D66B04}';
+  CLSID_LavSplitterSource: TGuid = '{B98D13E7-55DB-4385-A33D-09FD1BA26338}';
+
+var
+  BasicVideoI : IBasicVideo2;
+  VSFilter : IBaseFilter;
+  VSFilterVendorInfo : PWideChar;
+  FHLAVVideoFilterInst, FHLavAudioFilterInst, FHLavSplitter : THandle;
+  VideoDecoderFilter, AudioDecoderFilter, FileSourceAsyncFilter, SourceAsyncFilter,
+  SplitterFilter,StandardRenderer,Renderer : IBaseFilter;
+  PinOut,PinIn : IPin;
+  PinInVideo,PinOutVideo,PinInVideoConnectedTo, PinOutVideoConnectedTo : IPin;
+  PinInVsFilter,PinOutVsFilter,PinOutSubtitleSource,PinInVsFilterConnectedTo,PinOutVsFilterConnectedTo : IPin;
+  PinInRenderer,PinInRendererConnectedTo : IPin;
+  PinInStandardRenderer,PinInStandardRendererConnectedTo : IPin;
+  LAVVideoSettings : ILAVVideoSettings;
+  LAVSplitterSettings : ILAVFSettings;
+  Pins : IEnumPins; ul : ULONG;
+  PinFileSourceOutput : IPin;
+  PinSplitterInput : IPin;
+  LAVAudioSettings : ILAVAudioSettings;
+  centerLevel, surroundLevel, LfeLevel : DWORD;
+  CodecPath : WideString;
+  pLanguages : WideString;
+  PinOutLavSplitterVideo, PinOutLavSplitterAudio,
+  PinInLavCodecVideo, PinInLavCodecAudio,
+  PinOutLavCodecVideo, PinOutLavCodecAudio,
+  PinInVideoRenderer, PinInAudioRenderer, PinInReclockRenderer : IPin;
+  AudioRenderer, VideoRenderer, ReclockRenderer : IBaseFilter;
+begin
+
+  if Assigned(FGraphBuilder) then
+    Close;
+  Result := False;
+  if (filename = '') or (not WideFileExists(filename)) then
+    Exit;
+
+  FLastResult := CoCreateInstance(TGUID(CLSID_FilterGraph), nil, CLSCTX_INPROC,
+    TGUID(IID_IGraphBuilder), FGraphBuilder);
+  GetLastErrorString;
+  if (FLastResult <> S_OK) then Exit;
+
+  FLastResult := FGraphBuilder.QueryInterface(IID_IMediaControl, FMediaControl);
+  if (FLastResult <> S_OK) then Exit;
+  FLastResult := FGraphBuilder.QueryInterface(IID_IMediaSeeking, FMediaSeeking);
+  if (FLastResult <> S_OK) then Exit;
+  FLastResult := FGraphBuilder.QueryInterface(IID_IMediaEventEx, FMediaEventEx);
+  if (FLastResult <> S_OK) then Exit;
+
+  FCustomVSFilterIntallOk := False;
+  if (FAutoInsertCustomVSFilter) then
+   begin
+    CodecPath := ExtractFilePath(ParamStr(0))+'VSSCustomVSFilterV2a.dll';
+    FHCustomVSFilterInst := CoLoadLibrary(PWideChar(CodecPath),True);
+    if (FHCustomVSFilterInst <> 0) then
+    begin
+      FLastResult := CreateFilterFromFile(FHCustomVSFilterInst,
+        CLSID_DirectVobSubFilter, VSFilter);
+      if Succeeded(FLastResult) then
+       begin
+        FGraphBuilder.AddFilter(VSFilter, 'VSFilter Custom (internal)');
+        SetSubtitleFont(MainForm.ConfigObject.SubVideoFont, Trunc(MainForm.ConfigObject.TransparencySubVideoFont / 10 * $FF),
+          MainForm.ConfigObject.OutlineSubVideoFont,MainForm.ConfigObject.OutlineSubVideoColorFont, Trunc(MainForm.ConfigObject.TransparencyOutlineSubVideoFont / 10 * $FF),
+          MainForm.ConfigObject.ShadowSubVideoFont,MainForm.ConfigObject.ShadowSubVideoColorFont, Trunc(MainForm.ConfigObject.TransparencyShadowSubVideoFont / 10 * $FF));
+        SetSubtitleUpscalingSettings;
+        SetSubtitleFlipSettings;
+       end;
+    end;
+   end;
+
+   // SPLITTER
+   FLastResult := CoCreateInstance(CLSID_LavSplitterSource, nil, CLSCTX_INPROC_SERVER, IID_IBaseFilter, SplitterFilter);
+   if MainForm.ConfigObject.ForceRegisteredCodecs AND Succeeded(FLastResult) then
+    begin
+     FGraphBuilder.AddFilter(SplitterFilter, 'LAV Splitter');
+
+     LAVSplitterSettings := GetLavSplitterSettingsInterface;
+     LAVSplitterSettings.SetRuntimeConfig(True);
+     LAVSplitterSettings.SetTrayIcon(False);
+     pLanguages := MainForm.ConfigObject.LavPreferredLanguages;
+     LAVSplitterSettings.SetPreferredLanguages(PWideChar(pLanguages));
+
+     (SplitterFilter as IFileSourceFilter).Load(@Filename[1],nil);
+    end
+   else
+   begin
+    CodecPath := ExtractFilePath(ParamStr(0))+'CodecLav\LAVSplitter.ax';
+    FHLavSplitter := CoLoadLibrary(PWideChar(CodecPath),True);
+    if (FHLavSplitter <> 0) then
+      begin
+       FLastResult := CreateFilterFromFile(FHLavSplitter,
+        CLSID_LavSplitterSource, SplitterFilter);
+       FGraphBuilder.AddFilter(SplitterFilter, 'LAV Splitter (internal)');
+
+       LAVSplitterSettings := GetLavSplitterSettingsInterface;
+       LAVSplitterSettings.SetRuntimeConfig(true);
+       LAVSplitterSettings.SetTrayIcon(false);
+       pLanguages := MainForm.ConfigObject.LavPreferredLanguages;
+       LAVSplitterSettings.SetPreferredLanguages(PWideChar(pLanguages));
+
+       (SplitterFilter as IFileSourceFilter).Load(@Filename[1],nil);
+      end;
+   end;
+
+   // AUDIO RENDERER
+   FLastResult := CoCreateInstance(CLSID_AudioRenderer, nil, CLSCTX_INPROC_SERVER, IID_IBaseFilter, AudioRenderer);
+   if Succeeded(FLastResult) then
+   begin
+     FGraphBuilder.AddFilter(AudioRenderer, 'Default DirectSound Device');
+   end;
+
+   // VIDEO RENDERER (VMR-7)
+   if MainForm.ConfigObject.PreferVmr7VideoRenderer then
+    begin
+     FLastResult := CoCreateInstance(CLSID_Vmr7Renderer, nil, CLSCTX_INPROC_SERVER, IID_IBaseFilter, VideoRenderer);
+     if Succeeded(FLastResult) then
+     begin
+       FGraphBuilder.AddFilter(VideoRenderer, 'Video Mixing Filter 7');
+     end;
+    end;
+
+   // VIDEO RENDERER (VMR-9)
+   if MainForm.ConfigObject.PreferVmr9VideoRenderer then
+    begin
+     FLastResult := CoCreateInstance(CLSID_Vmr9Renderer, nil, CLSCTX_INPROC_SERVER, IID_IBaseFilter, VideoRenderer);
+     if Succeeded(FLastResult) then
+     begin
+       FGraphBuilder.AddFilter(VideoRenderer, 'Video Mixing Renderer 9');
+     end;
+    end;
+
+   // LAV CODEC VIDEO
+   FLastResult := CoCreateInstance(CLSID_LavVideoDecoder, nil, CLSCTX_INPROC_SERVER, IID_IBaseFilter, VideoDecoderFilter);
+   if MainForm.ConfigObject.ForceRegisteredCodecs AND Succeeded(FLastResult) then
+    begin
+      FGraphBuilder.AddFilter(VideoDecoderFilter, 'LAV Video Decoder');
+    end
+   else
+    begin
+     CodecPath := ExtractFilePath(ParamStr(0))+'CodecLav\LAVVideo.ax';
+     FHLAVVideoFilterInst := CoLoadLibrary(PWideChar(CodecPath),True);
+     if (FHLAVVideoFilterInst <> 0) then
+      begin
+       FLastResult := CreateFilterFromFile(FHLAVVideoFilterInst,
+         CLSID_LavVideoDecoder, VideoDecoderFilter);
+       if Succeeded(FLastResult) then
+        FGraphBuilder.AddFilter(VideoDecoderFilter, 'LAV Video Decoder (internal)');
+      end;
+    end;
+
+   LAVVideoSettings := GetLavVideoSettingsInterface;
+   LAVVideoSettings.SetTrayIcon(False);
+   LAVVideoSettings.SetRuntimeConfig(True);
+   if MainForm.ConfigObject.LavVHwNone then LAVVideoSettings.SetHWAccel(HWAccel_None);
+   if MainForm.ConfigObject.LavVQuickSync then LAVVideoSettings.SetHWAccel(HWAccel_QuickSync);
+   if MainForm.ConfigObject.LavVCuda then LAVVideoSettings.SetHWAccel(HWAccel_CUDA);
+   if MainForm.ConfigObject.LavVDxva2 then  LAVVideoSettings.SetHWAccel(HWAccel_DXVA2CopyBack);
+
+   // AUDIO
+   FLastResult := CoCreateInstance(CLSID_LavAudioDecoder, nil, CLSCTX_INPROC_SERVER, IID_IBaseFilter, AudioDecoderFilter);
+   if MainForm.ConfigObject.ForceRegisteredCodecs AND Succeeded(FLastResult) then
+    begin
+     FGraphBuilder.AddFilter(AudioDecoderFilter, 'LAV Audio Decoder');
+    end
+   else
+    begin
+     CodecPath := ExtractFilePath(ParamStr(0))+'CodecLav\LAVAudio.ax';
+     FHLavAudioFilterInst := CoLoadLibrary(PWideChar(CodecPath),True);
+     if (FHLavAudioFilterInst <> 0) then
+      begin
+       FLastResult := CreateFilterFromFile(FHLavAudioFilterInst,
+         CLSID_LavAudioDecoder, AudioDecoderFilter);
+       if Succeeded(FLastResult) then
+        FGraphBuilder.AddFilter(AudioDecoderFilter, 'LAV Audio Decoder (internal)');
+      end;
+    end;
+
+   LAVAudioSettings := GetLavAudioSettingsInterface;
+   LAVAudioSettings.SetTrayIcon(False);
+   LAVAudioSettings.SetRuntimeConfig(True);
+   LAVAudioSettings.SetAudioDelay(False,0);
+   if MainForm.ConfigObject.EnableLavAudioMixing then
+    begin
+     LAVAudioSettings.SetMixingEnabled(True);
+     LAVAudioSettings.GetMixingLevels(centerLevel, surroundLevel, LfeLevel);
+     LAVAudioSettings.SetMixingLevels(centerLevel, surroundLevel, LfeLevel);
+     LAVAudioSettings.SetMixingFlags(LAV_MIXING_FLAG_UNTOUCHED_STEREO);
+    end;
+
+  // Detect PIN
+  SplitterFilter.FindPin('Video', PinOutLavSplitterVideo);
+  SplitterFilter.FindPin('Audio', PinOutLavSplitterAudio);
+
+  GetFilterPin(VideoDecoderFilter,PINDIR_INPUT,PinInLavCodecVideo);
+  GetFilterPin(VideoDecoderFilter,PINDIR_OUTPUT,PinOutLavCodecVideo);
+
+  GetFilterPin(VSFilter,PINDIR_INPUT,PinInVsFilter);
+  GetFilterPin(VSFilter,PINDIR_OUTPUT,PinOutVsFilter);
+
+  GetFilterPin(AudioDecoderFilter,PINDIR_INPUT,PinInLavCodecAudio);
+  GetFilterPin(AudioDecoderFilter,PINDIR_OUTPUT,PinOutLavCodecAudio);
+
+  GetFilterPin(VideoRenderer,PINDIR_INPUT,PinInVideoRenderer);
+  GetFilterPin(AudioRenderer,PINDIR_INPUT,PinInAudioRenderer);
+
+  // CONNECT FILTERS VIDEO CHAIN
+  FLastResult := FGraphBuilder.Connect(PinOutLavSplitterVideo,PinInLavCodecVideo); // SPLITTER VIDEO OUT -->CODEC VIDEO IN
+  FLastResult := FGraphBuilder.Connect(PinOutLavCodecVideo,PinInVsFilter); // CODEC VIDEO OUT --> VSFILTER IN
+  FLastResult := FGraphBuilder.Connect(PinOutVsFilter,PinInVideoRenderer); // CODEC VSFILTER OUT --> RENDERED VIDEO IN
+
+  // CONNECT FILTERS AUDIO CHAIN
+  FLastResult := FGraphBuilder.Connect(PinOutLavSplitterAudio,PinInLavCodecAudio); // SPLITTER AUDIO OUT -->CODEC AUDIO IN
+  FLastResult := FGraphBuilder.Connect(PinOutLavCodecAudio,PinInAudioRenderer); // CODEC AUDIO OUT --> RENDERED AUDIO IN
+
+  // ------- substitute Audio renderer with Reclock renderer
+  if MainForm.ConfigObject.UseReclockAudioRenderer then
+   begin
+    ReclockRenderer := FindFilterByCLSID(FGraphBuilder, CLSID_AudioRenderer);
+    if Assigned(ReclockRenderer) then
+     begin
+      if Assigned(PinOutLavCodecAudio) then
+       begin
+        FLastResult := CoCreateInstance(CLSID_Reclock, nil, CLSCTX_INPROC_SERVER, IID_IBaseFilter, ReclockRenderer);
+        if Succeeded(FLastResult) then
+        begin
+          FLastResult := FGraphBuilder.AddFilter(ReclockRenderer, 'Reclock Audio Renderer');
+          FGraphBuilder.Disconnect(PinOutLavCodecAudio);
+          FGraphBuilder.Disconnect(PinInAudioRenderer);
+          GetFilterPin(ReclockRenderer,PINDIR_INPUT,PinInReclockRenderer);
+          FGraphBuilder.Connect(PinOutLavCodecAudio,PinInReclockRenderer);
+        end;
+       end;
+     end;
+   end;
+  // -------------------------------------------
+
+  // ------- remove unused filters
+  if Assigned(VideoDecoderFilter) then
+   begin
+    GetFilterPin(VideoDecoderFilter,PINDIR_OUTPUT,PinOut);
+    Pinout.ConnectedTo(PinIn);
+    if not Assigned(PinIn) then
+     FGraphBuilder.RemoveFilter(VideoDecoderFilter);
+   end;
+  if Assigned(AudioDecoderFilter) then
+   begin
+    GetFilterPin(AudioDecoderFilter,PINDIR_OUTPUT,PinOut);
+    Pinout.ConnectedTo(PinIn);
+    if not Assigned(PinIn) then
+     FGraphBuilder.RemoveFilter(AudioDecoderFilter);
+   end;
+  if Assigned(ReclockRenderer) then
+   begin
+    GetFilterPin(ReclockRenderer,PINDIR_INPUT,PinIn);
+    PinIn.ConnectedTo(PinOut);
+    if not Assigned(PinOut) then
+     FGraphBuilder.RemoveFilter(ReclockRenderer);
+   end;
+  // ----------------------------
+
+  Result := (FLastResult = S_OK);
+  FIsOpen := Result;
+
+  FGraphBuilder.QueryInterface(IID_IBasicVideo2, BasicVideoI);
+  BasicVideoI.get_VideoWidth(FVideoWidth);
+  BasicVideoI.get_VideoHeight(FVideoHeight);
+  BasicVideoI := nil;
+
+  FGraphBuilder.QueryInterface(IID_IBasicAudio, FBasicAudio);
+
+  VSFilter := GetDirectVobSubFilter;
+  if Assigned(VSFilter) then
+  begin
+    FLastResult := VSFilter.QueryVendorInfo(VSFilterVendorInfo);
+    if Succeeded(FLastResult) then
+    begin
+      FCustomVSFilterIntallOk := Pos('VSS Custom VSFilter', VSFilterVendorInfo) = 1;
+      CoTaskMemFree(VSFilterVendorInfo);
+    end;
+  end;
+
+  AddToRot(FGraphBuilder, FROTID);
+
+  SetRate(100);
+end;
+
+//------------------------------------------------------------------------------
 
 end.
 

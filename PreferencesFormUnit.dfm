@@ -596,7 +596,7 @@ object PreferencesForm: TPreferencesForm
         object GroupBoxRenderer: TGroupBox
           Left = 11
           Top = 285
-          Width = 530
+          Width = 382
           Height = 56
           Caption = 'Video renderer to use'
           TabOrder = 8
@@ -615,14 +615,6 @@ object PreferencesForm: TPreferencesForm
             Height = 17
             Caption = 'Video Mixing Filter 7 (VMR-7)'
             TabOrder = 0
-          end
-          object ChkPreferLegacyVideoRenderer: TRadioButton
-            Left = 379
-            Top = 24
-            Width = 146
-            Height = 17
-            Caption = 'Video Renderer (legacy)'
-            TabOrder = 2
           end
         end
       end

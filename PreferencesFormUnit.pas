@@ -92,7 +92,6 @@ type
     ForceStopOnPausing : Boolean;
     DoubledSubResolution : Boolean;
     ForceNoDesktopComposition : Boolean;
-    PreferLegacyVideoRenderer : Boolean;
     PreferVmr7VideoRenderer : Boolean;
     PreferVmr9VideoRenderer : Boolean;
     UseReclockAudioRenderer : Boolean;
@@ -416,7 +415,6 @@ type
     GroupBoxRenderer: TGroupBox;
     ChkPreferVmr9VideoRenderer: TRadioButton;
     ChkPreferVmr7VideoRenderer: TRadioButton;
-    ChkPreferLegacyVideoRenderer: TRadioButton;
     cbbWordReferenceLanguage: TComboBox;
     chkUTF8AsDefault: TCheckBox;
     TimerCheckCodec: TTimer;
@@ -814,7 +812,6 @@ begin
   ForceNoDesktopComposition := false;
   PreferVmr7VideoRenderer := True;
   PreferVmr9VideoRenderer := False;
-  PreferLegacyVideoRenderer := False;
   UseReclockAudioRenderer := False;
   SpaceKeyMoveAfterSmartButtonIsUsed := 750;
   AutoPlaySmartButtonIsUsed := True;
@@ -1050,7 +1047,6 @@ begin
   IniFile.WriteBool('Misc','ForceStopOnPausing',ForceStopOnPausing);
   IniFile.WriteBool('Misc','DoubledSubResolution',DoubledSubResolution);
   IniFile.WriteBool('Misc','ForceNoDesktopComposition',ForceNoDesktopComposition);
-  IniFile.WriteBool('Misc','PreferLegacyVideoRenderer',PreferLegacyVideoRenderer);
   IniFile.WriteBool('Misc','PreferVrm7VideoRenderer',PreferVmr7VideoRenderer);
   IniFile.WriteBool('Misc','PreferVrm9VideoRenderer',PreferVmr9VideoRenderer);
   IniFile.WriteBool('Misc','UseReclockAudioRenderer',UseReclockAudioRenderer);
@@ -1226,7 +1222,6 @@ begin
   ForceStopOnPausing := IniFile.ReadBool('Misc','ForceStopOnPausing',ForceStopOnPausing);
   DoubledSubResolution := IniFile.ReadBool('Misc','DoubledSubResolution',DoubledSubResolution);
   ForceNoDesktopComposition := IniFile.ReadBool('Misc','ForceNoDesktopComposition',ForceNoDesktopComposition);
-  PreferLegacyVideoRenderer := IniFile.ReadBool('Misc','PreferLegacyVideoRenderer',PreferLegacyVideoRenderer);
   PreferVmr7VideoRenderer := IniFile.ReadBool('Misc','PreferVrm7VideoRenderer',PreferVmr7VideoRenderer);
   PreferVmr9VideoRenderer := IniFile.ReadBool('Misc','PreferVrm9VideoRenderer',PreferVmr9VideoRenderer);
   UseReclockAudioRenderer := IniFile.ReadBool('Misc','UseReclockAudioRenderer',UseReclockAudioRenderer);
@@ -1520,8 +1515,6 @@ begin
   {$ENDIF}
   ChkPreferVmr7VideoRenderer.Checked := Config.PreferVmr7VideoRenderer;
   ChkPreferVmr9VideoRenderer.Checked := Config.PreferVmr9VideoRenderer;
-  ChkPreferLegacyVideoRenderer.Checked := Config.PreferLegacyVideoRenderer Or
-   (not ChkPreferVmr7VideoRenderer.Checked And not ChkPreferVmr9VideoRenderer.Checked);
   ChkUseReclockAudioRenderer.Checked := Config.UseReclockAudioRenderer;
   UpDownMoveAfterSmartButtonIsUsed.Position := Config.SpaceKeyMoveAfterSmartButtonIsUsed;
   ChkMoveAfterSmartButtonIsUsed.Checked := Config.AutoPlaySmartButtonIsUsed;
@@ -1732,7 +1725,6 @@ begin
   Config.ForceStopOnPausing := ChkForceStopOnPausing.Checked;
   Config.DoubledSubResolution := ChkDoubledSubResolution.Checked;
   Config.ForceNoDesktopComposition := ChkDisableDesktopComposition.Checked;
-  Config.PreferLegacyVideoRenderer := ChkPreferLegacyVideoRenderer.Checked;
   Config.PreferVmr7VideoRenderer := ChkPreferVmr7VideoRenderer.Checked;
   Config.PreferVmr9VideoRenderer := ChkPreferVmr9VideoRenderer.Checked;
   Config.UseReclockAudioRenderer := ChkUseReclockAudioRenderer.Checked;
@@ -2460,7 +2452,6 @@ end;
 
 procedure TPreferencesForm.ChkUseInternalFiltersClick(Sender: TObject);
 begin
- ChkPreferLegacyVideoRenderer.Enabled := True;
  ChkPreferVmr7VideoRenderer.Enabled := True;
  ChkPreferVmr9VideoRenderer.Enabled := True;
  ChkDefaultInternalCodec.Enabled := True;
@@ -2484,7 +2475,6 @@ begin
  EditLavPreferredLanguages.Enabled := True;
  if not ChkUseInternalFilters.Checked Or not ChkUseInternalFilters.Enabled then
   begin
-   ChkPreferLegacyVideoRenderer.Enabled := False;
    ChkPreferVmr7VideoRenderer.Enabled := False;
    ChkPreferVmr9VideoRenderer.Enabled := False;
    ChkDefaultInternalCodec.Enabled := False;
