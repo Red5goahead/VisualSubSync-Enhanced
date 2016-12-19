@@ -583,7 +583,7 @@ begin
     if (MediaInfoDLL_Load('MediaInfo.dll') = True) Then
      begin
        MediaInfoHandle := MediaInfo_New();
-       MediaInfo_Open(MediaInfoHandle, @TntOpenDialogBrowseGenericFile.FileName[1]);
+       MediaInfo_Open(MediaInfoHandle, PWideChar(EditVideoFilename.Text));
        AudioStreamCount := MediaInfo_Get(MediaInfoHandle, Stream_Audio, 0, 'StreamCount', Info_Text, Info_Name);
        if AudioStreamCount <> '' then
         iAudioStreamCount := StrToInt(AudioStreamCount);
@@ -658,7 +658,7 @@ begin
         if (MediaInfoDLL_Load('MediaInfo.dll') = True) Then
          begin
            MediaInfoHandle := MediaInfo_New();
-           MediaInfo_Open(MediaInfoHandle, @TntOpenDialogBrowseGenericFile.FileName[1]);
+           MediaInfo_Open(MediaInfoHandle, PWideChar(EditVideoFilename.Text));
            TextStreamCount := MediaInfo_Get(MediaInfoHandle, Stream_Text, 0, 'StreamCount', Info_Text, Info_Name);
            if (TextStreamCount <> '') And (StrToInt(TextStreamCount) > 0) Then
             begin
@@ -1113,7 +1113,7 @@ begin
  if (MediaInfoDLL_Load('MediaInfo.dll') = True) Then
   begin
     MediaInfoHandle := MediaInfo_New();
-    MediaInfo_Open(MediaInfoHandle, @TntOpenDialogBrowseGenericFile.FileName[1]);
+    MediaInfo_Open(MediaInfoHandle, PWideChar(EditVideoFilename.Text));
     Duration := MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'Duration/String3', Info_Text, Info_Name);
     HH := StrToInt(copy(Duration,1,2));
     MM := StrToInt(copy(Duration,4,2));
@@ -1327,7 +1327,7 @@ begin
       if (MediaInfoDLL_Load('MediaInfo.dll') = True) Then
        begin
          MediaInfoHandle := MediaInfo_New();
-         MediaInfo_Open(MediaInfoHandle, @TntOpenDialogBrowseGenericFile.FileName[1]);
+         MediaInfo_Open(MediaInfoHandle, PWideChar(EditVideoFilename.Text));
          TextStreamCount := MediaInfo_Get(MediaInfoHandle, Stream_Text, 0, 'StreamCount', Info_Text, Info_Name);
          if (TextStreamCount <> '') And (StrToInt(TextStreamCount) > 0) Then
           begin
