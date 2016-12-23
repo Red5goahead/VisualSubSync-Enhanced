@@ -158,6 +158,7 @@ type
     procedure VideoSourceOperationSetSubtitleFileClick(Sender: TObject);
     procedure VideoSourceOperationSetSubtitleVOClick(Sender: TObject);
     procedure VideoSourceOperationGeneratePeakFileClick(Sender: TObject);
+    procedure cbbVideoSourceOperationAudioTracksSelect(Sender: TObject);
   private
     { Private declarations }
     procedure WAVSelectMode(WavMode : TProjectWAVMode);
@@ -533,7 +534,7 @@ procedure TProjectForm.bttBrowseVideoFileClick(Sender: TObject);
 var WAVFilename, PeakFilename : WideString;
   MediaInfoHandle : Cardinal; AudioStreamCount, TextStreamCount, TextStreamAudio: WideString;
   iAudioStreamCount : Word;
-  I, OrdinalSub, OrdinalAudio : Integer; Format,Language,Title:WideString;
+  I, OrdinalSub, OrdinalAudio : Integer; Format,Language,Layout,Title:WideString;
 begin
 
   TntOpenDialogBrowseGenericFile.FileName := EditVideoFilename.Text;
@@ -607,6 +608,19 @@ begin
        if cbbVideoSourceOperationAudioTracks.Items.Count > 0 then
        begin
          cbbVideoSourceOperationAudioTracks.ItemIndex := 0;
+         if cbbVideoSourceOperationAudioTracks.Items.Count = 1 then
+          begin
+            cbbVideoSourceOperationAudioTracks.enabled := False;
+            Layout := MediaInfo_Get(MediaInfoHandle, Stream_Audio, 0, 'ChannelLayout', Info_Text, Info_Name);
+            if (pos(' C ', Layout) > 0) OR (pos('C', Layout) > 0) OR (pos(' C', Layout) > 0) then
+              VideoSourceOperationAudioTracksOnlyCenter.Enabled := True
+            else
+            begin
+              VideoSourceOperationAudioTracksOnlyCenter.Enabled := False;
+              VideoSourceOperationAudioTracksOnlyCenter.Checked := False;
+            end;
+          end
+         else cbbVideoSourceOperationAudioTracks.enabled := True;
          VideoSourceOperationGeneratePeakFile.Checked := True;
        end;
      end;
@@ -1534,6 +1548,28 @@ begin
   begin
     cbbVideoSourceOperationTextTracks.Visible:= True;
   end;
+end;
+
+procedure TProjectForm.cbbVideoSourceOperationAudioTracksSelect(
+  Sender: TObject);
+var MediaInfoHandle : Cardinal;
+  OrdinalSub : Integer; Layout:WideString;
+begin
+  MediaInfoHandle := 0;
+  OrdinalSub := StrToInt(copy(cbbVideoSourceOperationAudioTracks.Text,1,2))-1;
+  if (MediaInfoDLL_Load('MediaInfo.dll') = True) Then
+   begin
+     MediaInfoHandle := MediaInfo_New();
+     MediaInfo_Open(MediaInfoHandle, PWideChar(EditVideoFilename.Text));
+     Layout := MediaInfo_Get(MediaInfoHandle, Stream_Audio, OrdinalSub, 'ChannelLayout', Info_Text, Info_Name);
+     if (pos(' C ', Layout) > 0) OR (pos('C', Layout) > 0) OR (pos(' C', Layout) > 0) then
+       VideoSourceOperationAudioTracksOnlyCenter.Enabled := True
+     else
+     begin
+       VideoSourceOperationAudioTracksOnlyCenter.Enabled := False;
+       VideoSourceOperationAudioTracksOnlyCenter.Checked := False;
+     end;
+   end;
 end;
 
 end.

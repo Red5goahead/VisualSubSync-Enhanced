@@ -206,6 +206,7 @@ object ProjectForm: TProjectForm
         ItemHeight = 13
         TabOrder = 1
         Visible = False
+        OnSelect = cbbVideoSourceOperationAudioTracksSelect
       end
       object VideoSourceOperationAudioTracksOnlyCenter: TTntCheckBox
         Left = 486
