@@ -28,7 +28,7 @@ object PreferencesForm: TPreferencesForm
     Top = 0
     Width = 746
     Height = 507
-    ActivePage = tsGeneral
+    ActivePage = TsPlayback
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTntTabSheet
@@ -508,7 +508,7 @@ object PreferencesForm: TPreferencesForm
         object GroupBoxCreateProject: TGroupBox
           Left = 29
           Top = 202
-          Width = 356
+          Width = 382
           Height = 69
           Caption = 'Building new projects'
           TabOrder = 7
@@ -594,7 +594,7 @@ object PreferencesForm: TPreferencesForm
           TabOrder = 14
         end
         object GroupBoxRenderer: TGroupBox
-          Left = 11
+          Left = 29
           Top = 285
           Width = 382
           Height = 56
