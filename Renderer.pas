@@ -92,7 +92,7 @@ type
     destructor Destroy; override;
     function GetLastErrorString : string;
     function Open(filename : WideString; AudioOnly : Boolean) : Boolean;
-    function OpenLavCodedBasedFilterGraph(filename : WideString) : Boolean;
+    function OpenLavCodecBasedFilterGraph(filename : WideString) : Boolean;
     function PlayRange(Start, Stop : Cardinal; Loop : Boolean = False) : Boolean; override;
     procedure Pause; override;
     procedure Resume; override;
@@ -735,7 +735,7 @@ begin
 
   if not AudioOnly AND NOT (MainForm.CurrentProject.VideoStreamCount < '1') AND MainForm.ConfigObject.UseInternalFilters AND MainForm.ConfigObject.UseAlternativeInternalCodec then
   begin
-    Result := OpenLavCodedBasedFilterGraph(filename);
+    Result := OpenLavCodecBasedFilterGraph(filename);
     EXIT;
   end;
 
@@ -3240,13 +3240,14 @@ begin
 
 end;
 
-function TDShowRenderer.OpenLavCodedBasedFilterGraph(filename : WideString) : Boolean;
+function TDShowRenderer.OpenLavCodecBasedFilterGraph(filename : WideString) : Boolean;
 Const
   CLSID_Reclock: TGuid = '{9DC15360-914C-46B8-B9DF-BFE67FD36C6A}';
   CLSID_VideoRenderer: TGuid = '{70E102B0-5556-11CE-97C0-00AA0055595A}';
   CLSID_AudioRenderer: TGuid = '{79376820-07D0-11CF-A24D-0020AFD79767}';
   CLSID_Vmr7Renderer: TGuid = '{B87BEB7B-8D29-423F-AE4D-6582C10175AC}';
   CLSID_Vmr9Renderer: TGuid = '{51B4ABF3-748F-4E3B-A276-C828330E926A}';
+  CLSID_MadVrRenderer: TGuid = '{E1A8B82A-32CE-4B0D-BE0D-AA68C772E423}';
   CLSID_EnhRenderer: TGuid = '{FA10746C-9B63-4B6C-BC49-FC300EA5F256}';
   CLSID_LavAudioDecoder: TGuid = '{E8E73B6B-4CB3-44A4-BE99-4F7BCB96E491}';
   CLSID_LavSplitter: TGuid = '{171252A0-8820-4AFE-9DF8-5C92B2D66B04}';
