@@ -39,23 +39,23 @@ var ItasaTyposRules1 = new Array(
 );
 
 var ItasaTyposRules2a = new Array(
-	{ re : /¿/, msg : "Accented letter", replaceby: "A'"},
-	{ re : /»/, msg : "Accented letter", replaceby: "E'"},
-	{ re : /…/, msg : "Accented letter", replaceby: "E'"},
-	{ re : /Ã/, msg : "Accented letter", replaceby: "I'"},
-	{ re : /“/, msg : "Accented letter", replaceby: "O'"},
-	{ re : /Ÿ/, msg : "Accented letter", replaceby: "U'"},
-	{ re : /‡/, msg : "Accented letter", replaceby: "a'"},
-	{ re : /Ë/, msg : "Accented letter", replaceby: "e'"},
-	{ re : /È/, msg : "Accented letter", replaceby: "e'"},
-	{ re : /Ï/, msg : "Accented letter", replaceby: "i'"},
-	{ re : /Ú/, msg : "Accented letter", replaceby: "o'"},
-	{ re : /˘/, msg : "Accented letter", replaceby: "u'"},
-	{ re : /[^A-Za-z0-9ÿ\.,;:\-_()!"%&£=\?'\+#@\*\\\/ \n\r<>\[\]\{\}]/, msg : "Invalid character", replaceby : "^"}
+	{ re : /√Ä/, msg : "Accented letter", replaceby: "A'"},
+	{ re : /√à/, msg : "Accented letter", replaceby: "E'"},
+	{ re : /√â/, msg : "Accented letter", replaceby: "E'"},
+	{ re : /√å/, msg : "Accented letter", replaceby: "I'"},
+	{ re : /√í/, msg : "Accented letter", replaceby: "O'"},
+	{ re : /√ô/, msg : "Accented letter", replaceby: "U'"},
+	{ re : /√†/, msg : "Accented letter", replaceby: "a'"},
+	{ re : /√®/, msg : "Accented letter", replaceby: "e'"},
+	{ re : /√©/, msg : "Accented letter", replaceby: "e'"},
+	{ re : /√¨/, msg : "Accented letter", replaceby: "i'"},
+	{ re : /√≤/, msg : "Accented letter", replaceby: "o'"},
+	{ re : /√π/, msg : "Accented letter", replaceby: "u'"},
+	{ re : /[^A-Za-z0-9√ò\.,;:\-_()!"%&¬£=\?'\+#@\*\\\/ \n\r<>\[\]\{\}]/, msg : "Invalid character", replaceby : "^"}
 );
 
 var ItasaTyposRules2b = new Array(
-	{ re : /[^A-Za-z0-9‡·ËÈÏÌÚÛ˘˙¿¡»…ÃÕ“”Ÿ⁄ÿ\.,;:\-_()!"%&£=\?'\+#@\*\\\/ \n\r<>\[\]\{\}]/, msg : "Invalid character", replaceby : "^"}
+	{ re : /[^A-Za-z0-9√†√°√®√©√¨√≠√≤√≥√π√∫√Ä√Å√à√â√å√ç√í√ì√ô√ö√ò\.,;:\-_()!"%&¬£=\?'\+#@\*\\\/ \n\r<>\[\]\{\}]/, msg : "Invalid character", replaceby : "^"}
 );
 
 var ItasaTyposRules3 = new Array(
@@ -71,7 +71,7 @@ var ItasaTyposRules3 = new Array(
 	{ re : /([Uu][Nn])'([Aa][Ll][Tt][Rr][Oo])(\b)/, msg : "-Un altro- does not have the apostrophe", replaceby: "$1 $2$3"},
 
 	// italian typo: "qual e'"
-	{ re : /(\b)([Qq][Uu][Aa][Ll])'([Ee»Ë])/, msg : "-Qual e'- does not have the apostrophe", replaceby: "$1$2 $3"},
+	{ re : /(\b)([Qq][Uu][Aa][Ll])'([Ee√à√®])/, msg : "-Qual e'- does not have the apostrophe", replaceby: "$1$2 $3"},
 
 	// "okay"
 	{ re : /(\b)([Oo][Kk])[Aa][Yy](\b)/, msg : "It's -Ok-", replaceby: "$1$2$3"},
@@ -96,10 +96,10 @@ var ItasaTyposRules3 = new Array(
 	{ re : /([^\.])[\.]{4,}/, msg : "Suspension mark has only three dots", replaceby: "$1..."},
 
 	// Caps after the dot
-	{ re : /((?:[^\.][\.])|[\?!])((?:[\s-\(\"]|<\x2f?[a-zA-Z]+>)*)([a-zË])/, msg : "Capital letter after a dot!", replaceby: "$1$2@UPPER@$3@"},
-	{ prev : /(([^\.][\.])|[\?!])([\s-\(\"]|<\x2f?[a-zA-Z]+>)*$/, re : /^((?:[\s-\(\"]|<\x2f?[a-zA-Z]+>)*)([a-zË])/, msg : "Capital letter after a dot in preceding line!", replaceby: "$1@UPPER@$2@"},
-	{ position : "F", re : /^((?:[\s-\(\"]|<\x2f?[a-zA-Z]+>)*)([a-zË])/, msg : "Capital letter in the first line!", replaceby: "$1@UPPER@$2@"},
-	{ position : "B", re : /^((?:[\s-\(\"]|<\x2f?[a-zA-Z]+>)*)([a-zË])/, msg : "Capital letter in the first line!", replaceby: "$1@UPPER@$2@"},
+	{ re : /((?:[^\.][\.])|[\?!])((?:[\s-\(\"]|<\x2f?[a-zA-Z]+>)*)([a-z√®])/, msg : "Capital letter after a dot!", replaceby: "$1$2@UPPER@$3@"},
+	{ prev : /(([^\.][\.])|[\?!])([\s-\(\"]|<\x2f?[a-zA-Z]+>)*$/, re : /^((?:[\s-\(\"]|<\x2f?[a-zA-Z]+>)*)([a-z√®])/, msg : "Capital letter after a dot in preceding line!", replaceby: "$1@UPPER@$2@"},
+	{ position : "F", re : /^((?:[\s-\(\"]|<\x2f?[a-zA-Z]+>)*)([a-z√®])/, msg : "Capital letter in the first line!", replaceby: "$1@UPPER@$2@"},
+	{ position : "B", re : /^((?:[\s-\(\"]|<\x2f?[a-zA-Z]+>)*)([a-z√®])/, msg : "Capital letter in the first line!", replaceby: "$1@UPPER@$2@"},
 
 	// Multiple caps
 	{ re : /(\b[A-Z])([A-Z]+)([a-z])/, msg : "Repeated capital letter!", replaceby: "$1@LOWER@$2@$3"},
@@ -125,7 +125,7 @@ var ItasaTyposRules3 = new Array(
 	{ re : /([\r\n])((?:<\x2f?[a-zA-Z]+>)*)( )+/, msg : "No whitespaces after a newline", replaceby: "$1$2"},
 	{ re : /( )+((?:<\x2f?[a-zA-Z]+>)*)$/, msg : "No trailing whitespaces", replaceby: "$2"},
 	{ re : /( )+((?:<\x2f?[a-zA-Z]+>)*)([\r\n])/, msg : "No whitespaces before a newline", replaceby: "$2$3"},
-	{ re : /([\r\n])+((?:<\x2f?[a-zA-Z]+>)*)$/, msg: "No trailing empy line", replaceby: "$2"},
+	{ re : /([\r\n])+((?:<\x2f?[a-zA-Z]+>)*)$/, msg: "No trailing empty line", replaceby: "$2"},
 
 	// Multiple spaces
 	{ re : /( ){2,}/, msg : "No multiple whitespaces", replaceby: " "},
