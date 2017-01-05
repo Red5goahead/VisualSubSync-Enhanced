@@ -125,6 +125,7 @@ var ItasaTyposRules3 = new Array(
 	{ re : /([\r\n])((?:<\x2f?[a-zA-Z]+>)*)( )+/, msg : "No whitespaces after a newline", replaceby: "$1$2"},
 	{ re : /( )+((?:<\x2f?[a-zA-Z]+>)*)$/, msg : "No trailing whitespaces", replaceby: "$2"},
 	{ re : /( )+((?:<\x2f?[a-zA-Z]+>)*)([\r\n])/, msg : "No whitespaces before a newline", replaceby: "$2$3"},
+	{ re : /([\r\n])+((?:<\x2f?[a-zA-Z]+>)*)$/, msg: "No trailing empy line", replaceby: "$2"},
 
 	// Multiple spaces
 	{ re : /( ){2,}/, msg : "No multiple whitespaces", replaceby: " "},

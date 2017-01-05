@@ -382,7 +382,7 @@ begin
  Found := False;
  for PrgSkippedOnErrorCheck := 0 to LastSkippedOnErrorCheck do
   begin
-   if ProjectFileIni.ReadString('VisualSubsync','SkippedSub' + Format('%.3d',[PrgSkippedOnErrorCheck]),'') = id then
+   if ProjectFileIni.ReadString('VisualSubsync','SkippedSub' + Format('%.3d',[PrgSkippedOnErrorCheck]),'<#@skipped@#>') = id then
     begin
       Found := True;
       break;

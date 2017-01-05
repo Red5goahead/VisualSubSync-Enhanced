@@ -20,6 +20,7 @@ VSSPlugin = {
 	// Don't forget that PreviousSub and NextSub can be null
 	HasError : function(CurrentSub, PreviousSub, NextSub)
 	{
+		if (CurrentSub.Text == "") return 'No empty lines allowed. Delete manually';
 		var acc = (this.ParamDisableCheckAccentedLetter.Value == 0) ? true : false;
 		var res = CheckItasaRules(CurrentSub, PreviousSub, NextSub, false, acc);
 		if (res == null)
