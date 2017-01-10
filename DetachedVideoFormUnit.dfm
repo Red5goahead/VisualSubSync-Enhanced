@@ -1,6 +1,6 @@
 object DetachedVideoForm: TDetachedVideoForm
-  Left = 333
-  Top = 232
+  Left = 487
+  Top = 263
   BorderStyle = bsNone
   Caption = 'Video'
   ClientHeight = 240
@@ -15,13 +15,13 @@ object DetachedVideoForm: TDetachedVideoForm
   OldCreateOrder = False
   PopupMenu = VideoPopupMenu
   Position = poDefaultPosOnly
+  ShowHint = False
   OnDblClick = FormDblClick
-  OnMouseDown = FormMouseDown
   PixelsPerInch = 96
   TextHeight = 13
   object VideoPopupMenu: TTntPopupMenu
     OnPopup = VideoPopupMenuPopup
-    Left = 8
+    Left = 32
     Top = 8
     object pmiVideoFullscreen: TTntMenuItem
       Caption = 'Fullscreen'

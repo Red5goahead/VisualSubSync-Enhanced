@@ -11,8 +11,6 @@ type
     VideoPopupMenu: TTntPopupMenu;
     pmiVideoFullscreen: TTntMenuItem;
     pmiVideoNormalSize: TTntMenuItem;
-    procedure FormMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure FormDblClick(Sender: TObject);
     procedure pmiVideoFullscreenClick(Sender: TObject);
     procedure pmiVideoNormalSizeClick(Sender: TObject);
@@ -21,7 +19,8 @@ type
     { Private declarations }
     FNormalLeft, FNormalTop, FNormalWidth, FNormalHeight : Integer;
     function IsFullscreen : Boolean;
-
+  protected
+    procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
   public
     { Public declarations }
     procedure CreateParams(var Params: TCreateParams); override;
@@ -56,18 +55,6 @@ begin
   FNormalTop := 0;
   FNormalWidth := 320;
   FNormalHeight := 240;
-end;
-
-procedure TDetachedVideoForm.FormMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-const
-  SC_DRAGMOVE = $F012;
-begin
-  if (Button = mbLeft) then
-  begin
-    ReleaseCapture;
-    (Self as TControl).Perform(WM_SYSCOMMAND, SC_DRAGMOVE, 0);
-  end;
 end;
 
 procedure TDetachedVideoForm.FormDblClick(Sender: TObject);
@@ -235,6 +222,17 @@ begin
    Self.SetBounds(FNormalLeft, FNormalTop, MainForm.VideoRenderer.VideoWidth div 4,
     MainForm.VideoRenderer.VideoHeight div 4);
   end;
+end;
+
+procedure TDetachedVideoForm.WMNCHitTest(var Message: TWMNCHitTest);
+var
+  Pt: TPoint;
+begin
+  Pt := ScreenToClient(SmallPointToPoint(Message.Pos));
+  if Pt.Y < 2 then
+    Message.Result := HTCAPTION
+  else
+    inherited;
 end;
 
 end.
