@@ -72,7 +72,7 @@ object ProjectForm: TProjectForm
       Top = 42
       Width = 636
       Height = 135
-      Caption = 'Avaiable operations on video source file'
+      Caption = 'Available operations on video source file'
       TabOrder = 2
       object VideoSourceOperationRemux: TTntRadioButton
         Left = 7

@@ -1729,7 +1729,7 @@ object MainForm: TMainForm
                 Width = 230
                 Height = 21
                 Style = csDropDownList
-                ItemHeight = 13
+                ItemHeight = 0
                 TabOrder = 6
                 OnSelect = ComboBoxSilentZoneSelect
               end
