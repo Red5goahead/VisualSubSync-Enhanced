@@ -171,6 +171,8 @@ type
     function GetFirstSelected : TSubtitleRangeJSWrapper;
     function GetNextSelected(Sub : TSubtitleRangeJSWrapper) : TSubtitleRangeJSWrapper;
 
+    function DeleteSubtitle(Index : Integer) : Boolean;
+
     function GetPluginParamValue(JsSection, JsParameter : WideString) : Integer;
 
     procedure DisableJavascriptItemMenu(ACaption : WideString);
@@ -1810,6 +1812,8 @@ begin
 
   VSSCoreJSObj.SetMethodInfo('GetFirstSelected', 0, rtObject);
   VSSCoreJSObj.SetMethodInfo('GetNextSelected', 1, rtObject);
+  
+  VSSCoreJSObj.SetMethodInfo('DeleteSubtitle', 1, rtBoolean);
 
   VSSCoreJSObj.SetMethodInfo('GetPluginParamValue', 2, rtInteger);
 
@@ -2019,6 +2023,17 @@ begin
       Result := MakeWrappedSub(SubtitleRange);
     end;
   end;
+end;
+
+function TVSSCoreWrapper.DeleteSubtitle(Index : Integer) : Boolean;
+begin
+  if (Index < 0) or (Index >= g_GlobalContext.SubList.Count) then
+  begin
+    Result:= False;
+    Exit;
+  end;
+  FVSSCoreEngine.DeleteSubtitle(Index-1);
+  Result:=True;
 end;
 
 function TVSSCoreWrapper.MeasureStringWidth(FontName : WideString;
