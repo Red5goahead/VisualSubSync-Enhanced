@@ -20,7 +20,7 @@ VSSPlugin = {
 	// Don't forget that PreviousSub and NextSub can be null
 	HasError : function(CurrentSub, PreviousSub, NextSub)
 	{
-		if (CurrentSub.Text == "") return 'No empty lines allowed. Delete manually';
+		if (CurrentSub.Text == "") return 'No empty lines allowed';
 		var acc = (this.ParamDisableCheckAccentedLetter.Value == 0) ? true : false;
 		var res = CheckItasaRules(CurrentSub, PreviousSub, NextSub, false, acc);
 		if (res == null)
@@ -30,12 +30,16 @@ VSSPlugin = {
 
 	FixError : function(CurrentSub, PreviousSub, NextSub)
 	{
-		var acc = (this.ParamDisableCheckAccentedLetter.Value == 0) ? true : false;
-		var res = CheckItasaRules(CurrentSub, PreviousSub, NextSub, true, acc);
-		if (res == null)
-			return;
-		if (res.fix != null)
-			CurrentSub.Text = res.fix;
+		if (CurrentSub.Text == "") VSSCore.DeleteSubtitle(CurrentSub.index);
+		else
+		{
+			var acc = (this.ParamDisableCheckAccentedLetter.Value == 0) ? true : false;
+			var res = CheckItasaRules(CurrentSub, PreviousSub, NextSub, true, acc);
+			if (res == null)
+				return;
+			if (res.fix != null)
+				CurrentSub.Text = res.fix;
+		}
 	}
 
 }
