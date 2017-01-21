@@ -12743,20 +12743,24 @@ begin
     SaveSubtitles(CurrentProject.SubtitlesFile, '', CurrentProject.IsUTF8, False, nil, False);
     SaveProject(CurrentProject, False);
   end;
-  NomeFile := TNomeFile.Create;
-  NomeFile.NewFile(ChangeFileExt(ExtractFileName(CurrentProject.SubtitlesFile),''));
-  skip:=False;
-  if not NomeFile.Valid then
+  if ItaliansubsAuthorization(MainForm.ConfigObject.Username, MainForm.ConfigObject.Passwd) then
   begin
-    tmp := 'Filename not valid for Italiansubs Filename Rules.'+ #13#10 +
-           'Zip anyway?';
-    case Application.MessageBox(PAnsiChar(tmp),
-           'Zip Subtitle...',
-           MB_ICONQUESTION or MB_YESNO or MB_DEFBUTTON1) of
-      IDYES: skip := True;
-      IDNO: Exit;
+    NomeFile := TNomeFile.Create;
+    NomeFile.NewFile(ChangeFileExt(ExtractFileName(CurrentProject.SubtitlesFile),''));
+    skip:=False;
+    if not NomeFile.Valid then
+    begin
+      tmp := 'Filename not valid for Italiansubs Filename Rules.'+ #13#10 +
+             'Zip anyway?';
+      case Application.MessageBox(PAnsiChar(tmp),
+             'Zip Subtitle...',
+             MB_ICONQUESTION or MB_YESNO or MB_DEFBUTTON1) of
+        IDYES: skip := True;
+        IDNO: Exit;
+      end;
     end;
-  end;
+  end
+  else Skip := True;
   if skip or (not skip and NomeFile.FixSeriesName) then
   begin
     try
