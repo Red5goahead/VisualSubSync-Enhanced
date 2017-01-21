@@ -2478,6 +2478,8 @@ begin
 
   AutoFitSubsListColumns;
 
+  FullSortTreeAndSubList;
+
   vtvSubsList.Repaint;
 
   if StyleFormInstance.GetCount = 0 then
@@ -2545,6 +2547,7 @@ begin
     g_WebRWSynchro.EndWrite;
     vtvSubsList.EndUpdate;
   end;
+  FullSortTreeAndSubList;
   vtvSubsList.Repaint;
   if Assigned(vtvSubsList.FocusedNode) then
     UpdateMemoVO(vtvSubsList.GetNodeData(vtvSubsList.FocusedNode));
