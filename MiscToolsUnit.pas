@@ -23,7 +23,7 @@ unit MiscToolsUnit;
 
 interface
 
-uses Classes, Graphics, Types, Richedit, TntComCtrls, TntClasses, StdCtrls, TntStdCtrls,IdIcmpClient;
+uses Classes, Graphics, Types, Richedit, TntComCtrls, TntClasses, StdCtrls, TntStdCtrls;
 
 type
   TFileVersion = class

@@ -36,8 +36,7 @@ uses
   PreferencesFormUnit, MRUListUnit, StdActns, TntStdActns, TntButtons, TntForms,
   DetachedVideoFormUnit, XPMan, JavaScriptPluginUnit, Contnrs, DelayFormUnit,
   UndoableTaskUnit, UndoableSubTaskUnit, Types, LibHunspellUnit, TranslateFormUnit,
-  OleCtrls, SHDocVw, VistaAltFixUnit, XMLDoc, xmldom, XMLIntf, msxmldom,
-  CategoryButtons;
+  OleCtrls, SHDocVw, VistaAltFixUnit, XMLDoc, xmldom, XMLIntf, msxmldom;
 
 type
   // -----
