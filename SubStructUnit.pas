@@ -77,6 +77,8 @@ type
 
     function GetPluginParamValue(JsSection, JsParameter : WideString) : Integer;
 
+    procedure DeleteSubtitle(Index : Integer);
+
     procedure DisableJavascriptItemMenu(AName : WideString);
     procedure EnableJavascriptItemMenu(AName : WideString);
     procedure InsertBreakBeforeJavascriptMenuItem(ACaption : WideString);
