@@ -1142,10 +1142,10 @@ begin
    FFMpegPath := uppercase(ExtractFileDir(ParamStr(0))+'\mkvtoolnix\ffmpeg.exe');
    NewAudioWavFileName := ChangeFileExt(EditVideoFilename.Text,'') + '.wav';
 
-   FFMpegPathCommand := Format('-y -i "%s" -ac 1 -ar 8k "%s"',[EditVideoFilename.Text,NewAudioWavFileName]);
+   FFMpegPathCommand := Format('-y -i "%s" -map_metadata -1 -ac 1 -ar 8k "%s"',[EditVideoFilename.Text,NewAudioWavFileName]);
    if VideoSourceOperationAudioTracksOnlyCenter.checked then
    begin
-    FFMpegPathCommand := Format('-y -i "%s" -af "pan=mono|c0=FC" -ac 1 -ar 8k "%s"',[EditVideoFilename.Text,NewAudioWavFileName]);
+    FFMpegPathCommand := Format('-y -i "%s" -map_metadata -1 -af "pan=mono|c0=FC" -ac 1 -ar 8k "%s"',[EditVideoFilename.Text,NewAudioWavFileName]);
    end;
 
    Screen.Cursor:=crHourglass;
