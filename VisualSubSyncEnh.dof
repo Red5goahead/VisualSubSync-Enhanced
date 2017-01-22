@@ -135,29 +135,31 @@ LegalTrademarks=
 OriginalFilename=
 ProductName=VisualSubSync
 ProductVersion=1.0.0.0
-Comments=https://sourceforge.net/projects/vss-itasa/
+Comments=https://github.com/Red5goahead/VisualSubSync-Enhanced
 [HistoryLists\hlDebugSourcePath]
 Count=2
 Item0=.\ThirdParty;.\ThirdParty\DirectX-2012;.\ThirdParty\jsbridge;.\ThirdParty\WinSock2;.\ThirdParty\FastMM;.\ThirdParty\DirectX
-Item1=.\ThirdParty;.\ThirdParty\DirectX;.\ThirdParty\jsbridge;.\ThirdParty\WinSock2;.\ThirdParty\FastMM;.\ThirdParty\DirectX
+Item1=.\ThirdParty;.\ThirdParty\DeCAL;.\ThirdParty\DirectX-2012;.\ThirdParty\FastMM;.\ThirdParty\KAZip;.\ThirdParty\jsbridge;.\ThirdParty\Synapse;.\ThirdParty\WinSock2
 [HistoryLists\hlConditionals]
-Count=2
+Count=3
 Item0=enhanced
 Item1=UWP
+Item2=DEBUG
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
 Count=2
 Item0=.\ThirdParty;.\ThirdParty\DirectX-2012;.\ThirdParty\jsbridge;.\ThirdParty\WinSock2;.\ThirdParty\FastMM
-Item1=.\ThirdParty;.\ThirdParty\DirectX;.\ThirdParty\jsbridge;.\ThirdParty\WinSock2;.\ThirdParty\FastMM
+Item1=.\ThirdParty;.\ThirdParty\DeCAL;.\ThirdParty\DirectX-2012;.\ThirdParty\FastMM;.\ThirdParty\KAZip;.\ThirdParty\jsbridge;.\ThirdParty\Synapse;.\ThirdParty\WinSock2
 [HistoryLists\hlUnitOutputDirectory]
 Count=1
 Item0=dcu
 [HistoryLists\hlOutputDirectorry]
-Count=5
+Count=6
 Item0=C:\Program Files (x86)\VisualSubSyncEnh
 Item1=C:\Program Files (x86)\VisualSubSyncForItaliansubs
 Item2=C:\Program Files (x86)\VisualSubSyncForItaliansubsUWP
 Item3=C:\Program Files (x86)\(x86)\VisualSubSyncForItaliansubs
 Item4=C:\Program Files (x86)\VisualSubSync ItaSA
+Item5=C:\Users\Utente\Programmi\VSS_Test
