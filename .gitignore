@@ -57,6 +57,7 @@
 *.projdata
 *.tvsconfig
 *.dsk
+*.dex
 
 # Delphi history and backups
 __history/
