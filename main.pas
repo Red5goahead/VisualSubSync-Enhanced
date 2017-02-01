@@ -6640,6 +6640,13 @@ begin
       while Assigned(Node) do
       begin
         NodeData := vtvSubsList.GetNodeData(Node);
+
+        if NodeData.Range.Text = '' then
+        begin
+         Node := vtvSubsList.GetNextSelected(Node);
+         Continue;
+        end;
+
         SubRangeCurrent := NodeData.Range;
         i := WAVDisplayer.RangeList.IndexOf(NodeData.Range);
 
