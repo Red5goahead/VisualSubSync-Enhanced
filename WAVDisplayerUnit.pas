@@ -914,6 +914,11 @@ end;
 
 function CompareRanges(R1, R2: TRange): Integer;
 begin
+  if not Assigned(R1) or not Assigned(R2) then
+  begin
+    Result := 0;
+    Exit;
+  end;
   if R1.StartTime < R2.StartTime then
     Result := 1
   else if R1.StartTime > R2.StartTime then

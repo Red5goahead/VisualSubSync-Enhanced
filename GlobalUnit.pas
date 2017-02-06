@@ -159,7 +159,8 @@ var
   HTTP: THTTPSend;
   UrlItasa, LoginParam : string;
 begin
-  if (User = 'Your Username') OR (Password = 'Your Password') then
+  if (User = 'Your Username') OR (Password = 'Your Password') OR
+     (User = '') OR (Password = '') then
   begin
     Result := False;
     Exit;

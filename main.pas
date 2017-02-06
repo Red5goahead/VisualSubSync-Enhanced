@@ -1108,6 +1108,7 @@ type
     function GetTextSelectionLength : Integer;
     function GetAudioCursorPosition : Integer;
     function GetPluginParamValue(JsSection, JsParameter : WideString) : Integer;
+    procedure JsDeleteSubtitle(Index : Integer);
 
     procedure DisableJavascriptItemMenu(ACaption : WideString);
     procedure EnableJavascriptItemMenu(ACaption : WideString);
@@ -6636,6 +6637,7 @@ begin
       JPlugin.OnSubtitleChangeStop := OnSubtitleRangeJSWrapperChangeStop;
       JPlugin.OnSubtitleChangeText := OnSubtitleRangeJSWrapperChangeText;
 
+      vtvSubsList.SelectionLocked := True;
       Node := vtvSubsList.GetFirstSelected;
       while Assigned(Node) do
       begin
@@ -6665,9 +6667,16 @@ begin
         begin
           JPlugin.FixError(SubRangeCurrent, SubRangePrevious, SubRangeNext);
         end;
-        Node := vtvSubsList.GetNextSelected(Node);
-      end;
 
+        try
+          //TODO: find a better solution in case a node has been deleted.
+          Node := vtvSubsList.GetNextSelected(Node);
+        except
+          Node := vtvSubsList.GetFirstSelected;
+        end;
+      end;
+      
+      vtvSubsList.SelectionLocked := True;
       FreeAndNil(JPlugin);
     end;
     JSPEnum.Free;
@@ -9026,6 +9035,18 @@ var ParamArray : array[0..0] of Integer;
 begin
   ParamArray[0] := Index;
   DeleteSubtitles(ParamArray);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TMainForm.JsDeleteSubtitle(Index : Integer);
+var UndoableDeleteTask : TUndoableDeleteTask;
+begin
+  UndoableDeleteTask := TUndoableDeleteTask.Create;
+  UndoableDeleteTask.SetCapacity(1);
+  UndoableDeleteTask.AddSubtitleIndex(Index);
+  UndoableDeleteTask.DoTask;
+  PushUndoableTask(UndoableDeleteTask);
 end;
 
 //------------------------------------------------------------------------------

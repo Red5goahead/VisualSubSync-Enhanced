@@ -2032,7 +2032,7 @@ begin
     Result:= False;
     Exit;
   end;
-  FVSSCoreEngine.DeleteSubtitle(Index-1);
+  FVSSCoreEngine.JsDeleteSubtitle(Index-1);
   Result:=True;
 end;
 
