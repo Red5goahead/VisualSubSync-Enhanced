@@ -6676,7 +6676,7 @@ begin
         end;
       end;
       
-      vtvSubsList.SelectionLocked := True;
+      vtvSubsList.SelectionLocked := False;
       FreeAndNil(JPlugin);
     end;
     JSPEnum.Free;
