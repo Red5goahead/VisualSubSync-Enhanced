@@ -35,7 +35,9 @@ var ItasaTyposRules1 = new Array(
 	
 	// dollar
 	{ re : / \x24/, msg : "Invalid character: -$-", replaceby : " dollari"},
-	{ re : /([^ ])\x24/, msg : "Invalid character: -$-", replaceby : "$1 dollari"}
+	{ re : /([^ ])\x24/, msg : "Invalid character: -$-", replaceby : "$1 dollari"},
+	{ re : /\u2019/, msg : "Invalid character: -\u2019-", replaceby : "'"},
+	{ re : /\u2026/, msg : "Invalid character: -\u2026-", replaceby : "..."}
 );
 
 var ItasaTyposRules2a = new Array(
