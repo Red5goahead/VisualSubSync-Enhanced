@@ -3,7 +3,7 @@
 
 #define MyAppName "VisualSubSync Enhanced"
 #define MyAppDefaultDir "VisualSubSyncEnh"
-#define MyAppVersion "1.2.17.0"
+#define MyAppVersion "1.2.19.0"
 #define MyAppPublisher "VisualSubSync Team"
 #define MyAppURL "https://red5goahead.github.io/VisualSubSync-Enhanced/"
 #define MyAppExeName "VisualSubSyncEnh.exe"

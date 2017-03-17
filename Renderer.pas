@@ -733,7 +733,7 @@ var
   pLanguages : WideString;
 begin
 
-  if not AudioOnly AND NOT (MainForm.CurrentProject.VideoStreamCount < '1') AND MainForm.ConfigObject.UseInternalFilters AND MainForm.ConfigObject.UseAlternativeInternalCodec then
+  if NOT (MainForm.CurrentProject.VideoStreamCount < '1') AND MainForm.ConfigObject.UseInternalFilters AND MainForm.ConfigObject.UseAlternativeInternalCodec then
   begin
     Result := OpenLavCodecBasedFilterGraph(filename);
     EXIT;
