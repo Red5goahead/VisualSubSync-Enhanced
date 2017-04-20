@@ -11,7 +11,7 @@ object StyleForm: TStyleForm
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
@@ -34,7 +34,7 @@ object StyleForm: TStyleForm
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindow
     Font.Height = -11
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Microsoft Sans Serif'
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
@@ -52,7 +52,7 @@ object StyleForm: TStyleForm
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindow
     Font.Height = -11
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Microsoft Sans Serif'
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
@@ -70,7 +70,7 @@ object StyleForm: TStyleForm
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindow
     Font.Height = -11
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Microsoft Sans Serif'
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
@@ -88,7 +88,7 @@ object StyleForm: TStyleForm
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindow
     Font.Height = -11
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Microsoft Sans Serif'
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
@@ -106,7 +106,7 @@ object StyleForm: TStyleForm
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindow
     Font.Height = -11
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Microsoft Sans Serif'
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
@@ -159,7 +159,7 @@ object StyleForm: TStyleForm
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindow
     Font.Height = -11
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Microsoft Sans Serif'
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
@@ -177,7 +177,7 @@ object StyleForm: TStyleForm
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindow
     Font.Height = -11
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Microsoft Sans Serif'
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
@@ -195,7 +195,7 @@ object StyleForm: TStyleForm
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindow
     Font.Height = -11
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Microsoft Sans Serif'
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
@@ -536,7 +536,7 @@ object StyleForm: TStyleForm
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
     Options = [fdAnsiOnly, fdEffects, fdScalableOnly]
     Left = 8

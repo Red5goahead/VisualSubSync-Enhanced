@@ -13,7 +13,7 @@ object SuggestionForm: TSuggestionForm
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   FormStyle = fsStayOnTop
   KeyPreview = True
@@ -22,8 +22,8 @@ object SuggestionForm: TSuggestionForm
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   DesignSize = (
-    257
-    401)
+    249
+    389)
   PixelsPerInch = 96
   TextHeight = 13
   object vtvSuggestionsLst: TVirtualDrawTree

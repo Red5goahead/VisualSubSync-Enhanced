@@ -12,7 +12,7 @@ object PreferencesForm: TPreferencesForm
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
@@ -28,7 +28,7 @@ object PreferencesForm: TPreferencesForm
     Top = 0
     Width = 746
     Height = 507
-    ActivePage = TsPlayback
+    ActivePage = tsItasa
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTntTabSheet
@@ -119,7 +119,7 @@ object PreferencesForm: TPreferencesForm
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
-          Font.Name = 'MS Sans Serif'
+          Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
           ParentFont = False
         end
@@ -385,13 +385,13 @@ object PreferencesForm: TPreferencesForm
         object labelMessagePlaybackAvailable: TLabel
           Left = 8
           Top = 456
-          Width = 254
+          Width = 253
           Height = 13
           Caption = '** Only available when your project is closed'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
-          Font.Name = 'MS Sans Serif'
+          Font.Name = 'Microsoft Sans Serif'
           Font.Style = [fsBold]
           ParentFont = False
           Visible = False
@@ -411,6 +411,12 @@ object PreferencesForm: TPreferencesForm
           Width = 174
           Height = 17
           Caption = 'MPC-HC codec (discontinued)'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
           TabOrder = 5
           OnClick = ChkDefaultInternalCodecClick
         end
@@ -816,13 +822,13 @@ object PreferencesForm: TPreferencesForm
         object TntLabel3: TTntLabel
           Left = 8
           Top = 7
-          Width = 73
+          Width = 72
           Height = 13
           Caption = 'Description :'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
-          Font.Name = 'MS Sans Serif'
+          Font.Name = 'Microsoft Sans Serif'
           Font.Style = [fsBold]
           ParentFont = False
         end
@@ -848,7 +854,7 @@ object PreferencesForm: TPreferencesForm
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
-          Font.Name = 'MS Sans Serif'
+          Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
           ParentFont = False
           Transparent = True
@@ -882,7 +888,7 @@ object PreferencesForm: TPreferencesForm
         Header.Font.Charset = DEFAULT_CHARSET
         Header.Font.Color = clWindowText
         Header.Font.Height = -11
-        Header.Font.Name = 'MS Sans Serif'
+        Header.Font.Name = 'Microsoft Sans Serif'
         Header.Font.Style = []
         Header.MainColumn = 1
         Header.Options = [hoAutoResize, hoColumnResize, hoVisible, hoAutoSpring]
@@ -1096,7 +1102,7 @@ object PreferencesForm: TPreferencesForm
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindow
           Font.Height = -11
-          Font.Name = 'MS Sans Serif'
+          Font.Name = 'Microsoft Sans Serif'
           Font.Style = [fsBold]
           ParentColor = False
           ParentFont = False
@@ -1114,7 +1120,7 @@ object PreferencesForm: TPreferencesForm
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindow
           Font.Height = -11
-          Font.Name = 'MS Sans Serif'
+          Font.Name = 'Microsoft Sans Serif'
           Font.Style = [fsBold]
           ParentColor = False
           ParentFont = False
@@ -1129,7 +1135,7 @@ object PreferencesForm: TPreferencesForm
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
-          Font.Name = 'MS Sans Serif'
+          Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
           ItemHeight = 13
           ParentFont = False
@@ -1942,7 +1948,7 @@ object PreferencesForm: TPreferencesForm
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
-          Font.Name = 'MS Sans Serif'
+          Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
           ItemHeight = 13
           ParentFont = False
@@ -1992,6 +1998,12 @@ object PreferencesForm: TPreferencesForm
           Height = 13
           Alignment = taRightJustify
           Caption = 'Username:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
         end
         object TntLabel16: TTntLabel
           Left = 25
@@ -2004,15 +2016,15 @@ object PreferencesForm: TPreferencesForm
         object TntLabel17: TTntLabel
           Left = 24
           Top = 16
-          Width = 332
-          Height = 13
+          Width = 385
+          Height = 15
           Caption = 
             'Username and password used to connect to italiansubs.net communi' +
             'ty'
-          Font.Charset = DEFAULT_CHARSET
+          Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
           Font.Height = -12
-          Font.Name = 'MS Sans Serif'
+          Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
           ParentFont = False
         end
@@ -2192,7 +2204,7 @@ object PreferencesForm: TPreferencesForm
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
-            Font.Name = 'MS Sans Serif'
+            Font.Name = 'Microsoft Sans Serif'
             Font.Style = [fsBold]
             ParentFont = False
             TabOrder = 1
@@ -2207,7 +2219,7 @@ object PreferencesForm: TPreferencesForm
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
-            Font.Name = 'MS Sans Serif'
+            Font.Name = 'Microsoft Sans Serif'
             Font.Style = [fsItalic]
             ParentFont = False
             TabOrder = 2
@@ -2222,7 +2234,7 @@ object PreferencesForm: TPreferencesForm
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
-            Font.Name = 'MS Sans Serif'
+            Font.Name = 'Microsoft Sans Serif'
             Font.Style = [fsUnderline]
             ParentFont = False
             TabOrder = 3
@@ -2315,7 +2327,7 @@ object PreferencesForm: TPreferencesForm
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
     Options = [fdAnsiOnly, fdEffects, fdNoVectorFonts, fdScalableOnly]
     Left = 532

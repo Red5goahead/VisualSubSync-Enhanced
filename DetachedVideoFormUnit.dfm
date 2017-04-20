@@ -9,13 +9,12 @@ object DetachedVideoForm: TDetachedVideoForm
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   PopupMenu = VideoPopupMenu
   Position = poDefaultPosOnly
-  ShowHint = False
   OnDblClick = FormDblClick
   PixelsPerInch = 96
   TextHeight = 13

@@ -10,7 +10,7 @@ object TranslateForm: TTranslateForm
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
@@ -21,14 +21,14 @@ object TranslateForm: TTranslateForm
   TextHeight = 13
   object PanelBottom: TPanel
     Left = 0
-    Top = 227
-    Width = 600
+    Top = 215
+    Width = 592
     Height = 35
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
     DesignSize = (
-      600
+      592
       35)
     object bttOK: TTntButton
       Left = 440
@@ -54,14 +54,14 @@ object TranslateForm: TTranslateForm
   object PanelClient: TPanel
     Left = 0
     Top = 0
-    Width = 600
-    Height = 227
+    Width = 592
+    Height = 215
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
     DesignSize = (
-      600
-      227)
+      592
+      215)
     object rgSelectionType: TTntRadioGroup
       Left = 8
       Top = 8

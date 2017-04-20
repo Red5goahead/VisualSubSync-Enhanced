@@ -10,7 +10,7 @@ object SilentZoneForm: TSilentZoneForm
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   FormStyle = fsStayOnTop
   KeyPreview = True
@@ -32,7 +32,7 @@ object SilentZoneForm: TSilentZoneForm
     Left = 0
     Top = 53
     Width = 290
-    Height = 234
+    Height = 231
     Align = alClient
     ItemHeight = 13
     TabOrder = 0

@@ -9,7 +9,7 @@ object SpellCheckForm: TSpellCheckForm
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
@@ -23,7 +23,7 @@ object SpellCheckForm: TSpellCheckForm
     Left = 376
     Top = 0
     Width = 5
-    Height = 316
+    Height = 313
     Align = alRight
     Shape = bsSpacer
   end
@@ -31,7 +31,7 @@ object SpellCheckForm: TSpellCheckForm
     Left = 381
     Top = 0
     Width = 75
-    Height = 316
+    Height = 313
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 0
@@ -82,7 +82,7 @@ object SpellCheckForm: TSpellCheckForm
     end
     object TntPanel3: TTntPanel
       Left = 0
-      Top = 289
+      Top = 286
       Width = 75
       Height = 27
       Align = alBottom
@@ -116,7 +116,7 @@ object SpellCheckForm: TSpellCheckForm
     Left = 0
     Top = 0
     Width = 376
-    Height = 316
+    Height = 313
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
@@ -154,7 +154,7 @@ object SpellCheckForm: TSpellCheckForm
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
-      Font.Name = 'MS Sans Serif'
+      Font.Name = 'Microsoft Sans Serif'
       Font.Style = [fsBold]
       ParentFont = False
     end
@@ -237,7 +237,7 @@ object SpellCheckForm: TSpellCheckForm
       Left = 0
       Top = 172
       Width = 376
-      Height = 144
+      Height = 141
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText

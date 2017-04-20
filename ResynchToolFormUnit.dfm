@@ -11,7 +11,7 @@ object ResynchToolForm: TResynchToolForm
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   FormStyle = fsStayOnTop
   KeyPreview = True
@@ -29,11 +29,10 @@ object ResynchToolForm: TResynchToolForm
     Align = alClient
     Constraints.MinHeight = 50
     Header.AutoSizeIndex = 0
-    Header.DefaultHeight = 17
     Header.Font.Charset = DEFAULT_CHARSET
     Header.Font.Color = clWindowText
     Header.Font.Height = -11
-    Header.Font.Name = 'MS Sans Serif'
+    Header.Font.Name = 'Microsoft Sans Serif'
     Header.Font.Style = []
     Header.MainColumn = -1
     Header.Options = [hoColumnResize, hoDrag]

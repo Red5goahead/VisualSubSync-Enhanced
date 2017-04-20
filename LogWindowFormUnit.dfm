@@ -9,7 +9,7 @@ object LogForm: TLogForm
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   FormStyle = fsStayOnTop
   Menu = MainMenu1
@@ -20,7 +20,7 @@ object LogForm: TLogForm
     Left = 0
     Top = 0
     Width = 489
-    Height = 111
+    Height = 108
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText

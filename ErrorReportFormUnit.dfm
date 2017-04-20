@@ -11,7 +11,7 @@ object ErrorReportForm: TErrorReportForm
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   FormStyle = fsStayOnTop
   KeyPreview = True
@@ -26,13 +26,13 @@ object ErrorReportForm: TErrorReportForm
     Left = 0
     Top = 0
     Width = 305
-    Height = 346
+    Height = 345
     Align = alClient
     Header.AutoSizeIndex = 0
     Header.Font.Charset = DEFAULT_CHARSET
     Header.Font.Color = clWindowText
     Header.Font.Height = -11
-    Header.Font.Name = 'MS Sans Serif'
+    Header.Font.Name = 'Microsoft Sans Serif'
     Header.Font.Style = []
     Header.MainColumn = -1
     Header.Options = [hoColumnResize, hoDrag]
@@ -45,7 +45,7 @@ object ErrorReportForm: TErrorReportForm
   end
   object TntStatusBar1: TTntStatusBar
     Left = 0
-    Top = 346
+    Top = 345
     Width = 305
     Height = 21
     Panels = <

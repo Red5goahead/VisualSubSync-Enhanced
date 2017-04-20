@@ -9,7 +9,7 @@ object SendToItasaForm: TSendToItasaForm
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
@@ -174,7 +174,7 @@ object SendToItasaForm: TSendToItasaForm
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Microsoft Sans Serif'
     Font.Style = [fsBold]
     ParentFont = False
     TabOrder = 10
@@ -189,7 +189,7 @@ object SendToItasaForm: TSendToItasaForm
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Microsoft Sans Serif'
     Font.Style = [fsItalic]
     ParentFont = False
     TabOrder = 11
@@ -204,7 +204,7 @@ object SendToItasaForm: TSendToItasaForm
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Microsoft Sans Serif'
     Font.Style = [fsUnderline]
     ParentFont = False
     TabOrder = 12

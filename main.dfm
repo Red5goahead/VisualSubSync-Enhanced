@@ -8,7 +8,7 @@ object MainForm: TMainForm
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   Menu = TntMainMenu1
   OldCreateOrder = False
@@ -162,7 +162,7 @@ object MainForm: TMainForm
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
     ParentFont = False
     TabOrder = 2
@@ -208,7 +208,7 @@ object MainForm: TMainForm
           Header.Font.Charset = DEFAULT_CHARSET
           Header.Font.Color = clWindowText
           Header.Font.Height = -11
-          Header.Font.Name = 'MS Sans Serif'
+          Header.Font.Name = 'Microsoft Sans Serif'
           Header.Font.Style = []
           Header.MainColumn = -1
           Header.Options = [hoColumnResize, hoDrag]
@@ -886,7 +886,7 @@ object MainForm: TMainForm
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
-            Font.Name = 'MS Sans Serif'
+            Font.Name = 'Microsoft Sans Serif'
             Font.Style = [fsBold]
             ParentFont = False
             ParentShowHint = False
@@ -1030,7 +1030,7 @@ object MainForm: TMainForm
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
-            Font.Name = 'MS Sans Serif'
+            Font.Name = 'Microsoft Sans Serif'
             Font.Style = []
             ParentFont = False
           end
@@ -1133,7 +1133,13 @@ object MainForm: TMainForm
               AutoSize = False
               Caption = 'Auto-scroll :'
               Color = clBtnFace
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -11
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
               ParentColor = False
+              ParentFont = False
             end
             object chkAutoScrollSub: TCheckBox
               Left = 6
@@ -1191,14 +1197,14 @@ object MainForm: TMainForm
             object LabelSelLenght: TLabel
               Left = 184
               Top = 4
-              Width = 40
+              Width = 39
               Height = 13
               Caption = 'Length'
               Enabled = False
               Font.Charset = DEFAULT_CHARSET
               Font.Color = clNavy
               Font.Height = -11
-              Font.Name = 'MS Sans Serif'
+              Font.Name = 'Microsoft Sans Serif'
               Font.Style = [fsBold, fsUnderline]
               ParentFont = False
               OnClick = LabelSelLenghtClick
@@ -1206,14 +1212,14 @@ object MainForm: TMainForm
             object LabelSelEnd: TLabel
               Left = 108
               Top = 4
-              Width = 23
+              Width = 22
               Height = 13
               Caption = 'End'
               Enabled = False
               Font.Charset = DEFAULT_CHARSET
               Font.Color = clNavy
               Font.Height = -11
-              Font.Name = 'MS Sans Serif'
+              Font.Name = 'Microsoft Sans Serif'
               Font.Style = [fsBold, fsUnderline]
               ParentFont = False
               OnClick = LabelSelEndClick
@@ -1221,7 +1227,7 @@ object MainForm: TMainForm
             object LabelSelBegin: TLabel
               Left = 32
               Top = 4
-              Width = 33
+              Width = 32
               Height = 13
               Hint = 'Double click to update begin timing'
               Caption = 'Begin'
@@ -1229,7 +1235,7 @@ object MainForm: TMainForm
               Font.Charset = DEFAULT_CHARSET
               Font.Color = clNavy
               Font.Height = -11
-              Font.Name = 'MS Sans Serif'
+              Font.Name = 'Microsoft Sans Serif'
               Font.Style = [fsBold, fsUnderline]
               ParentFont = False
               OnClick = LabelSelBeginClick
@@ -1571,7 +1577,7 @@ object MainForm: TMainForm
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
                 Font.Height = -11
-                Font.Name = 'MS Sans Serif'
+                Font.Name = 'Microsoft Sans Serif'
                 Font.Style = []
                 ParentFont = False
                 ParentShowHint = False
@@ -1966,7 +1972,7 @@ object MainForm: TMainForm
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
-          Font.Name = 'MS Sans Serif'
+          Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
           HideSelection = False
           ParentFont = False
@@ -1999,7 +2005,7 @@ object MainForm: TMainForm
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
-          Font.Name = 'MS Sans Serif'
+          Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
           HideSelection = False
           ParentFont = False
