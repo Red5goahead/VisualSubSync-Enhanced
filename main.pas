@@ -1499,7 +1499,7 @@ function GetIniFilename : WideString;
 var ApplicationPath, ApplicationDataPath, IniFilename : WideString;
 begin
   // By default place the ini file in the application directory
-  Result := WideChangeFileExt(TntApplication.ExeName, '.ini');
+  Result := WideExtractFilePath(TntApplication.ExeName) + 'VisualSubSync.ini';
 
   {$IFDEF enhanced}
   Result := StringReplace(Result, 'Uwp', '', []);

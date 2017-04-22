@@ -238,6 +238,10 @@ initialization
   {$ELSE}
   g_DictPath := g_ApplicationPath + 'dict\';
   g_AppDataDictPath := WideIncludeTrailingBackslash(GetUserApplicationDataFolder) + RootAppData;
+  if WideFileExists(WideExtractFilePath(TntApplication.ExeName) + 'perso.dic')  then
+  begin
+    g_AppDataDictPath := WideExtractFilePath(TntApplication.ExeName);
+  end;
   {$ENDIF}
   CheckDictDirectory;
   g_ItaliansubsAuthorization := False;
