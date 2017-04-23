@@ -28,7 +28,7 @@ object PreferencesForm: TPreferencesForm
     Top = 0
     Width = 746
     Height = 507
-    ActivePage = tsItasa
+    ActivePage = TsPlayback
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTntTabSheet
@@ -470,8 +470,8 @@ object PreferencesForm: TPreferencesForm
           end
         end
         object ChkDoubledSubResolution: TCheckBox
-          Left = 180
-          Top = 359
+          Left = 268
+          Top = 351
           Width = 137
           Height = 17
           Hint = 
@@ -484,7 +484,7 @@ object PreferencesForm: TPreferencesForm
         end
         object ChkDisableDesktopComposition: TCheckBox
           Left = 10
-          Top = 382
+          Top = 374
           Width = 162
           Height = 17
           Hint = 
@@ -497,15 +497,15 @@ object PreferencesForm: TPreferencesForm
         end
         object ChkForceStopOnPausing: TCheckBox
           Left = 10
-          Top = 359
+          Top = 351
           Width = 161
           Height = 17
           Caption = 'Force stop play when pausing'
           TabOrder = 9
         end
         object ChkUseReclockAudioRenderer: TCheckBox
-          Left = 180
-          Top = 382
+          Left = 268
+          Top = 374
           Width = 241
           Height = 17
           Caption = 'Use reclock audio renderer when available'
@@ -579,7 +579,7 @@ object PreferencesForm: TPreferencesForm
         end
         object chkFlippedPicture: TCheckBox
           Left = 10
-          Top = 406
+          Top = 398
           Width = 102
           Height = 17
           Hint = 'Check to flip picture'
@@ -589,8 +589,8 @@ object PreferencesForm: TPreferencesForm
           TabOrder = 13
         end
         object chkFlippedSubtitles: TCheckBox
-          Left = 180
-          Top = 406
+          Left = 268
+          Top = 398
           Width = 102
           Height = 17
           Hint = 'Check to flip subtitles'
@@ -622,6 +622,14 @@ object PreferencesForm: TPreferencesForm
             Caption = 'Video Mixing Filter 7 (VMR-7)'
             TabOrder = 0
           end
+        end
+        object ChkForceWavDisplayPlayback: TCheckBox
+          Left = 10
+          Top = 423
+          Width = 247
+          Height = 17
+          Caption = 'Force auto scroll/wav display starting playback'
+          TabOrder = 15
         end
       end
     end

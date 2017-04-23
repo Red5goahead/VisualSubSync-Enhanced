@@ -3791,7 +3791,10 @@ procedure TMainForm.ActionPlayExecute(Sender: TObject);
 begin
   if IsTimingMode then
     PanelWAVDisplay.SetFocus;
-  WAVDisplayer.AutoScrolling := True;
+  if ConfigObject.ForceWavDisplayPlayback = true then
+  begin
+    WAVDisplayer.AutoScrolling := True;
+  end;
   UpdateSubtitleForPreview(VideoPreviewNeedSubtitleUpdate);
   if WAVDisplayer.SelectionIsEmpty then
   begin
@@ -3826,7 +3829,10 @@ procedure TMainForm.ActionLoopExecute(Sender: TObject);
 begin
   if IsTimingMode then
     PanelWAVDisplay.SetFocus;
-  WAVDisplayer.AutoScrolling := True;
+  if ConfigObject.ForceWavDisplayPlayback = true then
+  begin
+    WAVDisplayer.AutoScrolling := True;
+  end;
   UpdateSubtitleForPreview(VideoPreviewNeedSubtitleUpdate);
   if WAVDisplayer.SelectionIsEmpty then
   begin
@@ -7945,7 +7951,10 @@ procedure TMainForm.ActionPlayToEndExecute(Sender: TObject);
 begin
   if IsTimingMode then
     PanelWAVDisplay.SetFocus;
-  WAVDisplayer.AutoScrolling := True;
+  if ConfigObject.ForceWavDisplayPlayback = true then
+  begin
+    WAVDisplayer.AutoScrolling := True;
+  end;
   if WAVDisplayer.SelectionIsEmpty then
   begin
     PlayingMode := pmtAll;

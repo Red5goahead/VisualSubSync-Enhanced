@@ -90,6 +90,7 @@ type
     UseDefaultCodecOnCreateProject : Boolean;
     UseAlternativeCodecOnCreateProject : Boolean;
     ForceStopOnPausing : Boolean;
+    ForceWavDisplayPlayback : Boolean;
     DoubledSubResolution : Boolean;
     ForceNoDesktopComposition : Boolean;
     PreferVmr7VideoRenderer : Boolean;
@@ -436,6 +437,7 @@ type
     bttBackupConfiguration: TButton;
     bttRestoreConfiguration: TButton;
     TntRestoreConfigurationOpenDialog: TTntOpenDialog;
+    ChkForceWavDisplayPlayback: TCheckBox;
     procedure bttOkClick(Sender: TObject);
     procedure bttCancelClick(Sender: TObject);
     procedure ListErrorCheckingClick(Sender: TObject);
@@ -808,6 +810,7 @@ begin
   UseDefaultCodecOnCreateProject := false;
   UseAlternativeCodecOnCreateProject := true;
   ForceStopOnPausing := false;
+  ForceWavDisplayPlayback := true;
   DoubledSubResolution := true;
   ForceNoDesktopComposition := false;
   PreferVmr7VideoRenderer := True;
@@ -1045,6 +1048,7 @@ begin
   IniFile.WriteBool('Misc','UseDefaultCodecOnCreateProject',UseDefaultCodecOnCreateProject);
   IniFile.WriteBool('Misc','UseAlternativeCodecOnCreateProject',UseAlternativeCodecOnCreateProject);
   IniFile.WriteBool('Misc','ForceStopOnPausing',ForceStopOnPausing);
+  IniFile.WriteBool('Misc','ForceWavDisplayPlayback',ForceWavDisplayPlayback);
   IniFile.WriteBool('Misc','DoubledSubResolution',DoubledSubResolution);
   IniFile.WriteBool('Misc','ForceNoDesktopComposition',ForceNoDesktopComposition);
   IniFile.WriteBool('Misc','PreferVrm7VideoRenderer',PreferVmr7VideoRenderer);
@@ -1220,6 +1224,7 @@ begin
   UseDefaultCodecOnCreateProject := IniFile.ReadBool('Misc','UseDefaultCodecOnCreateProject',UseDefaultCodecOnCreateProject);
   UseAlternativeCodecOnCreateProject := IniFile.ReadBool('Misc','UseAlternativeCodecOnCreateProject',UseAlternativeCodecOnCreateProject);
   ForceStopOnPausing := IniFile.ReadBool('Misc','ForceStopOnPausing',ForceStopOnPausing);
+  ForceWavDisplayPlayback := IniFile.ReadBool('Misc','ForceWavDisplayPlayback',ForceWavDisplayPlayback);
   DoubledSubResolution := IniFile.ReadBool('Misc','DoubledSubResolution',DoubledSubResolution);
   ForceNoDesktopComposition := IniFile.ReadBool('Misc','ForceNoDesktopComposition',ForceNoDesktopComposition);
   PreferVmr7VideoRenderer := IniFile.ReadBool('Misc','PreferVrm7VideoRenderer',PreferVmr7VideoRenderer);
@@ -1499,6 +1504,7 @@ begin
   Config.UseAlternativeCodecOnCreateProject := True;
   {$ENDIF}
   ChkForceStopOnPausing.Checked := Config.ForceStopOnPausing;
+  ChkForceWavDisplayPlayback.Checked := Config.ForceWavDisplayPlayback;
   ChkDoubledSubResolution.Checked := Config.DoubledSubResolution;
   ChkDisableDesktopComposition.Checked := Config.ForceNoDesktopComposition;
   {$IFDEF enhanced}
@@ -1723,6 +1729,7 @@ begin
   Config.UseDefaultCodecOnCreateProject := ChkUseDefaultCodecOnCreateProject.Checked;
   Config.UseAlternativeCodecOnCreateProject := ChkUseAlternativeCodecOnCreateProject.Checked;
   Config.ForceStopOnPausing := ChkForceStopOnPausing.Checked;
+  Config.ForceWavDisplayPlayback := ChkForceWavDisplayPlayback.Checked;
   Config.DoubledSubResolution := ChkDoubledSubResolution.Checked;
   Config.ForceNoDesktopComposition := ChkDisableDesktopComposition.Checked;
   Config.PreferVmr7VideoRenderer := ChkPreferVmr7VideoRenderer.Checked;
