@@ -198,6 +198,27 @@ begin
 
 end;
 
+function IsPortable : Boolean;
+var ApplicationPath, IniFilename : WideString;
+begin
+
+  // By default place the ini file in the application directory
+  IniFilename := WideExtractFilePath(TntApplication.ExeName) + 'VisualSubSync.ini';
+
+  {$IFDEF enhanced}
+  IniFilename := StringReplace(IniFilename, 'Uwp', '', []);
+  {$ENDIF}
+
+  // Check if application path and ini file is writable
+  ApplicationPath := WideExtractFilePath(TntApplication.ExeName);
+
+  if WideFileIsReadOnly(ApplicationPath) or not WideFileExists(IniFilename) or (WideFileExists(IniFilename) and WideFileIsReadOnly(IniFilename)) then
+  begin
+    Result := False;
+  end;
+
+end;
+
 initialization
   g_ApplicationPath := WideIncludeTrailingBackslash(WideExtractFilePath(TntApplication.ExeName));
   {$IFDEF enhanced}
@@ -209,7 +230,10 @@ initialization
   end;
   if not WideDirectoryExists(WideIncludeTrailingBackslash(GetUserApplicationDataFolder) + RootAppData) then
   begin
-   WideForceDirectories(WideIncludeTrailingBackslash(GetUserApplicationDataFolder) + RootAppData);
+   if not IsPortable then
+   begin
+    WideForceDirectories(WideIncludeTrailingBackslash(GetUserApplicationDataFolder) + RootAppData);
+   end;
   end;
   if not WideDirectoryExists(WideIncludeTrailingBackslash(GetUserDocumentsFolder) + 'VisualSubSync\Backup\') then
    begin
@@ -219,7 +243,13 @@ initialization
   IsEnhanced := False;
   IsUniversalAppEnviroment := False;
   {$ENDIF}
-  if WideDirectoryExists(WideIncludeTrailingBackslash(GetUserApplicationDataFolder) + RootAppData) then Deploy;
+  if WideDirectoryExists(WideIncludeTrailingBackslash(GetUserApplicationDataFolder) + RootAppData) then
+  begin
+    if not IsPortable then
+    begin
+      Deploy;
+    end;
+  end;
   g_ApplicationVersion := TFileVersion.Create(Application.ExeName);
   g_GlobalContext := TGlobalContext.Create;
   g_WebRWSynchro := TMultiReadExclusiveWriteSynchronizer.Create;
