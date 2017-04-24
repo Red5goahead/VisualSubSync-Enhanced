@@ -133,6 +133,7 @@ type
     VideoSourceOperationGeneratePeakFile: TTntRadioButton;
     cbbVideoSourceOperationAudioTracks: TTntComboBox;
     VideoSourceOperationAudioTracksOnlyCenter: TTntCheckBox;
+    VideoSourceOperationNone: TTntRadioButton;
     procedure bttCreateNewProjectClick(Sender: TObject);
     procedure bttCancelClick(Sender: TObject);
     procedure bttBrowseVideoFileClick(Sender: TObject);
@@ -150,7 +151,6 @@ type
     procedure EditUpdateColor(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure VideoSourceOperationExecuteClick(Sender: TObject);
     procedure VideoSourceOperationRemuxClick(Sender: TObject);
     procedure VideoSourceOperationRecodeAudio1Click(Sender: TObject);
     procedure VideoSourceOperationRecodeAudio2Click(Sender: TObject);
@@ -159,6 +159,8 @@ type
     procedure VideoSourceOperationSetSubtitleVOClick(Sender: TObject);
     procedure VideoSourceOperationGeneratePeakFileClick(Sender: TObject);
     procedure cbbVideoSourceOperationAudioTracksSelect(Sender: TObject);
+    procedure VideoSourceOperationExecuteClick(Sender: TObject);
+    procedure VideoSourceOperationNoneClick(Sender: TObject);
   private
     { Private declarations }
     procedure WAVSelectMode(WavMode : TProjectWAVMode);
@@ -166,6 +168,7 @@ type
     function ShowExtractForm(extType : TWAVExtractionType) : Boolean;
     function CheckData(AskForExtraction : Boolean) : Boolean;
     procedure UpdateColor;
+    procedure VideoSourceOperation(silent : Boolean);
   public
     { Public declarations }
     SelectedAudioTrackOnExtract : Integer;
@@ -502,6 +505,12 @@ procedure TProjectForm.bttCreateNewProjectClick(Sender: TObject);
 var res : Integer;
 begin
 
+  if VideoSourceOperationGeneratePeakFile.Checked = True And
+    rbPeakOnly.Checked = True AND not WideFileExists(EditPeakFilename.Text) Then
+  begin
+    VideoSourceOperation(False);
+  end;
+
   if not CheckData(True) then
     Exit;
 
@@ -546,6 +555,9 @@ begin
   if TntOpenDialogBrowseGenericFile.Execute then
   begin
     EditVideoFilename.Text := TntOpenDialogBrowseGenericFile.FileName;
+
+    VideoSourceOperationNone.Enabled :=True;
+    VideoSourceOperationNone.Checked :=False;
 
     // If external wav file exists with the same name use it
     WAVFilename := WideChangeFileExt(EditVideoFilename.Text,'.wav');
@@ -862,6 +874,7 @@ begin
   bttOk.Visible := False;
   WAVSelectMode(pwmNoWaveform);
   cbbVideoSourceOperationTextTracks.Items.Clear;
+  VideoSourceOperationNone.Enabled :=False;
   VideoSourceOperationGeneratePeakFile.Enabled :=False;
   VideoSourceOperationGeneratePeakFile.Checked :=False;
   cbbVideoSourceOperationAudioTracks.Visible:= False;
@@ -906,6 +919,7 @@ begin
   WAVSelectMode(Project.WAVMode);
   chkSaveAsUTF8.Checked := Project.IsUTF8;
 
+  VideoSourceOperationNone.Enabled :=False;
   VideoSourceOperationGeneratePeakFile.Enabled :=False;
   VideoSourceOperationGeneratePeakFile.Checked :=False;
   cbbVideoSourceOperationAudioTracks.Visible:= False;
@@ -1100,7 +1114,7 @@ begin
   end;
 end;
 
-procedure TProjectForm.VideoSourceOperationExecuteClick(Sender: TObject);
+procedure TProjectForm.VideoSourceOperation(Silent : Boolean);
 var
     SourceFileOperationCancel : TSourceFileOperationCancel;
     Language, Title, CodecID, StreamOrder : String;
@@ -1179,8 +1193,11 @@ begin
     end;
     ProjectForm.SelectedAudioTrackOnExtract := cbbVideoSourceOperationAudioTracks.ItemIndex+1;
     bttCreateNewProject.Enabled := True;
-    MessageBoxW(Handle, PWideChar(WideString('Operation complete. The audio waveform peak file is being created.')),
-     PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
+    if Silent = true then
+    begin
+      MessageBoxW(Handle, PWideChar(WideString('Operation complete. The audio waveform peak file is being created.')),
+       PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
+    end;
    end
    else if ExitForced And FileExists(NewAudioWavFileName) then
    begin
@@ -1213,7 +1230,7 @@ begin
       SourceFileOperationCancel.ShowModal;
       if SourceFileOperationCancel.ExitForced then
        ExitForced := True;
-      SourceFileOperationCancel.Free; 
+      SourceFileOperationCancel.Free;
 
       Screen.Cursor:=crDefault;
 
@@ -1437,6 +1454,8 @@ begin
     end;
   end;
 
+ VideoSourceOperationNone.Checked := True;
+ VideoSourceOperationNoneClick(Nil);
 end;
 
 procedure TProjectForm.VideoSourceOperationRemuxClick(Sender: TObject);
@@ -1570,6 +1589,28 @@ begin
        VideoSourceOperationAudioTracksOnlyCenter.Checked := False;
      end;
    end;
+end;
+
+procedure TProjectForm.VideoSourceOperationExecuteClick(Sender: TObject);
+begin
+ VideoSourceOperation(True);
+end;
+
+procedure TProjectForm.VideoSourceOperationNoneClick(Sender: TObject);
+begin
+ VideoSourceOperationExecute.Enabled := False;
+ cbbVideoSourceOperationAudioTracks.Visible:= False;
+ VideoSourceOperationAudioTracksOnlyCenter.Visible:= False;
+ if VideoSourceOperationGeneratePeakFile.Checked Then
+ begin
+   cbbVideoSourceOperationAudioTracks.Visible:= True;
+   VideoSourceOperationAudioTracksOnlyCenter.Visible:= True;
+ end;
+ cbbVideoSourceOperationTextTracks.Visible:= False;
+ if VideoSourceOperationSetSubtitleFile.Checked Or VideoSourceOperationSetSubtitleVO.Checked Then
+  begin
+    cbbVideoSourceOperationTextTracks.Visible:= True;
+  end;
 end;
 
 end.
