@@ -115,8 +115,8 @@ VSSPlugin = {
   // Called when the selection is doubleclicked at stop on the WAV display
   OnRangeStopDblClick : function(CurrentSub, PreviousSub, NextSub) {
 
-    // Lavie duration
-    var duration = CurrentSub.StrippedText.length * 50 + 500;
+  // Lavie duration
+  var duration = CurrentSub.StrippedText.length * 50 + 500;
 	if (duration < VSSCore.MinimumDuration)
 		duration = VSSCore.MinimumDuration;
     var stop = CurrentSub.Start + duration;
@@ -152,16 +152,22 @@ VSSPlugin = {
   
   // Declare extra column index here
   RS_COL_IDX : VSSCore.LAST_CORE_COL_IDX + 1, // Reading speed
+  CPS_COL_IDX : VSSCore.LAST_CORE_COL_IDX + 2, // Characters per second
+  DURATION_COL_IDX : VSSCore.LAST_CORE_COL_IDX + 3, // Duration
   
   // Get the number of extra-columns (called only at VSS startup)
   GetExtraColumnsCount : function() {
-    return 1;
+    //return 1;
+    //return 2;
+	return 3;
   },
   
   // Get the title of each extra-column (called only at VSS startup)
   GetColumnTitle : function(Index) {
     switch(Index) {
-      case this.RS_COL_IDX: return 'RS';
+      case this.RS_COL_IDX:  return 'RS';
+      case this.CPS_COL_IDX: return 'CPS';
+	  case this.DURATION_COL_IDX: return 'Duration';
       default: return '';
     }
   },
@@ -169,7 +175,9 @@ VSSPlugin = {
   // Get the size of each extra-column (called only at VSS startup)
   GetColumnSize : function(Index) {
     switch(Index) {
-      case this.RS_COL_IDX: return 30;
+      case this.RS_COL_IDX:  return 30;
+      case this.CPS_COL_IDX: return 30;
+	  case this.DURATION_COL_IDX: return 52;
       default: return '';
     }
   },
@@ -177,7 +185,9 @@ VSSPlugin = {
   // Check if a column background can be colorized (called only at VSS startup)
   IsColumnBGColorized : function(Index) {
     switch(Index) {
-      case this.RS_COL_IDX:    return true;
+      case this.RS_COL_IDX:  return true;
+      case this.CPS_COL_IDX: return true;
+	  case this.DURATION_COL_IDX: return true;
       default: return false;
     }
   },
@@ -185,7 +195,9 @@ VSSPlugin = {
   // Check if a column has custom text (called only at VSS startup)
   HasColumnCustomText : function(Index) {
     switch(Index) {
-      case this.RS_COL_IDX:    return true;
+      case this.RS_COL_IDX:  return true;
+      case this.CPS_COL_IDX: return true;
+	  case this.DURATION_COL_IDX: return true;
       default: return false;
     }
   },  
@@ -193,7 +205,18 @@ VSSPlugin = {
   // Get the column background color (called on each cell repaint)
   GetColumnBGColor : function(Index, CurrentSub, PreviousSub, NextSub) {
     switch(Index) {
-      case this.RS_COL_IDX: return getReadingSpeedAsColor(CurrentSub);
+      case this.RS_COL_IDX:  return getReadingSpeedAsColor(CurrentSub);
+      case this.CPS_COL_IDX: return getCPSAsColor(CurrentSub);
+      case this.DURATION_COL_IDX:
+        if (this.cache <   500) return 0xff9999;  // TF color
+        if (this.cache <   750) return 0xffcc99;  // FA color
+        if (this.cache <  1000) return 0xffff99;  // ABF color
+        if (this.cache <  2000) return 0xccff99;  // G color
+        if (this.cache <= 3000) return 0x99ff99;  // P color
+        if (this.cache <= 4000) return 0x99ffcc;  // G color
+        if (this.cache <= 5000) return 0x99ffff;  // ABS color
+        if (this.cache <= 6000) return 0x99ccff;  // SA color
+        return 0x9999ff;                          // TS color
       default: return 0xffffff;
     }
   },
@@ -201,7 +224,11 @@ VSSPlugin = {
   // Get the text of the extra-column (called on each cell repaint)
   GetColumnText : function(Index, CurrentSub, PreviousSub, NextSub) {
     switch(Index) {
-      case this.RS_COL_IDX: return getReadingSpeedAsText(CurrentSub);
+      case this.RS_COL_IDX:  return getReadingSpeedAsText(CurrentSub);
+      case this.CPS_COL_IDX: return getCPSAsText(CurrentSub);	  
+      case this.DURATION_COL_IDX:
+        this.cache = CurrentSub.Stop - CurrentSub.Start;
+        return (this.cache / 1000).toFixed(3);
       default: return '';
     }
   }
