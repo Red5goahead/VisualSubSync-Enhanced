@@ -505,7 +505,9 @@ procedure TProjectForm.bttCreateNewProjectClick(Sender: TObject);
 var res : Integer;
 begin
 
-  if VideoSourceOperationGeneratePeakFile.Checked = True And
+  if VideoSourceOperationGeneratePeakFile.Enabled = True And
+    VideoSourceOperationGeneratePeakFile.Checked = True And
+    WideFileExists(EditVideoFilename.Text) AND
     rbPeakOnly.Checked = True AND not WideFileExists(EditPeakFilename.Text) Then
   begin
     VideoSourceOperation(False);
