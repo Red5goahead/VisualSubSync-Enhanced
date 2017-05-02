@@ -1,0 +1,8 @@
+title: Visualsubsync-enhanced
+description: The Visualsubsync enhanced version
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-architect
+
+gems:
+  - jekyll-mentions
