@@ -11,7 +11,7 @@ improved subtitles quality and much more...
 Starting from release 1.0.2.3 the english, french and german dictionaries are included into setup and 
 now it support Thesaurus (MyThes format).
 
-Visualsubsync Enhanced is fully compatible with Windows Xp, Windows Vista, Windows 7, Windows 8/8.1 and now for Windows 10.
+Visualsubsync Enhanced is fully compatible with Windows Xp, Windows Vista, Windows 7, Windows 8/8.1 and now for Windows 10 and Windows 10 S
 
 Download here https://github.com/Red5goahead/VisualSubSync-Enhanced/releases the installation/setup.
 
