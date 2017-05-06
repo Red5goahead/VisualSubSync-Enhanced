@@ -1145,6 +1145,8 @@ begin
     MediaInfoHandle := MediaInfo_New();
     MediaInfo_Open(MediaInfoHandle, PWideChar(EditVideoFilename.Text));
     Duration := MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'Duration/String3', Info_Text, Info_Name);
+    if (Duration = '') then               
+      Duration := MediaInfo_Get(MediaInfoHandle, Stream_Audio, 0, 'Duration/String3', Info_Text, Info_Name);
     HH := StrToInt(copy(Duration,1,2));
     MM := StrToInt(copy(Duration,4,2));
     SS := StrToInt(copy(Duration,7,2));

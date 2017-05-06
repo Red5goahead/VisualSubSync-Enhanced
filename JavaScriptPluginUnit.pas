@@ -2027,7 +2027,7 @@ end;
 
 function TVSSCoreWrapper.DeleteSubtitle(Index : Integer) : Boolean;
 begin
-  if (Index < 0) or (Index >= g_GlobalContext.SubList.Count) then
+  if (Index <= 0) or (Index > g_GlobalContext.SubList.Count) then
   begin
     Result:= False;
     Exit;
