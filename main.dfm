@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 253
-  Top = 62
+  Left = 414
+  Top = 83
   Width = 1083
   Height = 755
   Caption = 'VisualSubSync'

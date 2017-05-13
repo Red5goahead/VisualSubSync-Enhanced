@@ -28,7 +28,7 @@ object PreferencesForm: TPreferencesForm
     Top = 0
     Width = 746
     Height = 507
-    ActivePage = TsPlayback
+    ActivePage = tsGeneral
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTntTabSheet
@@ -210,7 +210,7 @@ object PreferencesForm: TPreferencesForm
           Text = '500'
         end
         object UpDownMoveAfterSmartButtonIsUsed: TTntUpDown
-          Left = 320
+          Left = 328
           Top = 148
           Width = 16
           Height = 21
