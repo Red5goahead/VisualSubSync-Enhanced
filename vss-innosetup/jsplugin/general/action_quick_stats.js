@@ -9,7 +9,7 @@ JSAction_QuickStats = {
     if(subCount > 0) {
     
       // Table to store results
-      var rsArray = new Array(ReadingSpeedDef.length);
+      var rsArray = new Array(RSDef.length);
       for (var i = 0; i < rsArray.length; i++) {
         rsArray[i] = 0;
       }
@@ -27,7 +27,7 @@ JSAction_QuickStats = {
       for (var i = 0; i < rsArray.length; i++) {
         var rsCount = rsArray[i];
         var rsCountPercent = (rsCount * 100) / subCount;
-        ScriptLog(ReadingSpeedDef[i].text + ' = ' + decimal1Round(rsCountPercent)
+        ScriptLog(RSDef[i].text + ' = ' + decimal1Round(rsCountPercent)
         	+ '% (' + rsCount + ')');
       }
       
