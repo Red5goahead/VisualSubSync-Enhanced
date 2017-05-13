@@ -821,7 +821,7 @@ begin
   PreferVmr9VideoRenderer := False;
   UseReclockAudioRenderer := False;
   SpaceKeyMoveAfterSmartButtonIsUsed := 750;
-  SubtitlePreviewDelay := 750;
+  SubtitlePreviewDelay := 800;
   AutoPlaySmartButtonIsUsed := True;
   DesynchToolsAutoReset := True;
   DesynchUseColorsForSubtitles := True;

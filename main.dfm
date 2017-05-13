@@ -7941,4 +7941,11 @@ object MainForm: TMainForm
     Left = 384
     Top = 491
   end
+  object TimerSubtitlePreview: TTimer
+    Enabled = False
+    Interval = 750
+    OnTimer = TimerSubtitlePreviewTimer
+    Left = 436
+    Top = 397
+  end
 end

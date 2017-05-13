@@ -548,6 +548,7 @@ type
     MenuCustomDictionaryCopyToClipboard: TTntMenuItem;
     MenuCustomDictionaryPasteFromClipboard: TTntMenuItem;
     MenuCustomDictionaryAppendFromClipboard: TTntMenuItem;
+    TimerSubtitlePreview: TTimer;
     procedure FormCreate(Sender: TObject);
 
     procedure WAVDisplayer1CursorChange(Sender: TObject);
@@ -836,6 +837,7 @@ type
     procedure MenuCustomDictionaryAppendFromClipboardClick(
       Sender: TObject);
     procedure SubMenuCustomDictionaryClick(Sender: TObject);
+    procedure TimerSubtitlePreviewTimer(Sender: TObject);
 
   private
 
@@ -3131,7 +3133,8 @@ var NodeData, NodeDataPrevious: PTreeData;
 begin
   if Assigned(vtvSubsList.FocusedNode) and (MemoSubtitleText.Tag = 1) then
   begin
-    NodeData := vtvSubsList.GetNodeData(vtvSubsList.FocusedNode);
+
+   NodeData := vtvSubsList.GetNodeData(vtvSubsList.FocusedNode);
 
    if (ConfigObject.AccentsAssistant And (CurrentProject.Dictionary = 'it_IT.dic') And MenuItemLiveSpellcheck.Checked And FSpellChecker.IsInitialized And not CurrentMemoSubtitleTextSelectionOn )  then
      begin
@@ -3157,7 +3160,20 @@ begin
         NeedUpdate := NodeData.Range.UpdateSubTimeFromText(NodeData.Range.Text);
 
       vtvSubsList.RepaintNode(vtvSubsList.FocusedNode);
-      CurrentProject.IsDirty := True;
+      if ConfigObject.SubtitlePreviewDelay > 0 then
+        begin
+          TimerSubtitlePreview.Interval := ConfigObject.SubtitlePreviewDelay;
+          if TimerSubtitlePreview.Enabled = True then
+          begin
+            TimerSubtitlePreview.Enabled := False;
+            TimerSubtitlePreview.Enabled := True;
+          end
+          else
+          begin
+            TimerSubtitlePreview.Enabled := True;
+          end;
+        end
+      else CurrentProject.IsDirty := True;
     finally
       g_WebRWSynchro.EndWrite;
     end;
@@ -8504,7 +8520,7 @@ var TmpDstFilename : WideString;
     StartTime : Cardinal;
 begin
   // TODO : Clean old files in temp directory
-  
+
   if DisableVideoUpdatePreview
      or (Trim(CurrentProject.SubtitlesFile) = '')
      or (not VideoRenderer.IsOpen) then
@@ -13426,6 +13442,12 @@ begin
  MenuCustomDictionaryCopyToClipboard.Enabled := True;
  if Words.Count=0 then MenuCustomDictionaryCopyToClipboard.Enabled := False;
  Words.Free;
+end;
+
+procedure TMainForm.TimerSubtitlePreviewTimer(Sender: TObject);
+begin
+ TimerSubtitlePreview.Enabled := False;
+ CurrentProject.IsDirty := True;
 end;
 
 end.
