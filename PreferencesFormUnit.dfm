@@ -28,7 +28,7 @@ object PreferencesForm: TPreferencesForm
     Top = 0
     Width = 746
     Height = 507
-    ActivePage = tsGeneral
+    ActivePage = TsPlayback
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTntTabSheet
@@ -385,9 +385,9 @@ object PreferencesForm: TPreferencesForm
         object labelMessagePlaybackAvailable: TLabel
           Left = 8
           Top = 456
-          Width = 253
+          Width = 349
           Height = 13
-          Caption = '** Only available when your project is closed'
+          Caption = '** Most options are only available when your project is closed'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
