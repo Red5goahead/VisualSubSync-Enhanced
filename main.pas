@@ -2202,7 +2202,7 @@ begin
        end;
 
   if Enable and (CurrentProject <> nil) then
-    if Pos('29.970 fps', CurrentProject.VideoFrameRate) = 1 then
+    if Pos('29.970', CurrentProject.VideoFrameRate) = 1 then
        begin
         ChangeFpsCinemaToNtsc.Enabled := True;
         ChangeFpsTrueCinemaToNtsc.Enabled := True;
