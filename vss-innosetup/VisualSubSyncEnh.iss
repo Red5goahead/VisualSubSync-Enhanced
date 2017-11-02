@@ -3,7 +3,7 @@
 
 #define MyAppName "VisualSubSync Enhanced"
 #define MyAppDefaultDir "VisualSubSyncEnh"
-#define MyAppVersion "1.2.23.0"
+#define MyAppVersion "1.2.25.0"
 #define MyAppPublisher "VisualSubSync Team"
 #define MyAppURL "https://red5goahead.github.io/VisualSubSync-Enhanced/"
 #define MyAppExeName "VisualSubSyncEnh.exe"
@@ -108,6 +108,8 @@ Source: "vss-innosetup\vss-release\dict\fr_FR.aff"; DestDir: "{app}\dict"; Flags
 Source: "vss-innosetup\vss-release\dict\fr_FR.dic"; DestDir: "{app}\dict"; Flags: IgnoreVersion
 Source: "vss-innosetup\vss-release\dict\de_DE.aff"; DestDir: "{app}\dict"; Flags: IgnoreVersion
 Source: "vss-innosetup\vss-release\dict\de_DE.dic"; DestDir: "{app}\dict"; Flags: IgnoreVersion
+Source: "vss-innosetup\vss-release\dict\el_GR.aff"; DestDir: "{app}\dict"; Flags: IgnoreVersion
+Source: "vss-innosetup\vss-release\dict\el_GR.dic"; DestDir: "{app}\dict"; Flags: IgnoreVersion
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Flags: nowait postinstall skipifsilent; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"

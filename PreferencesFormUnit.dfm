@@ -28,7 +28,7 @@ object PreferencesForm: TPreferencesForm
     Top = 0
     Width = 746
     Height = 507
-    ActivePage = TsPlayback
+    ActivePage = tsGeneral
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTntTabSheet
@@ -1945,7 +1945,6 @@ object PreferencesForm: TPreferencesForm
           ParentShowHint = False
           ShowHint = True
           TabOrder = 5
-          Visible = False
         end
         object chkOnLineSearchDict4: TCheckBox
           Left = 15

@@ -405,7 +405,6 @@ type
     MemoLinesCounter: TTntRichEdit;
     MemoSubtitleVO: TTntRichEdit;
     TabSheetUrbanDictionary: TTabSheet;
-    WebBrowserUrbanDictionary: TWebBrowser;
     TabSheetWordNet: TTabSheet;
     WebBrowserWordNet: TWebBrowser;
     MenuItemQuickSmartDelay: TTntMenuItem;
@@ -549,6 +548,7 @@ type
     MenuCustomDictionaryPasteFromClipboard: TTntMenuItem;
     MenuCustomDictionaryAppendFromClipboard: TTntMenuItem;
     TimerSubtitlePreview: TTimer;
+    RichEditUrbanDictionary: TTntRichEdit;
     procedure FormCreate(Sender: TObject);
 
     procedure WAVDisplayer1CursorChange(Sender: TObject);
@@ -11101,13 +11101,6 @@ begin
       with Application as IOleobject do
        DoVerb(OLEIVERB_UIACTIVATE, nil, WebBrowserWordNet, 0, Handle, GetClientRect);
   end;
- if PageControlMain.ActivePage = TabSheetUrbanDictionary then
-  begin
-   with WebBrowserUrbanDictionary do
-    if Document <> nil then
-      with Application as IOleobject do
-       DoVerb(OLEIVERB_UIACTIVATE, nil, WebBrowserUrbanDictionary, 0, Handle, GetClientRect);
-  end;
  if PageControlMain.ActivePage = TabSheetOneLook then
   begin
    with WebBrowserOneLook do
@@ -11499,6 +11492,37 @@ end;
 procedure TMainForm.MemoSubtitleVOMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
  var I : word; SaveCompleteSelectionForMemoSubtitleVOLocal : String;
+ sJSonUrbanDictionary : String;
+ oUrbanDictionary, oListUrbanDictionary : TlkJSONBase;
+ oUrbanDictionaryListIndex : Integer;
+
+ function WebGetData(const UserAgent: string; const URL: string): string;
+  var
+    hInet: HINTERNET;
+    hURL: HINTERNET;
+    Buffer: array[0..1023] of AnsiChar;
+    BufferLen: cardinal;
+  begin
+    result := '';
+    hInet := InternetOpen(PChar(UserAgent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+    if hInet = nil then RaiseLastOSError;
+    try
+      hURL := InternetOpenUrl(hInet, PChar(URL), nil, 0, 0, 0);
+      if hURL = nil then RaiseLastOSError;
+      try
+        repeat
+          if not InternetReadFile(hURL, @Buffer, SizeOf(Buffer), BufferLen) then
+            RaiseLastOSError;
+          result := result + UTF8Decode(Copy(Buffer, 1, BufferLen))
+        until BufferLen = 0;
+      finally
+        InternetCloseHandle(hURL);
+      end;
+    finally
+      InternetCloseHandle(hInet);
+    end;
+  end;
+
 begin
 
  if Not ConfigObject.DictionaryOnLineEnabled then Exit;
@@ -11543,6 +11567,7 @@ begin
     // Urban Dictionary
     if ConfigObject.OnLineSearchDict3 = true then
      begin
+
       SaveCompleteSelectionForMemoSubtitleVOLocal := SaveCompleteSelectionForMemoSubtitleVO;
       for I:= 33 to 47 do
        begin
@@ -11553,8 +11578,45 @@ begin
         SaveCompleteSelectionForMemoSubtitleVOLocal := AnsiReplaceStr(SaveCompleteSelectionForMemoSubtitleVOLocal,chr(I),'%'+IntToHex(I,2));
        end;
       SaveCompleteSelectionForMemoSubtitleVOLocal := AnsiReplaceStr(SaveCompleteSelectionForMemoSubtitleVO,chr(32),'+');
-      WebBrowserUrbanDictionary.Navigate('http://www.urbandictionary.com/define.php?term='+lowercase(SaveCompleteSelectionForMemoSubtitleVOLocal));
+
+      // API
+      sJSonUrbanDictionary := WebGetData('Visualsubsync Enhanced', 'http://api.urbandictionary.com/v0/define?term='+lowercase(SaveCompleteSelectionForMemoSubtitleVOLocal));
+      oUrbanDictionary := TlkJSON.ParseText(sJSonUrbanDictionary);
+      oListUrbanDictionary := oUrbanDictionary.Field['list'];
+      RichEditUrbanDictionary.Clear;
+      for oUrbanDictionaryListIndex := 0 to oListUrbanDictionary.count-1 do
+      begin
+        RichEditUrbanDictionary.SelAttributes.Color := clBlack;
+        RichEditUrbanDictionary.SelAttributes.Style := [fsBold, fsUnderline];
+        RichEditUrbanDictionary.SelAttributes.Size := 10;
+        if oUrbanDictionaryListIndex > 0 then
+        begin
+          RichEditUrbanDictionary.Lines.Add(IntToStr(oUrbanDictionaryListIndex+1));
+        end
+        else
+        begin
+          RichEditUrbanDictionary.Lines.Add('Top definition');
+        end;
+        RichEditUrbanDictionary.SelAttributes.Color := clBlack;
+        RichEditUrbanDictionary.SelAttributes.Style := [];
+        RichEditUrbanDictionary.SelAttributes.Size := 9;
+        RichEditUrbanDictionary.Lines.Add(Vartostr(oListUrbanDictionary.Child[oUrbanDictionaryListIndex].Field['definition'].Value));
+        RichEditUrbanDictionary.Lines.Add('');
+
+        RichEditUrbanDictionary.SelAttributes.Color := clBlack;
+        RichEditUrbanDictionary.SelAttributes.Style := [fsItalic];
+        RichEditUrbanDictionary.SelAttributes.Size := 8;
+        RichEditUrbanDictionary.Lines.Add(Vartostr(oListUrbanDictionary.Child[oUrbanDictionaryListIndex].Field['example'].Value));
+        RichEditUrbanDictionary.Lines.Add('');
+
+      end;
+
+      RichEditUrbanDictionary.SelStart := 0;
+      // *********
+
+      //WebBrowserUrbanDictionary.Navigate('http://www.urbandictionary.com/define.php?term='+lowercase(SaveCompleteSelectionForMemoSubtitleVOLocal));
       if TabSheetUrbanDictionary.TabVisible = False then TabSheetUrbanDictionary.TabVisible := True;
+      if oListUrbanDictionary.count = 0 then TabSheetUrbanDictionary.TabVisible := False;
       TabSheetUrbanDictionary.Caption := 'Urban Dictionary [ ' + uppercase(SaveCompleteSelectionForMemoSubtitleVO) + ' ]';
      end;
     // -------------------------
@@ -11638,7 +11700,6 @@ begin
         SaveCompleteSelectionForMemoTextPipeVOLocal := AnsiReplaceStr(SaveCompleteSelectionForMemoTextPipeVOLocal,chr(I),'%'+IntToHex(I,2));
        end;
       SaveCompleteSelectionForMemoTextPipeVOLocal := AnsiReplaceStr(SaveCompleteSelectionForMemoTextPipeVOLocal,chr(32),'+');
-      WebBrowserUrbanDictionary.Navigate('http://www.urbandictionary.com/define.php?term='+lowercase(SaveCompleteSelectionForMemoTextPipeVOLocal));
       if TabSheetUrbanDictionary.TabVisible = False then TabSheetUrbanDictionary.TabVisible := True;
       TabSheetUrbanDictionary.Caption := 'Urban Dictionary [ ' + uppercase(SaveCompleteSelectionForMemoTextPipeVOLocal) + ' ]';
      end;

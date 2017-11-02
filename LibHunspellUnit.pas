@@ -376,6 +376,7 @@ begin
            (FileExists(WideExtractFileDir(DictDic)+'\'+FCurrentThesaurusDictName+'m.xml') = False) or
            (FileExists(WideExtractFileDir(DictDic)+'\'+FCurrentThesaurusDictName+'s.xml') = False) Then
         begin
+          try
           FThesaurusDbWord.FieldDefs.Add('Word', ftString, 80, True);
           FThesaurusDbWord.FieldDefs.Add('Id', ftInteger, 0, True);
           FThesaurusDbWord.FieldDefs.Add('Meanings', ftInteger, 0, True);
@@ -443,6 +444,8 @@ begin
 
             ThesaurusIndex := ThesaurusIndex + ThesaurusNumOfMeanings + 1;
            end;
+          except
+          end;
           SplitObj.Destroy;
           FThesaurus.Destroy;
           FThesaurusDict := False;
