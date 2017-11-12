@@ -139,6 +139,8 @@ type
 
   function GetLayoutShortName: String;
 
+  function NetFramework4Installed: Boolean;
+
 type
   MyTTntStringList = class(TTntStringList)
   public
@@ -1762,6 +1764,21 @@ begin
   Result := AnsiUpperCase(Copy(Result, 1, 2));
 end;
 
+// -----------------------------------------------------------------------------
+
+function NetFramework4Installed: Boolean;
+var
+Reg: TRegistry;
+begin
+Result := False;
+  Reg := TRegistry.Create(KEY_READ);
+  try
+  Reg.RootKey := HKEY_LOCAL_MACHINE;
+  Result := Reg.KeyExists('SOFTWARE\Microsoft\NET Framework Setup\NDP\v4');
+  finally
+  Reg.Free;
+  end
+end;
 
 end.
 // -----------------------------------------------------------------------------

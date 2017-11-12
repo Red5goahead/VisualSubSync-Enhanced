@@ -1735,7 +1735,7 @@ object MainForm: TMainForm
                 Width = 230
                 Height = 21
                 Style = csDropDownList
-                ItemHeight = 13
+                ItemHeight = 0
                 TabOrder = 6
                 OnSelect = ComboBoxSilentZoneSelect
               end
@@ -2249,7 +2249,7 @@ object MainForm: TMainForm
       object SubMenuItemErrorChecking: TTntMenuItem
         Caption = 'Error checking'
         ImageIndex = 27
-        object MenuItemCheckErrors: TTntMenuItem
+        object Checkerrors1: TTntMenuItem
           Action = ActionCheckErrors
         end
         object MenuItemShowErrorReport: TTntMenuItem
@@ -2258,6 +2258,20 @@ object MainForm: TMainForm
         object MenuItemErrorCheckingPreferences: TTntMenuItem
           Action = ActionErrorPreferences
           Caption = 'Preferences...'
+        end
+        object N33: TTntMenuItem
+          Caption = '-'
+        end
+        object MenuItemRemoveTextForHi: TTntMenuItem
+          Action = ActionRemoveTextForHi
+        end
+        object MenuItemFixCommonErrors: TTntMenuItem
+          Action = ActionFixCommonErrors
+        end
+        object MenuItemSEFix: TTntMenuItem
+          Caption = 'All fix options above'
+          ImageIndex = 22
+          OnClick = MenuItemSEFixClick
         end
       end
       object SubMenuItemSpellcheck: TTntMenuItem
@@ -2786,6 +2800,20 @@ object MainForm: TMainForm
       Hint = 'Check errors'
       ImageIndex = 19
       OnExecute = ActionCheckErrorsExecute
+    end
+    object ActionFixCommonErrors: TTntAction
+      Tag = 1
+      Caption = 'Fix common errors'
+      Hint = 'Fix common errors'
+      ImageIndex = 22
+      OnExecute = ActionFixCommonErrorsExecute
+    end
+    object ActionRemoveTextForHi: TTntAction
+      Tag = 1
+      Caption = 'Remove text for hearing impareid'
+      Hint = 'Remove text for hearing impareid'
+      ImageIndex = 22
+      OnExecute = ActionRemoveTextForHiExecute
     end
     object ActionDelay: TTntAction
       Tag = 1

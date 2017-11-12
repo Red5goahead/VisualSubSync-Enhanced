@@ -3,7 +3,7 @@
 
 #define MyAppName "VisualSubSync Enhanced"
 #define MyAppDefaultDir "VisualSubSyncEnh"
-#define MyAppVersion "1.2.25.0"
+#define MyAppVersion "1.2.26.0"
 #define MyAppPublisher "VisualSubSync Team"
 #define MyAppURL "https://red5goahead.github.io/VisualSubSync-Enhanced/"
 #define MyAppExeName "VisualSubSyncEnh.exe"
@@ -42,6 +42,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "vss-innosetup\vss-release\VisualSubSyncEnh.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "vss-innosetup\vss-release\SE\SubtitleEdit.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "vss-innosetup\vss-release\SE\Settings.xml"; DestDir: "{app}"
 Source: "vss-innosetup\vss-release\ICSharpCode.SharpZipLib.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\js3215R.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\libhunspell.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -55,7 +57,6 @@ Source: "vss-innosetup\vss-release\codecLav\avresample-lav-3.dll"; DestDir: "{ap
 Source: "vss-innosetup\vss-release\codecLav\avutil-lav-55.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\codecLav\IntelQuickSyncDecoder.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\codecLav\LAVAudio.ax"; DestDir: "{app}\codecLav"; Flags: ignoreversion
-Source: "vss-innosetup\vss-release\codecLav\LAVSplitter.ax"; DestDir: "{app}\codecLav"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\codecLav\LAVVideo.ax"; DestDir: "{app}\codecLav"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\codecLav\libbluray.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\codecLav\swscale-lav-4.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
@@ -110,6 +111,7 @@ Source: "vss-innosetup\vss-release\dict\de_DE.aff"; DestDir: "{app}\dict"; Flags
 Source: "vss-innosetup\vss-release\dict\de_DE.dic"; DestDir: "{app}\dict"; Flags: IgnoreVersion
 Source: "vss-innosetup\vss-release\dict\el_GR.aff"; DestDir: "{app}\dict"; Flags: IgnoreVersion
 Source: "vss-innosetup\vss-release\dict\el_GR.dic"; DestDir: "{app}\dict"; Flags: IgnoreVersion
+Source: "vss-innosetup\vss-release\codecLav\LAVSplitter.ax"; DestDir: "{app}\codecLav"; Flags: ignoreversion
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Flags: nowait postinstall skipifsilent; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"

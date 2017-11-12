@@ -105,7 +105,6 @@ type
     Splitter2: TSplitter;
     N6: TTntMenuItem;
     SubMenuItemErrorChecking: TTntMenuItem;
-    MenuItemCheckErrors: TTntMenuItem;
     MenuItemErrorCheckingPreferences: TTntMenuItem;
     MenuItemDelay: TTntMenuItem;
     ActionCheckErrors: TTntAction;
@@ -549,6 +548,13 @@ type
     MenuCustomDictionaryAppendFromClipboard: TTntMenuItem;
     TimerSubtitlePreview: TTimer;
     RichEditUrbanDictionary: TTntRichEdit;
+    N33: TTntMenuItem;
+    Checkerrors1: TTntMenuItem;
+    MenuItemRemoveTextForHi: TTntMenuItem;
+    ActionFixCommonErrors: TTntAction;
+    ActionRemoveTextForHi: TTntAction;
+    MenuItemFixCommonErrors: TTntMenuItem;
+    MenuItemSEFix: TTntMenuItem;
     procedure FormCreate(Sender: TObject);
 
     procedure WAVDisplayer1CursorChange(Sender: TObject);
@@ -838,6 +844,9 @@ type
       Sender: TObject);
     procedure SubMenuCustomDictionaryClick(Sender: TObject);
     procedure TimerSubtitlePreviewTimer(Sender: TObject);
+    procedure ActionFixCommonErrorsExecute(Sender: TObject);
+    procedure ActionRemoveTextForHiExecute(Sender: TObject);
+    procedure MenuItemSEFixClick(Sender: TObject);
 
   private
 
@@ -1023,6 +1032,8 @@ type
 
     procedure ChangeFps(FPSSource : double; FPSDestination : double);
 
+    procedure ActionSubtitleEdit(RemoveTextForHiExecute, FixCommonErrorsExecute : boolean);
+
   public
     CurrentProject : TVSSProject;
     ConfigObject : TConfigObject;
@@ -1125,6 +1136,12 @@ type
     procedure CheckResynchToolMenu;
     procedure CheckUpdates(Silent:Boolean);
     function GetUTF8Default : boolean;
+
+    procedure ConvertSubToNetFlixFormat(Filename, NewFileName : WideString);
+    procedure ConvertFromSupportedFormat(Filename, NewFileName, Ext : WideString);
+    procedure ConvertSubToYouTubeSbv(Filename, NewFileName : WideString);
+    procedure ConvertSubTowebVTT(Filename, NewFileName : WideString);
+
   end;
 
 const
@@ -1157,7 +1174,8 @@ uses ActiveX, Math, StrUtils, FindFormUnit, AboutFormUnit,
   SceneChangeUnit, SilentZoneFormUnit, RegExpr, SRTParserUnit, ShellAPI,
   VSSClipboardUnit, BgThreadTaskUnit, SpellCheckFormUnit, TntClipBrd, DeCAL,MediaInfoDll,
   ResynchToolFormUnit, DSiWin32, DiffSubsFormUnit, SendToItasaFormUnit, SendToItasaMiscUnit,
-  SubtitleTimingFormUnit, KAZip, mshtml, ClipBrd, uLkJSON, WinINet;
+  SubtitleTimingFormUnit, KAZip, mshtml, ClipBrd, uLkJSON, WinINet,
+  SourceFileOperationCancel;
 
 {$R *.dfm}
 
@@ -2066,6 +2084,15 @@ begin
   ActionFindNext.Enabled := Enable;
   ActionGoto.Enabled := Enable;
   ActionCheckErrors.Enabled := Enable;
+  ActionFixCommonErrors.Enabled := Enable;
+  ActionRemoveTextForHi.Enabled := Enable;
+  MenuItemSeFix.Enabled := Enable;
+  if not NetFramework4Installed() then
+  begin
+    ActionFixCommonErrors.Enabled := False;
+    ActionRemoveTextForHi.Enabled := False;
+    MenuItemSeFix.Enabled := False;
+  end;
   ActionDelay.Enabled := Enable;
   ActionDelaySynchToCursor.Enabled := Enable;
   ActionDelayMoveNegative200.Enabled := Enable;
@@ -4012,6 +4039,8 @@ procedure TMainForm.ActionSaveAsExecute(Sender: TObject);
 var InputExt : WideString;
     NewExt : WideString;
     Translator : TTranslator;
+    //SourceFileOperationCancel : TSourceFileOperationCancel;
+    //SEPathCommand : String; ConvertedSubFilePath : String;
 begin
   TntSaveDialog1.Filter :=
     'SRT files (*.srt)|*.SRT' + '|' +
@@ -4021,7 +4050,11 @@ begin
     'CUE files (*.cue)|*.CUE' + '|' +
     'TXT files (*.txt)|*.TXT' + '|' +
     'CSV files (*.csv)|*.CSV' + '|' +
+    'NetflixTimedText (*.dfxp)|*.DFXP' + '|' +
+    'YouTubeSbv (*.sbv)|*.SBV' + '|' +
+    'WebVTT (*.vtt)|*.VTT' + '|' +
     'All files (*.*)|*.*';
+
   TntSaveDialog1.FileName := ChangeFileExt(CurrentProject.SubtitlesFile,'');
   // Preselect format
   InputExt := WideLowerCase(WideExtractFileExt(CurrentProject.SubtitlesFile));
@@ -4031,6 +4064,12 @@ begin
     TntSaveDialog1.FilterIndex := 3
   else if (InputExt = '.ass') then
     TntSaveDialog1.FilterIndex := 4
+  else if (InputExt = '.dfxp') then
+    TntSaveDialog1.FilterIndex := 8
+  else if (InputExt = '.sbv') then
+    TntSaveDialog1.FilterIndex := 9
+  else if (InputExt = '.vtt') then
+    TntSaveDialog1.FilterIndex := 10
   else
     TntSaveDialog1.FilterIndex := 7;
 
@@ -4046,25 +4085,53 @@ begin
       5 : NewExt := '.cue';
       6 : NewExt := '.txt';
       7 : NewExt := '.csv';
+      8 : NewExt := '.dfxp';
+      9 : NewExt := '.sbv';
+      10 : NewExt := '.sbv';
     end;
     if (WideLowerCase(WideExtractFileExt(TntSaveDialog1.FileName)) <> '.srt') AND
        (WideLowerCase(WideExtractFileExt(TntSaveDialog1.FileName)) <> '.ssa') AND
        (WideLowerCase(WideExtractFileExt(TntSaveDialog1.FileName)) <> '.ass') AND
        (WideLowerCase(WideExtractFileExt(TntSaveDialog1.FileName)) <> '.cue') AND
        (WideLowerCase(WideExtractFileExt(TntSaveDialog1.FileName)) <> '.txt') AND
-       (WideLowerCase(WideExtractFileExt(TntSaveDialog1.FileName)) <> '.csv') Then
+       (WideLowerCase(WideExtractFileExt(TntSaveDialog1.FileName)) <> '.csv') AND
+       (WideLowerCase(WideExtractFileExt(TntSaveDialog1.FileName)) <> '.dfxp') AND
+       (WideLowerCase(WideExtractFileExt(TntSaveDialog1.FileName)) <> '.sbv') AND
+       (WideLowerCase(WideExtractFileExt(TntSaveDialog1.FileName)) <> '.vtt')Then
        begin
         TntSaveDialog1.FileName := TntSaveDialog1.FileName + NewExt;
        end;
     if NewExt <> '' then
       TntSaveDialog1.FileName := WideChangeFileExt(TntSaveDialog1.FileName, NewExt);
-    Translator := nil;
-    if (TntSaveDialog1.FilterIndex = 2) then
-      Translator := TTranslatorEmpty.Create;
-    SaveSubtitles(TntSaveDialog1.FileName, CurrentProject.SubtitlesFile,
-      CurrentProject.IsUTF8, False, Translator, False);
-    if (Assigned(Translator)) then
-      FreeAndNil(Translator);
+
+    if (TntSaveDialog1.FilterIndex < 8) then
+    begin
+      Translator := nil;
+      if (TntSaveDialog1.FilterIndex = 2) then
+        Translator := TTranslatorEmpty.Create;
+      SaveSubtitles(TntSaveDialog1.FileName, CurrentProject.SubtitlesFile,
+        CurrentProject.IsUTF8, False, Translator, False);
+      if (Assigned(Translator)) then
+        FreeAndNil(Translator);
+    end
+    else
+    begin
+      if (TntSaveDialog1.FilterIndex = 8) then
+      begin
+        ConvertSubToNetFlixFormat(CurrentProject.SubtitlesFile, TntSaveDialog1.FileName);
+      end
+      else if (TntSaveDialog1.FilterIndex = 9) then
+      begin
+        ConvertSubToYouTubeSbv(CurrentProject.SubtitlesFile, TntSaveDialog1.FileName);
+      end
+      else if (TntSaveDialog1.FilterIndex = 10) then
+      begin
+        ConvertSubToWebVTT(CurrentProject.SubtitlesFile, TntSaveDialog1.FileName);
+      end;
+    end;
+
+    if (TntSaveDialog1.FilterIndex >= 8) then exit;
+
     if MessageDlg('Do you want assign new subtitle to current project and reload it?', mtConfirmation,[mbYes,mbNo],0) = mrYes then
       begin
         CurrentProject.SubtitlesFile := TntSaveDialog1.FileName;
@@ -5687,7 +5754,7 @@ var
   UndoableMultiAddTask : TUndoableMultiAddTask;
   SRTParser : TSRTParser;
   SubList : TList;
-  SRTSub : TSRTSubtitle; 
+  SRTSub : TSRTSubtitle;
 begin
 
   TntOpenDialog1.Filter := 'Text files|*.TXT' + '|' +
@@ -5704,7 +5771,7 @@ begin
   TntOpenDialog1.Options := TntOpenDialog1.Options - [ofAllowMultiSelect];
 
   Source := nil;
-  
+
   g_WebRWSynchro.BeginWrite;
   try
     for fidx := 0 to TntOpenDialog1.Files.Count-1 do
@@ -13509,6 +13576,227 @@ procedure TMainForm.TimerSubtitlePreviewTimer(Sender: TObject);
 begin
  TimerSubtitlePreview.Enabled := False;
  CurrentProject.IsDirty := True;
+end;
+
+procedure TMainForm.ConvertSubToNetFlixFormat(Filename, NewFileName : WideString);
+var
+  SourceFileOperationCancel : TSourceFileOperationCancel;
+  SEPathCommand : String; ConvertedSubFilePath : String;
+begin
+
+  if not NetFramework4Installed() then
+  begin
+    MessageDlg('Selected format requires the .NET Framework 4 to be installed in the system', mtWarning,[mbOk],0);
+    exit;
+  end;
+
+  SEPathCommand := format('/convert "%s" netflixtimedtext /overwrite', [FileName]);
+
+  SourceFileOperationCancel := TSourceFileOperationCancel.Create(self);
+  SourceFileOperationCancel.SEPath := uppercase(ExtractFileDir(ParamStr(0))+'\SE\SubtitleEdit.exe');
+  SourceFileOperationCancel.SEPathCommand := SEPathCommand;
+  SourceFileOperationCancel.ExecuteSE();
+  SourceFileOperationCancel.Free;
+
+  ConvertedSubFilePath := ExtractFileDir(Filename)+'\'+ChangeFileExt(ExtractFileName(Filename),'')+'.DFXP';
+
+  If FileExists(ConvertedSubFilePath) = true then
+  begin
+    if ConvertedSubFilePath <> NewFileName then
+    begin
+      WideRenameFile(ConvertedSubFilePath, NewFileName);
+    end;
+  end;
+
+end;
+
+procedure TMainForm.ConvertFromSupportedFormat(Filename, NewFileName, Ext : WideString);
+var
+  SourceFileOperationCancel : TSourceFileOperationCancel;
+  SEPathCommand : String; ConvertedSubFilePath : String;
+begin
+
+  if Uppercase(Ext) = 'SRT' then
+  begin
+    SEPathCommand := format('/convert "%s" SubRip /overwrite', [FileName]);
+    ConvertedSubFilePath := ExtractFileDir(Filename)+'\'+ChangeFileExt(ExtractFileName(Filename),'')+'.SRT';
+  end
+  else if Uppercase(Ext) = 'SSA' then
+  begin
+    SEPathCommand := format('/convert "%s" SubStationAlpha /overwrite', [FileName]);
+    ConvertedSubFilePath := ExtractFileDir(Filename)+'\'+ChangeFileExt(ExtractFileName(Filename),'')+'.SSA';
+  end
+  else if Uppercase(Ext) = 'ASS' then
+  begin
+    SEPathCommand := format('/convert "%s" AdvancedSubStationAlpha /overwrite', [FileName]);
+    ConvertedSubFilePath := ExtractFileDir(Filename)+'\'+ChangeFileExt(ExtractFileName(Filename),'')+'.ASS';
+  end;
+
+  SourceFileOperationCancel := TSourceFileOperationCancel.Create(self);
+  SourceFileOperationCancel.SEPath := uppercase(ExtractFileDir(ParamStr(0))+'\SE\SubtitleEdit.exe');
+  SourceFileOperationCancel.SEPathCommand := SEPathCommand;
+  SourceFileOperationCancel.ExecuteSE();
+  SourceFileOperationCancel.Free;
+
+  If FileExists(ConvertedSubFilePath) = true then
+  begin
+    if ConvertedSubFilePath <> NewFileName then
+    begin
+      WideRenameFile(ConvertedSubFilePath, NewFileName);
+    end;
+  end;
+end;
+
+procedure TMainForm.ConvertSubToYouTubeSbv(Filename, NewFileName : WideString);
+var
+  SourceFileOperationCancel : TSourceFileOperationCancel;
+  SEPathCommand : String; ConvertedSubFilePath : String;
+begin
+
+  if not NetFramework4Installed() then
+  begin
+    MessageDlg('Selected format requires the .NET Framework 4 to be installed in the system', mtWarning,[mbOk],0);
+    exit;
+  end;
+
+  SEPathCommand := format('/convert "%s" YouTubesbv /overwrite', [FileName]);
+
+  SourceFileOperationCancel := TSourceFileOperationCancel.Create(self);
+  SourceFileOperationCancel.SEPath := uppercase(ExtractFileDir(ParamStr(0))+'\SE\SubtitleEdit.exe');
+  SourceFileOperationCancel.SEPathCommand := SEPathCommand;
+  SourceFileOperationCancel.ExecuteSE();
+  SourceFileOperationCancel.Free;
+
+  ConvertedSubFilePath := ExtractFileDir(Filename)+'\'+ChangeFileExt(ExtractFileName(Filename),'')+'.SBV';
+
+  If FileExists(ConvertedSubFilePath) = true then
+  begin
+    if ConvertedSubFilePath <> NewFileName then
+    begin
+      WideRenameFile(ConvertedSubFilePath, NewFileName);
+    end;
+  end;
+
+end;
+
+procedure TMainForm.ConvertSubTowebVTT(Filename, NewFileName : WideString);
+var
+  SourceFileOperationCancel : TSourceFileOperationCancel;
+  SEPathCommand : String; ConvertedSubFilePath : String;
+begin
+
+  if not NetFramework4Installed() then
+  begin
+    MessageDlg('Selected format requires the .NET Framework 4 to be installed in the system', mtWarning,[mbOk],0);
+    exit;
+  end;
+
+  SEPathCommand := format('/convert "%s" WebVTT /overwrite', [FileName]);
+
+  SourceFileOperationCancel := TSourceFileOperationCancel.Create(self);
+  SourceFileOperationCancel.SEPath := uppercase(ExtractFileDir(ParamStr(0))+'\SE\SubtitleEdit.exe');
+  SourceFileOperationCancel.SEPathCommand := SEPathCommand;
+  SourceFileOperationCancel.ExecuteSE();
+  SourceFileOperationCancel.Free;
+
+  ConvertedSubFilePath := ExtractFileDir(Filename)+'\'+ChangeFileExt(ExtractFileName(Filename),'')+'.VTT';
+
+  If FileExists(ConvertedSubFilePath) = true then
+  begin
+    if ConvertedSubFilePath <> NewFileName then
+    begin
+      WideRenameFile(ConvertedSubFilePath, NewFileName);
+    end;
+  end;
+
+end;
+
+procedure TMainForm.ActionSubtitleEdit(RemoveTextForHiExecute, FixCommonErrorsExecute : boolean);
+ var
+  SourceFileOperationCancel : TSourceFileOperationCancel;
+  SEPathCommand : String; ConvertedSubFilePath : String;
+  SubtitlesFileFolder, SubtitlesFileName, SubtitlesFileExt : String;
+  FFindFileAttrs : Integer;
+  FSearchRec : TSearchRecW;
+  ProjectType : String;
+begin
+
+  SubtitlesFileFolder := WideExtractFileDir(CurrentProject.SubtitlesFile);
+  SubtitlesFileName := WideChangeFileExt(WideExtractFileName(CurrentProject.SubtitlesFile),'');
+  SubtitlesFileExt := WideExtractFileExt(CurrentProject.SubtitlesFile);
+
+  if Uppercase(SubtitlesFileExt) = '.SRT' then
+  begin
+    ProjectType := 'SubRip';
+  end
+  else if Uppercase(SubtitlesFileExt) = '.SSA' then
+  begin
+    ProjectType := 'SubStationAlpha';
+  end
+  else if Uppercase(SubtitlesFileExt) = '.ASS' then
+  begin
+    ProjectType := 'AdvancedSubStationAlpha';
+  end;
+
+  if (RemoveTextForHiExecute = False) And (FixCommonErrorsExecute = True) then
+  begin
+    SEPathCommand := Format('/convert "%s" %s /fixcommonerrors', [CurrentProject.SubtitlesFile, ProjectType]);
+  end
+  else if (RemoveTextForHiExecute = True) And (FixCommonErrorsExecute = False) then
+  begin
+    SEPathCommand := Format('/convert "%s" %s /removetextforhi', [CurrentProject.SubtitlesFile, ProjectType]);
+  end
+  else if (RemoveTextForHiExecute = True) And (FixCommonErrorsExecute = True) then
+  begin
+    SEPathCommand := Format('/convert "%s" %s /removetextforhi /fixcommonerrors', [CurrentProject.SubtitlesFile, ProjectType]);
+  end;
+
+  SourceFileOperationCancel := TSourceFileOperationCancel.Create(self);
+  SourceFileOperationCancel.SEPath := uppercase(ExtractFileDir(ParamStr(0))+'\SE\SubtitleEdit.exe');
+  SourceFileOperationCancel.SEPathCommand := SEPathCommand;
+  SourceFileOperationCancel.ExecuteSE();
+  SourceFileOperationCancel.Free;
+
+  FFindFileAttrs := faAnyFile;
+  FSearchRec.FindHandle := INVALID_HANDLE_VALUE;
+  if (WideFindFirst(SubtitlesFileFolder + '\' + SubtitlesFileName + '.*' + SubtitlesFileExt, FFindFileAttrs, FSearchRec) <> 0) then
+  begin
+    WideFindClose(FSearchRec);
+  end
+  else
+  begin
+    DeleteFile(CurrentProject.SubtitlesFile);
+    WideRenameFile(SubtitlesFileFolder + '\' + FSearchRec.Name, CurrentProject.SubtitlesFile);
+
+    // ----- Load subtitles
+    ShowStatusBarMessage('Loading subtitles...');
+    LoadSubtitles(CurrentProject.SubtitlesFile,CurrentProject.IsUTF8);
+  end;
+
+end;
+
+procedure TMainForm.ActionFixCommonErrorsExecute(Sender: TObject);
+begin
+  if MessageDlg('Do you want to execute this fix for the current project and reload it?', mtConfirmation,[mbYes,mbNo],0) = mrYes then
+   begin
+    ActionSubtitleEdit(False, True);
+   end;
+end;
+
+procedure TMainForm.ActionRemoveTextForHiExecute(Sender: TObject);
+begin
+  if MessageDlg('Do you want to execute this fix for the current project and reload it?', mtConfirmation,[mbYes,mbNo],0) = mrYes then
+   begin
+    ActionSubtitleEdit(True, False);
+   end;
+end;
+
+procedure TMainForm.MenuItemSEFixClick(Sender: TObject);
+begin
+  if MessageDlg('Do you want to execute these fix for the current project and reload it?', mtConfirmation,[mbYes,mbNo],0) = mrYes then
+   begin
+    ActionSubtitleEdit(True, True);
+   end;
 end;
 
 end.

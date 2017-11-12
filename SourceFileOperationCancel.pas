@@ -43,17 +43,18 @@ type
   private
     { Private declarations }
     WAVDisplayer : TWAVDisplayer;
-    FlagCancelExecuteFFMpeg : Bool;
+    FlagCancelExecute : Bool;
     Procedure ExecuteFFMpeg(const Command: string; const Parameters: string; TotalDuration: LongWord; const Timeout: DWORD);
     Procedure ExecuteMkvMerge(const Command: string; const Parameters: string; const Timeout: DWORD);
   public
     { Public declarations }
     ExitForced : Boolean;
-    FFMpegPath, MkvMergePath : String;
-    FFMpegPathCommand, MkvMergePathCommand : String;
+    FFMpegPath, MkvMergePath, SEPath : String;
+    FFMpegPathCommand, MkvMergePathCommand, SEPathCommand : String;
     GeneratePeek, PeekFileGenerated : Boolean;
     OutputFile : String;
     DurationMs : LongWord;
+    Procedure ExecuteSE();
   end;
 
 implementation
@@ -84,7 +85,7 @@ var
   LoadWAVOK : Boolean;
 
 begin
-  FlagCancelExecuteFFMpeg := False;
+  FlagCancelExecute := False;
   PeekFileGenerated := False;
 
   Win32Check(CreatePipe(hReadStdout, hWriteStdout,
@@ -102,7 +103,7 @@ begin
     try
       while True do
       begin
-        WaitRes := WaitForSingleObject(pi.hProcess, Timeout);
+        WaitRes := WaitForSingleObject(pi.hProcess, 100);
         Win32Check(WaitRes <> WAIT_FAILED);
         while True do
         begin
@@ -131,7 +132,7 @@ begin
             end;
           Application.ProcessMessages;
         end;
-        if (WaitRes = WAIT_OBJECT_0) Or FlagCancelExecuteFFMpeg then
+        if (WaitRes = WAIT_OBJECT_0) Or FlagCancelExecute then
         begin
           break;
         end;
@@ -148,7 +149,7 @@ begin
   end;
 
   ExitForced := False;
-  if FlagCancelExecuteFFMpeg then
+  if FlagCancelExecute then
   begin
     ExitForced := True;
   end
@@ -192,7 +193,7 @@ var
   ProgressOutput : String;
 
 begin
-  FlagCancelExecuteFFMpeg := False;
+  FlagCancelExecute := False;
   ExitForced := False;
 
   Win32Check(CreatePipe(hReadStdout, hWriteStdout,
@@ -242,7 +243,7 @@ begin
             end;
           Application.ProcessMessages;
         end;
-        if (WaitRes = WAIT_OBJECT_0) Or FlagCancelExecuteFFMpeg then
+        if (WaitRes = WAIT_OBJECT_0) Or FlagCancelExecute then
         begin
           FFMpegOutputProgressBar.Visible := False;
           break;
@@ -259,7 +260,84 @@ begin
     CloseHandle(hWriteStdout);
   end;
   ExitForced := False;
-  if FlagCancelExecuteFFMpeg then
+  if FlagCancelExecute then
+  begin
+    ExitForced := True;
+  end;
+  Close;
+end;
+
+Procedure TSourceFileOperationCancel.ExecuteSE();
+
+const
+  InheritHandleSecurityAttributes: TSecurityAttributes =
+    (nLength: SizeOf(TSecurityAttributes); bInheritHandle: True);
+
+var
+  hReadStdout, hWriteStdout: THandle;
+  si: TStartupInfo;
+  pi: TProcessInformation;
+  WaitRes, BytesRead: DWORD;
+  FileSize: Int64;
+  AnsiBuffer: array [0 .. 1024 - 1] of AnsiChar;
+  ExitForced : Boolean;
+  Progress : Integer;
+  ProgressOutput : String;
+
+begin
+  FlagCancelExecute := False;
+  ExitForced := False;
+
+  Win32Check(CreatePipe(hReadStdout, hWriteStdout,
+    @InheritHandleSecurityAttributes, 0));
+  try
+    //si := Default (TStartupInfo);
+    FillChar(si, SizeOf(TStartupInfo), 0);
+    si.lpTitle := PChar('SubtitleEdit');
+    si.cb := SizeOf(TStartupInfo);
+    si.dwFlags := STARTF_USESTDHANDLES;
+    si.hStdOutput := hWriteStdout;
+    si.hStdError := hWriteStdout;
+    Win32Check(CreateProcess(nil, PChar(SEPath + ' ' + SEPathCommand), nil, nil,
+      True, CREATE_NO_WINDOW, nil, nil, si, pi));
+    try
+      while True do
+      begin
+        WaitRes := WaitForSingleObject(pi.hProcess, 100);
+        Win32Check(WaitRes <> WAIT_FAILED);
+        while True do
+        begin
+          Win32Check(GetFileSizeEx(hReadStdout, FileSize));
+          if FileSize = 0 then
+          begin
+            break;
+          end;
+          Win32Check(ReadFile(hReadStdout, AnsiBuffer, SizeOf(AnsiBuffer) - 1,
+            BytesRead, nil));
+          if BytesRead = 0 then
+          begin
+            break;
+          end;
+          Application.ProcessMessages;
+        end;
+        if (WaitRes = WAIT_OBJECT_0) Or FlagCancelExecute then
+        begin
+          FFMpegOutputProgressBar.Visible := False;
+          break;
+        end;
+      end;
+    finally
+      TerminateProcess(pi.hProcess,0);
+      TerminateProcess(pi.hThread,0);
+      CloseHandle(pi.hProcess);
+      CloseHandle(pi.hThread);
+    end;
+  finally
+    CloseHandle(hReadStdout);
+    CloseHandle(hWriteStdout);
+  end;
+  ExitForced := False;
+  if FlagCancelExecute then
   begin
     ExitForced := True;
   end;
@@ -278,7 +356,7 @@ end;
 procedure TSourceFileOperationCancel.VideoSourceOperationExecuteCancelClick(
   Sender: TObject);
 begin
-  FlagCancelExecuteFFMpeg := True;
+  FlagCancelExecute := True;
 end;
 
 procedure TSourceFileOperationCancel.FormClose(Sender: TObject;
