@@ -3,7 +3,7 @@
 
 #define MyAppName "VisualSubSync Enhanced"
 #define MyAppDefaultDir "VisualSubSyncEnh"
-#define MyAppVersion "1.2.26.0"
+#define MyAppVersion "1.2.27.0"
 #define MyAppPublisher "VisualSubSync Team"
 #define MyAppURL "https://red5goahead.github.io/VisualSubSync-Enhanced/"
 #define MyAppExeName "VisualSubSyncEnh.exe"
@@ -42,8 +42,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "vss-innosetup\vss-release\VisualSubSyncEnh.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "vss-innosetup\vss-release\SE\SubtitleEdit.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "vss-innosetup\vss-release\SE\Settings.xml"; DestDir: "{app}"
+Source: "vss-innosetup\vss-release\SE\SubtitleEdit.exe"; DestDir: "{app}\SE"; Flags: ignoreversion
+Source: "vss-innosetup\vss-release\SE\Settings.xml"; DestDir: "{app}\SE"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\ICSharpCode.SharpZipLib.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\js3215R.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\libhunspell.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -61,6 +61,7 @@ Source: "vss-innosetup\vss-release\codecLav\LAVVideo.ax"; DestDir: "{app}\codecL
 Source: "vss-innosetup\vss-release\codecLav\libbluray.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\codecLav\swscale-lav-4.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\codecLav\LAVFilters.Dependencies.manifest"; DestDir: "{app}\codecLav"; Flags: ignoreversion
+Source: "vss-innosetup\vss-release\jsplugin\greek_typo.js"; DestDir: "{app}\jsplugin"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\jsplugin\duration.js"; DestDir: "{app}\jsplugin"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\jsplugin\itasa_typos_kickaha.js"; DestDir: "{app}\jsplugin"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\jsplugin\itasa_zplit_kickaha.js"; DestDir: "{app}\jsplugin"; Flags: ignoreversion
@@ -97,6 +98,11 @@ Source: "vss-innosetup\vss-release\dict\th_it_IT_v2.idx"; DestDir: "{app}\dict";
 Source: "vss-innosetup\vss-release\dict\th_it_IT_v2m.xml"; DestDir: "{app}\dict"; Flags: IgnoreVersion
 Source: "vss-innosetup\vss-release\dict\th_it_IT_v2s.xml"; DestDir: "{app}\dict"; Flags: IgnoreVersion
 Source: "vss-innosetup\vss-release\dict\th_it_IT_v2w.xml"; DestDir: "{app}\dict"; Flags: IgnoreVersion
+Source: "vss-innosetup\vss-release\dict\th_el_GR_v2.dat"; DestDir: "{app}\dict"; Flags: IgnoreVersion
+Source: "vss-innosetup\vss-release\dict\th_el_GR_v2.idx"; DestDir: "{app}\dict"; Flags: IgnoreVersion
+Source: "vss-innosetup\vss-release\dict\th_el_GR_v2m.xml"; DestDir: "{app}\dict"; Flags: IgnoreVersion
+Source: "vss-innosetup\vss-release\dict\th_el_GR_v2s.xml"; DestDir: "{app}\dict"; Flags: IgnoreVersion
+Source: "vss-innosetup\vss-release\dict\th_el_GR_v2w.xml"; DestDir: "{app}\dict"; Flags: IgnoreVersion
 Source: "vss-innosetup\vss-release\dict\en_US.aff"; DestDir: "{app}\dict"; Flags: IgnoreVersion
 Source: "vss-innosetup\vss-release\dict\en_US.dic"; DestDir: "{app}\dict"; Flags: IgnoreVersion
 Source: "vss-innosetup\vss-release\dict\en_GB.aff"; DestDir: "{app}\dict"; Flags: IgnoreVersion

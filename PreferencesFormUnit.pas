@@ -958,6 +958,8 @@ begin
   begin
     JSPluginInfo := TJSPluginInfo.Create;
     JSPluginInfo.Enabled := True;
+    // plugin added in installation (default)
+    if JSPlugin.Name = 'Greek typography' then JSPluginInfo.Enabled := False;
     JSPluginInfo.Name := JSPlugin.Name;
     JSPluginInfo.Description := JSPlugin.Description;
     JSPluginInfo.Color := JSColorToTColor(JSPlugin.Color);
@@ -1198,6 +1200,9 @@ begin
 
   // Mod String
   IniFile.WriteString('Misc','ModString',ModString);
+
+  // default for custom JS
+  //IniFile.WriteInteger('Greek typography','Enabled', 0);
 
 end;
 
