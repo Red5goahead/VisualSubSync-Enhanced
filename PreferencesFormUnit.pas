@@ -1240,6 +1240,7 @@ begin
   ForceNoDesktopComposition := IniFile.ReadBool('Misc','ForceNoDesktopComposition',ForceNoDesktopComposition);
   PreferVmr7VideoRenderer := IniFile.ReadBool('Misc','PreferVrm7VideoRenderer',PreferVmr7VideoRenderer);
   PreferVmr9VideoRenderer := IniFile.ReadBool('Misc','PreferVrm9VideoRenderer',PreferVmr9VideoRenderer);
+  PreferVmr9VideoRenderer := True;
   UseReclockAudioRenderer := IniFile.ReadBool('Misc','UseReclockAudioRenderer',UseReclockAudioRenderer);
   SpaceKeyMoveAfterSmartButtonIsUsed := IniFile.ReadInteger('Misc','SpaceKeyMoveAfterSmartButtonIsUsed',SpaceKeyMoveAfterSmartButtonIsUsed);
   SubtitlePreviewDelay := IniFile.ReadInteger('Misc','SubtitlePreviewDelay',SubtitlePreviewDelay);
@@ -2473,7 +2474,7 @@ end;
 
 procedure TPreferencesForm.ChkUseInternalFiltersClick(Sender: TObject);
 begin
- ChkPreferVmr7VideoRenderer.Enabled := True;
+ //ChkPreferVmr7VideoRenderer.Enabled := True;
  ChkPreferVmr9VideoRenderer.Enabled := True;
  ChkDefaultInternalCodec.Enabled := True;
  ChkAlternativeInternalCodec.Enabled := True;

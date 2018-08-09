@@ -28,7 +28,7 @@ object PreferencesForm: TPreferencesForm
     Top = 0
     Width = 746
     Height = 507
-    ActivePage = tsGeneral
+    ActivePage = TsPlayback
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTntTabSheet
@@ -635,6 +635,7 @@ object PreferencesForm: TPreferencesForm
             Width = 170
             Height = 17
             Caption = 'Video Mixing Filter 7 (VMR-7)'
+            Enabled = False
             TabOrder = 0
           end
         end

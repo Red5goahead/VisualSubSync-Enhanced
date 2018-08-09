@@ -13104,6 +13104,8 @@ begin
               // eccezioni
               if (AWordAlt = 'da') then Continue;
 
+              if (LowerCase(AWordAlt) = 'di') then Continue;
+
               // ì
               if Copy(AWordAlt,Length(AWord)-1,1) = 'i' then
                 if FSpellChecker.Spell(Copy(AWordAlt,1,Length(AWordAlt)-1)+'ì') then
