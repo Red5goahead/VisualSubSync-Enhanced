@@ -1722,7 +1722,7 @@ end;
 
 procedure TMainForm.LoadColumnsSettings(IniFile : TIniFile);
 var Column : TVirtualTreeColumn;
-    i, NewPos, NewWidth : Integer;
+    i, y, z, NewPos, NewWidth : Integer;
     MenuItem : TTntMenuItem;
     ColumnsPositionList, ColumnsWidthList : TStrings;
 
@@ -1737,15 +1737,23 @@ begin
   ColumnsWidthList := TStringList.Create;
   ColumnsWidthList.CommaText := StartupColumnsWidth;
   HiddenByUserCoreColumnsList.CommaText := StartupHiddenByUserCoreColumns;
-  for i := 0 to vtvSubsList.Header.Columns.Count-1 do
+  for z := 0 to vtvSubsList.Header.Columns.Count-1 do
   begin
+    //load the column based on the order in the INI file
+    //to prevent misplacement
+    for i := 0 to ColumnsPositionList.Count-1 do
+    begin
+      y := StrToIntDef(ColumnsPositionList[i], MaxInt);
+      if y = z then break;
+    end;
+
     Column := vtvSubsList.Header.Columns.Items[i];
-    if (i < ColumnsPositionList.Count) then
+    if (z < ColumnsPositionList.Count) then
     begin
       NewPos := StrToIntDef(ColumnsPositionList[i], MaxInt);
       Column.Position := NewPos;
     end;
-    if (i < ColumnsWidthList.Count) then
+    if (z < ColumnsWidthList.Count) then
     begin
       NewWidth := StrToIntDef(ColumnsWidthList[i], Column.Width);
       Column.Width := NewWidth;
