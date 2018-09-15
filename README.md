@@ -1,8 +1,7 @@
 # VisualSubSync-Enhanced
 The Visualsubsync enhanced version
 
-The natural enhanced extension of the awesome ToffParis project at https://sourceforge.net/projects/visualsubsync/ developed 
-for italiansubs.net  community (no traslation, the whole project is in English).
+The natural enhanced extension of the awesome ToffParis project at https://sourceforge.net/projects/visualsubsync/
 
 It includes new functions like a complete internal filter graph support via mpc-home cinema and lav codecs, online dictionary 
 automatic search (Italian language), new tools for resync, a new tool for progressive desync issues, new updated vsfilter for 
