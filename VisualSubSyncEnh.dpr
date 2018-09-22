@@ -60,8 +60,6 @@ uses
   Diff in 'Diff.pas',
   DiffSubsFormUnit in 'DiffSubsFormUnit.pas' {DiffSubsForm},
   HashUnit in 'HashUnit.pas',
-  SendToItasaFormUnit in 'SendToItasaFormUnit.pas' {SendToItasaForm},
-  SendToItasaMiscUnit in 'SendToItasaMiscUnit.pas',
   blcksock in 'ThirdParty\Synapse\blcksock.pas',
   httpsend in 'ThirdParty\Synapse\httpsend.pas',
   SubtitleTimingFormUnit in 'SubtitleTimingFormUnit.pas',
@@ -89,7 +87,6 @@ begin
   Application.CreateForm(TDetachedVideoForm, DetachedVideoForm);
   Application.CreateForm(TResynchToolForm, ResynchToolForm);
   Application.CreateForm(TDiffSubsForm, DiffSubsForm);
-  Application.CreateForm(TSendToItasaForm, SendToItasaForm);
   MainForm.InitGeneralJSPlugin;
   MainForm.LoadSettings;
   MainForm.FinishLoadSettings;

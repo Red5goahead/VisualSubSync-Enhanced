@@ -125,7 +125,7 @@ object MainForm: TMainForm
   end
   object StatusBarMainPanel: TPanel
     Left = 0
-    Top = 677
+    Top = 678
     Width = 1067
     Height = 19
     Align = alBottom
@@ -156,7 +156,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 229
     Width = 1067
-    Height = 448
+    Height = 449
     ActivePage = TabSheetSub
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
@@ -171,7 +171,7 @@ object MainForm: TMainForm
       Caption = 'Subtitle'
       object Splitter1: TSplitter
         Left = 0
-        Top = 312
+        Top = 313
         Width = 1059
         Height = 4
         Cursor = crVSplit
@@ -187,7 +187,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 1059
-        Height = 312
+        Height = 313
         Align = alClient
         BevelOuter = bvNone
         FullRepaint = False
@@ -196,7 +196,7 @@ object MainForm: TMainForm
           Left = 0
           Top = 88
           Width = 1059
-          Height = 224
+          Height = 225
           Align = alClient
           Colors.UnfocusedSelectionColor = clGradientInactiveCaption
           Font.Charset = DEFAULT_CHARSET
@@ -1056,51 +1056,6 @@ object MainForm: TMainForm
             ParentShowHint = False
             ShowHint = True
           end
-          object bttSendToItasa: TSpeedButton
-            Left = 719
-            Top = 10
-            Width = 25
-            Height = 25
-            Hint = 'Send To Itasa'
-            Action = ActionSendToItasa
-            Glyph.Data = {
-              36040000424D3604000000000000360000002800000010000000100000000100
-              2000000000000004000000000000000000000000000000000000FF00FF00FF00
-              FF00FF00FF00FF00FF00FF00FF00E3D0A300C7A24800BD922B00C59E4000DEC8
-              9300FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-              FF00FF00FF00E1CC9900BA8A1400B6830500B8881000C0952B00C2983300BC8E
-              1C00B8860C00DAC08100FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-              FF00DABF7900BA860700C59B3100EBDDBB00FF00FF00FF00FF00FF00FF00FF00
-              FF00FF00FF00D5B66A00D1B05B00FF00FF00FF00FF00FF00FF00FF00FF00EBDB
-              B200BE8B0600DABF7500FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-              FF00FF00FF00FF00FF00FF00FF00E3CE9600FF00FF00FF00FF00FF00FF00C798
-              1600DEC27600FF00FF00FF00FF00FF00FF00CCA12C00CEA53500E5D09600ECDD
-              B400FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00D0A7
-              2C00FF00FF00FF00FF00E3CA8100CC9F1B00FF00FF00FF00FF00FF00FF00FF00
-              FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00E3C87500EFE1
-              B400FF00FF00EFDFB000CFA11500FF00FF00FF00FF00FF00FF00F1E4BB00FF00
-              FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00DEBB4B00FF00
-              FF00FF00FF00D7AC2100EDDBA000FF00FF00FF00FF00E6CB7500FF00FF00FF00
-              FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00E7CA6A00FF00
-              FF00FF00FF00DAAC1500FF00FF00FF00FF00F1E0A600FF00FF00FF00FF00FF00
-              FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00F4E3AB00FF00
-              FF00F5E8BA00E6C14300FF00FF00FF00FF00E4BD3A00FF00FF00FF00FF00FF00
-              FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-              FF00F7EABC00EDD06800FF00FF00FF00FF00E3B51200FF00FF00FF00FF00F3DF
-              9800FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-              FF00FF00FF00EECD5100FF00FF00FF00FF00E9BE1D00FF00FF00FF00FF00F0D5
-              6E00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-              FF00FF00FF00F1CF5100FF00FF00FF00FF00F3D86F00FF00FF00FF00FF00FF00
-              FF00F0CE4A00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-              FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00F3CE4000FF00FF00FF00
-              FF00FF00FF00F7E29000F6DB7200F8E69F00FF00FF00FF00FF00FF00FF00FF00
-              FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00F7D96200FF00
-              FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-              FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-              FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00}
-            ParentShowHint = False
-            ShowHint = True
-          end
           object tbVolume: TTntTrackBar
             Left = -4
             Top = 61
@@ -1943,7 +1898,7 @@ object MainForm: TMainForm
       end
       object PanelBottom: TPanel
         Left = 0
-        Top = 316
+        Top = 317
         Width = 1059
         Height = 104
         Align = alBottom
@@ -2102,7 +2057,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 1059
-        Height = 420
+        Height = 421
         Align = alClient
         ReadOnly = True
         ScrollBars = ssVertical
@@ -3602,11 +3557,6 @@ object MainForm: TMainForm
       Caption = 'Show Text<->VO/Other diffs'
       ImageIndex = 27
       OnExecute = ActionDiffSubFilesExecute
-    end
-    object ActionSendToItasa: TTntAction
-      Caption = 'Send To ItaSA'
-      ImageIndex = 52
-      OnExecute = ActionSendToItasaExecute
     end
     object ActionZipSubtitle: TTntAction
       Caption = 'Zip Subtitle...'
