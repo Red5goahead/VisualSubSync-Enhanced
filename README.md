@@ -23,3 +23,5 @@ It is also on **Windows Universal Platform** as Desktop Bridge application.
 Visit Microsoft Store here https://www.microsoft.com/store/apps/9nblggh4401s
 
 Please, read the privacy policy [here](http://myapppolicy.com/app/visualsubsync_enhanced)
+
+t.me/red5goahead
