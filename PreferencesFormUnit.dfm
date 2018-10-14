@@ -28,7 +28,7 @@ object PreferencesForm: TPreferencesForm
     Top = 0
     Width = 746
     Height = 507
-    ActivePage = TsPlayback
+    ActivePage = tsGeneral
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTntTabSheet
@@ -132,8 +132,6 @@ object PreferencesForm: TPreferencesForm
           Caption = 'Select path...'
           Enabled = False
           OnClick = LblDefaultPathClick
-          OnMouseEnter = LabelZipPathMouseEnter
-          OnMouseLeave = LabelZipPathMouseLeave
         end
         object chkAssociateExtVSSPRJ: TCheckBox
           Left = 16
@@ -679,12 +677,12 @@ object PreferencesForm: TPreferencesForm
         Left = 0
         Top = 0
         Width = 738
-        Height = 479
+        Height = 480
         Align = alClient
         TabOrder = 0
         DesignSize = (
           738
-          479)
+          480)
         object TntLabel8: TTntLabel
           Left = 16
           Top = 164
@@ -829,7 +827,7 @@ object PreferencesForm: TPreferencesForm
       Caption = 'Error checking'
       object Bevel7: TBevel
         Left = 0
-        Top = 267
+        Top = 268
         Width = 730
         Height = 4
         Align = alBottom
@@ -837,7 +835,7 @@ object PreferencesForm: TPreferencesForm
       end
       object Bevel8: TBevel
         Left = 0
-        Top = 263
+        Top = 264
         Width = 730
         Height = 4
         Align = alBottom
@@ -847,7 +845,7 @@ object PreferencesForm: TPreferencesForm
         Left = 0
         Top = 0
         Width = 730
-        Height = 263
+        Height = 264
         OnClickCheck = ListErrorCheckingClickCheck
         Align = alClient
         ItemHeight = 13
@@ -858,7 +856,7 @@ object PreferencesForm: TPreferencesForm
       end
       object Panel2: TPanel
         Left = 0
-        Top = 271
+        Top = 272
         Width = 730
         Height = 88
         Align = alBottom
@@ -926,7 +924,7 @@ object PreferencesForm: TPreferencesForm
       end
       object ListPluginParam: TVirtualStringTree
         Left = 0
-        Top = 359
+        Top = 360
         Width = 730
         Height = 112
         Align = alBottom
@@ -964,7 +962,7 @@ object PreferencesForm: TPreferencesForm
           item
             Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
             Position = 1
-            Width = 298
+            Width = 294
             WideText = 'Value'
           end
           item
@@ -980,7 +978,7 @@ object PreferencesForm: TPreferencesForm
       Caption = 'Hotkeys'
       object Bevel9: TBevel
         Left = 0
-        Top = 432
+        Top = 433
         Width = 730
         Height = 4
         Align = alBottom
@@ -990,7 +988,7 @@ object PreferencesForm: TPreferencesForm
         Left = 0
         Top = 0
         Width = 730
-        Height = 432
+        Height = 433
         Align = alClient
         Columns = <
           item
@@ -1017,7 +1015,7 @@ object PreferencesForm: TPreferencesForm
       end
       object PanelHotKey: TPanel
         Left = 0
-        Top = 436
+        Top = 437
         Width = 730
         Height = 35
         Align = alBottom
@@ -1227,7 +1225,7 @@ object PreferencesForm: TPreferencesForm
         Left = 0
         Top = 125
         Width = 730
-        Height = 346
+        Height = 347
         Align = alClient
         Caption = ' Misc : '
         TabOrder = 1
@@ -1340,13 +1338,13 @@ object PreferencesForm: TPreferencesForm
         Left = 0
         Top = 185
         Width = 730
-        Height = 286
+        Height = 287
         Align = alClient
         Caption = ' Subtitles video : '
         TabOrder = 2
         DesignSize = (
           730
-          286)
+          287)
         object TntLabel25: TTntLabel
           Left = 16
           Top = 128
@@ -1508,7 +1506,7 @@ object PreferencesForm: TPreferencesForm
         Left = 0
         Top = 0
         Width = 730
-        Height = 471
+        Height = 472
         Align = alClient
         TabOrder = 0
         object chkEnableSubCreationWithSpaceKey: TCheckBox
@@ -1738,7 +1736,7 @@ object PreferencesForm: TPreferencesForm
         Left = 0
         Top = 245
         Width = 730
-        Height = 226
+        Height = 227
         Align = alClient
         Caption = 'WavDisplayer Colors'
         TabOrder = 2
@@ -1844,6 +1842,23 @@ object PreferencesForm: TPreferencesForm
           Shape = stRoundSquare
           OnMouseDown = ShapeWCMouseDown
         end
+        object TntLabel15: TTntLabel
+          Left = 20
+          Top = 85
+          Width = 80
+          Height = 14
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Scene-change:'
+        end
+        object ShapeSC: TTntShape
+          Left = 105
+          Top = 83
+          Width = 17
+          Height = 17
+          Shape = stRoundSquare
+          OnMouseDown = ShapeWCMouseDown
+        end
         object ButtonDefaultWavColours: TTntButton
           Left = 344
           Top = 24
@@ -1861,7 +1876,7 @@ object PreferencesForm: TPreferencesForm
         Left = 0
         Top = 0
         Width = 738
-        Height = 479
+        Height = 480
         Align = alClient
         TabOrder = 0
         object ChkDesynchToolsAutoReset: TCheckBox
@@ -2029,309 +2044,10 @@ object PreferencesForm: TPreferencesForm
         TabOrder = 1
       end
     end
-    object tsItasa: TTntTabSheet
-      Caption = 'Italiansubs'
-      object TntGroupBox8: TTntGroupBox
-        Left = 0
-        Top = 0
-        Width = 738
-        Height = 479
-        Align = alClient
-        TabOrder = 0
-        object TntLabel15: TTntLabel
-          Left = 25
-          Top = 45
-          Width = 51
-          Height = 13
-          Alignment = taRightJustify
-          Caption = 'Username:'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentFont = False
-        end
-        object TntLabel16: TTntLabel
-          Left = 25
-          Top = 75
-          Width = 49
-          Height = 13
-          Alignment = taRightJustify
-          Caption = 'Password:'
-        end
-        object TntLabel17: TTntLabel
-          Left = 24
-          Top = 16
-          Width = 385
-          Height = 15
-          Caption = 
-            'Username and password used to connect to italiansubs.net communi' +
-            'ty'
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -12
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentFont = False
-        end
-        object TntSpeedButtonCheckLogin: TTntSpeedButton
-          Left = 270
-          Top = 69
-          Width = 103
-          Height = 22
-          Caption = 'Test Login && Unlock'
-          OnClick = TntSpeedButtonCheckLoginClick
-        end
-        object ImgLoginKO: TTntImage
-          Left = 376
-          Top = 74
-          Width = 16
-          Height = 16
-          AutoSize = True
-          Picture.Data = {
-            07544269746D617036050000424D360500000000000036040000280000001000
-            000010000000010008000000000000010000BB010000BB010000000100000000
-            000000000000000080000080000000808000800000008000800080800000C0C0
-            C000C0DCC000F0CAA6000020400000206000002080000020A0000020C0000020
-            E00000400000004020000040400000406000004080000040A0000040C0000040
-            E00000600000006020000060400000606000006080000060A0000060C0000060
-            E00000800000008020000080400000806000008080000080A0000080C0000080
-            E00000A0000000A0200000A0400000A0600000A0800000A0A00000A0C00000A0
-            E00000C0000000C0200000C0400000C0600000C0800000C0A00000C0C00000C0
-            E00000E0000000E0200000E0400000E0600000E0800000E0A00000E0C00000E0
-            E00040000000400020004000400040006000400080004000A0004000C0004000
-            E00040200000402020004020400040206000402080004020A0004020C0004020
-            E00040400000404020004040400040406000404080004040A0004040C0004040
-            E00040600000406020004060400040606000406080004060A0004060C0004060
-            E00040800000408020004080400040806000408080004080A0004080C0004080
-            E00040A0000040A0200040A0400040A0600040A0800040A0A00040A0C00040A0
-            E00040C0000040C0200040C0400040C0600040C0800040C0A00040C0C00040C0
-            E00040E0000040E0200040E0400040E0600040E0800040E0A00040E0C00040E0
-            E00080000000800020008000400080006000800080008000A0008000C0008000
-            E00080200000802020008020400080206000802080008020A0008020C0008020
-            E00080400000804020008040400080406000804080008040A0008040C0008040
-            E00080600000806020008060400080606000806080008060A0008060C0008060
-            E00080800000808020008080400080806000808080008080A0008080C0008080
-            E00080A0000080A0200080A0400080A0600080A0800080A0A00080A0C00080A0
-            E00080C0000080C0200080C0400080C0600080C0800080C0A00080C0C00080C0
-            E00080E0000080E0200080E0400080E0600080E0800080E0A00080E0C00080E0
-            E000C0000000C0002000C0004000C0006000C0008000C000A000C000C000C000
-            E000C0200000C0202000C0204000C0206000C0208000C020A000C020C000C020
-            E000C0400000C0402000C0404000C0406000C0408000C040A000C040C000C040
-            E000C0600000C0602000C0604000C0606000C0608000C060A000C060C000C060
-            E000C0800000C0802000C0804000C0806000C0808000C080A000C080C000C080
-            E000C0A00000C0A02000C0A04000C0A06000C0A08000C0A0A000C0A0C000C0A0
-            E000C0C00000C0C02000C0C04000C0C06000C0C08000C0C0A000F0FBFF00A4A0
-            A000808080000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
-            FF00FDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFD
-            FDFDFDFDFD010C01FDFDFDFD015601FDFDFDFDFD010D574C01FDFD014C570D01
-            FDFDFDFD0C4FF90F0B01014B0FF9574DFDFDFDFD010D0FF90F0B0B0FF90F0D01
-            FDFDFDFDFD010D0F0F0E0E0F0F0D01FDFDFDFDFDFDFD010D0E0E0E0E0D01FDFD
-            FDFDFDFDFDFD010D565656560D01FDFDFDFDFDFDFD010D56565656569F5601FD
-            FDFDFDFD010E5F5F9F55545F5F5F5601FDFDFDFD0D9F9FA756010156A79FA70D
-            FDFDFDFD0D56A75E0DFDFD0D56A7560DFDFDFDFDFD0D5E0DFDFDFDFD0DA70DFD
-            FDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFD
-            FDFD}
-          Transparent = True
-          Visible = False
-        end
-        object ImgLoginOK: TTntImage
-          Left = 376
-          Top = 71
-          Width = 16
-          Height = 16
-          AutoSize = True
-          Picture.Data = {
-            07544269746D617036050000424D360500000000000036040000280000001000
-            000010000000010008000000000000010000BB010000BB010000000100000000
-            000000000000000080000080000000808000800000008000800080800000C0C0
-            C000C0DCC000F0CAA6000020400000206000002080000020A0000020C0000020
-            E00000400000004020000040400000406000004080000040A0000040C0000040
-            E00000600000006020000060400000606000006080000060A0000060C0000060
-            E00000800000008020000080400000806000008080000080A0000080C0000080
-            E00000A0000000A0200000A0400000A0600000A0800000A0A00000A0C00000A0
-            E00000C0000000C0200000C0400000C0600000C0800000C0A00000C0C00000C0
-            E00000E0000000E0200000E0400000E0600000E0800000E0A00000E0C00000E0
-            E00040000000400020004000400040006000400080004000A0004000C0004000
-            E00040200000402020004020400040206000402080004020A0004020C0004020
-            E00040400000404020004040400040406000404080004040A0004040C0004040
-            E00040600000406020004060400040606000406080004060A0004060C0004060
-            E00040800000408020004080400040806000408080004080A0004080C0004080
-            E00040A0000040A0200040A0400040A0600040A0800040A0A00040A0C00040A0
-            E00040C0000040C0200040C0400040C0600040C0800040C0A00040C0C00040C0
-            E00040E0000040E0200040E0400040E0600040E0800040E0A00040E0C00040E0
-            E00080000000800020008000400080006000800080008000A0008000C0008000
-            E00080200000802020008020400080206000802080008020A0008020C0008020
-            E00080400000804020008040400080406000804080008040A0008040C0008040
-            E00080600000806020008060400080606000806080008060A0008060C0008060
-            E00080800000808020008080400080806000808080008080A0008080C0008080
-            E00080A0000080A0200080A0400080A0600080A0800080A0A00080A0C00080A0
-            E00080C0000080C0200080C0400080C0600080C0800080C0A00080C0C00080C0
-            E00080E0000080E0200080E0400080E0600080E0800080E0A00080E0C00080E0
-            E000C0000000C0002000C0004000C0006000C0008000C000A000C000C000C000
-            E000C0200000C0202000C0204000C0206000C0208000C020A000C020C000C020
-            E000C0400000C0402000C0404000C0406000C0408000C040A000C040C000C040
-            E000C0600000C0602000C0604000C0606000C0608000C060A000C060C000C060
-            E000C0800000C0802000C0804000C0806000C0808000C080A000C080C000C080
-            E000C0A00000C0A02000C0A04000C0A06000C0A08000C0A0A000C0A0C000C0A0
-            E000C0C00000C0C02000C0C04000C0C06000C0C08000C0C0A000F0FBFF00A4A0
-            A000808080000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
-            FF00FDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFD
-            FDFDFDFDFDFDFD181910FDFDFDFDFDFDFDFDFDFDFDFD10106A1910FDFDFDFDFD
-            FDFDFDFDFD1010623B331910FDFDFDFDFDFDFDFD1818623232322A1910FDFDFD
-            FDFDFD02186273737373736A1910FDFDFDFDFD1862737373626B7373741910FD
-            FDFDFD21B3B4B46210196BB4B4AB1910FDFDFD1862B46218FD18196BB4B4AB18
-            18FDFDFD186218FDFDFD1018ABB5B4AB18FDFDFDFD02FDFDFDFDFD1818ABBDB4
-            18FDFDFDFDFDFDFDFDFDFDFD1018B41818FDFDFDFDFDFDFDFDFDFDFDFD101810
-            FDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFD
-            FDFD}
-          Transparent = True
-          Visible = False
-        end
-        object TntEditUsername: TTntEdit
-          Left = 85
-          Top = 41
-          Width = 180
-          Height = 21
-          TabOrder = 0
-        end
-        object TntEditPasswd: TTntEdit
-          Left = 85
-          Top = 71
-          Width = 180
-          Height = 21
-          TabOrder = 1
-          PasswordCharW = '*'
-        end
-        object ItaliansubsOptionsGroupBox: TGroupBox
-          Left = 24
-          Top = 104
-          Width = 473
-          Height = 241
-          Caption = 'Italiansubs options'
-          TabOrder = 2
-          Visible = False
-          object TntLabel18: TTntLabel
-            Left = 4
-            Top = 20
-            Width = 261
-            Height = 13
-            Alignment = taRightJustify
-            AutoSize = False
-            Caption = 'Message to use when sending the subtitle to the topic'
-          end
-          object LabelZipPath: TTntLabel
-            Left = 118
-            Top = 185
-            Width = 239
-            Height = 13
-            AutoSize = False
-            Caption = 'Select path...'
-            Enabled = False
-            ParentShowHint = False
-            ShowHint = True
-            OnClick = LabelZipPathClick
-            OnMouseEnter = LabelZipPathMouseEnter
-            OnMouseLeave = LabelZipPathMouseLeave
-          end
-          object TntMemoMsg: TTntMemo
-            Left = 12
-            Top = 39
-            Width = 252
-            Height = 77
-            TabOrder = 0
-          end
-          object ButtonBold: TTntButton
-            Left = 268
-            Top = 39
-            Width = 21
-            Height = 21
-            Caption = 'B'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -11
-            Font.Name = 'Microsoft Sans Serif'
-            Font.Style = [fsBold]
-            ParentFont = False
-            TabOrder = 1
-            OnClick = ButtonBoldClick
-          end
-          object ButtonItalic: TTntButton
-            Left = 268
-            Top = 63
-            Width = 21
-            Height = 21
-            Caption = 'I'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -11
-            Font.Name = 'Microsoft Sans Serif'
-            Font.Style = [fsItalic]
-            ParentFont = False
-            TabOrder = 2
-            OnClick = ButtonItalicClick
-          end
-          object ButtonUnderline: TTntButton
-            Left = 268
-            Top = 87
-            Width = 21
-            Height = 21
-            Caption = 'U'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -11
-            Font.Name = 'Microsoft Sans Serif'
-            Font.Style = [fsUnderline]
-            ParentFont = False
-            TabOrder = 3
-            OnClick = ButtonUnderlineClick
-          end
-          object TntMemo1: TTntMemo
-            Left = 12
-            Top = 122
-            Width = 251
-            Height = 53
-            BevelOuter = bvNone
-            BorderStyle = bsNone
-            Color = clBtnFace
-            Lines.Strings = (
-              'Available tag:'
-              '#sub1# -> Name.of.Series.s01e01.Version'
-              '#sub2# -> Name of Seres 1x01 Version'
-              '#video# -> Video.File.Name')
-            ReadOnly = True
-            TabOrder = 4
-          end
-          object ChkZipPath: TCheckBox
-            Left = 12
-            Top = 184
-            Width = 104
-            Height = 17
-            Caption = 'Custom Zip Path:'
-            ParentShowHint = False
-            ShowHint = True
-            TabOrder = 5
-            OnClick = ChkZipPathClick
-          end
-          object ChkZipOnlyCP: TCheckBox
-            Left = 20
-            Top = 208
-            Width = 208
-            Height = 17
-            Caption = 'Only for complete packets'
-            Enabled = False
-            ParentShowHint = False
-            ShowHint = True
-            TabOrder = 6
-          end
-        end
-      end
-    end
   end
   object Panel1: TPanel
     Left = 0
-    Top = 507
+    Top = 508
     Width = 746
     Height = 36
     Align = alBottom
