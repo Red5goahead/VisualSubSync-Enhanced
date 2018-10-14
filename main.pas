@@ -6031,6 +6031,8 @@ begin
     Inc(SearchNodeIndex);
 
   UpdateDurationWithSubOnly;
+  
+  FullSortTreeAndSubList;
 
   Result := NewNode;
 end;
@@ -9232,6 +9234,7 @@ begin
     g_WebRWSynchro.EndWrite;
   end;
   vtvSubsList.Repaint;
+  FullSortTreeAndSubList;
 end;
 
 // -----------------------------------------------------------------------------
