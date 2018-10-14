@@ -1842,6 +1842,23 @@ object PreferencesForm: TPreferencesForm
           Shape = stRoundSquare
           OnMouseDown = ShapeWCMouseDown
         end
+        object TntLabel15: TTntLabel
+          Left = 20
+          Top = 85
+          Width = 80
+          Height = 14
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Scene-change:'
+        end
+        object ShapeSC: TTntShape
+          Left = 105
+          Top = 83
+          Width = 17
+          Height = 17
+          Shape = stRoundSquare
+          OnMouseDown = ShapeWCMouseDown
+        end
         object ButtonDefaultWavColours: TTntButton
           Left = 344
           Top = 24

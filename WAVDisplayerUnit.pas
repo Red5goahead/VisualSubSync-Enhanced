@@ -47,6 +47,7 @@ type
     RANGE_COLOR_2 : TColor;
     RANGE_COLOR_NOT_EDITABLE : TColor;
     CURSOR_COLOR : TColor;
+    SC_COLOR : TColor;
   end;
 
   TRange = class
@@ -450,6 +451,7 @@ var
   RANGE_COLOR_2 : TColor;
   RANGE_COLOR_NOT_EDITABLE : TColor;
   CURSOR_COLOR : TColor;
+  SC_COLOR : TColor;
 
 // =============================================================================
 
@@ -1205,6 +1207,7 @@ begin
   RANGE_COLOR_2 := MainForm.ConfigObject.WavColors.RANGE_COLOR_2;
   RANGE_COLOR_NOT_EDITABLE := MainForm.ConfigObject.WavColors.RANGE_COLOR_NOT_EDITABLE;
   CURSOR_COLOR := MainForm.ConfigObject.WavColors.CURSOR_COLOR;
+  SC_COLOR := MainForm.ConfigObject.WavColors.SC_COLOR;
   Self.UpdateView([uvfPageSize]);
 end;
  
@@ -1458,7 +1461,7 @@ var i, SceneChange, x : Integer;
 begin
   if FSceneChangeEnabled then
   begin
-    ACanvas.Pen.Color := $36C9FF;
+    ACanvas.Pen.Color := SC_COLOR;
     ACanvas.Pen.Style := psSolid;
     ACanvas.Pen.Mode := pmCopy;
     for i := Low(FSceneChangeList) to High(FSceneChangeList) do
