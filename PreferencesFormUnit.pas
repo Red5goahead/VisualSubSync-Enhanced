@@ -97,6 +97,7 @@ type
     PreferVmr9VideoRenderer : Boolean;
     UseReclockAudioRenderer : Boolean;
     SpaceKeyMoveAfterSmartButtonIsUsed : Integer;
+    SubtitlePreviewDelay : Integer;
     AutoPlaySmartButtonIsUsed : Boolean;
     AutoScrollWavDisplay : Boolean;
     AutoScrollSubtitles : Boolean;
@@ -438,6 +439,9 @@ type
     bttRestoreConfiguration: TButton;
     TntRestoreConfigurationOpenDialog: TTntOpenDialog;
     ChkForceWavDisplayPlayback: TCheckBox;
+    EditSubtitlePreviewDelay: TTntEdit;
+    TntLabelDelayPreviewVideo: TTntLabel;
+    UpDownSubtitlePreviewDelay: TTntUpDown;
     procedure bttOkClick(Sender: TObject);
     procedure bttCancelClick(Sender: TObject);
     procedure ListErrorCheckingClick(Sender: TObject);
@@ -817,6 +821,7 @@ begin
   PreferVmr9VideoRenderer := False;
   UseReclockAudioRenderer := False;
   SpaceKeyMoveAfterSmartButtonIsUsed := 750;
+  SubtitlePreviewDelay := 750;
   AutoPlaySmartButtonIsUsed := True;
   DesynchToolsAutoReset := True;
   DesynchUseColorsForSubtitles := True;
@@ -953,6 +958,8 @@ begin
   begin
     JSPluginInfo := TJSPluginInfo.Create;
     JSPluginInfo.Enabled := True;
+    // plugin added in installation (default)
+    if JSPlugin.Name = 'Greek typography' then JSPluginInfo.Enabled := False;
     JSPluginInfo.Name := JSPlugin.Name;
     JSPluginInfo.Description := JSPlugin.Description;
     JSPluginInfo.Color := JSColorToTColor(JSPlugin.Color);
@@ -1055,6 +1062,7 @@ begin
   IniFile.WriteBool('Misc','PreferVrm9VideoRenderer',PreferVmr9VideoRenderer);
   IniFile.WriteBool('Misc','UseReclockAudioRenderer',UseReclockAudioRenderer);
   IniFile.WriteInteger('Misc','SpaceKeyMoveAfterSmartButtonIsUsed',SpaceKeyMoveAfterSmartButtonIsUsed);
+  IniFile.WriteInteger('Misc','SubtitlePreviewDelay',SubtitlePreviewDelay);
   IniFile.WriteBool('Misc','UseDefaultInternalCodec',UseDefaultInternalCodec);
   IniFile.WriteBool('Misc','UseAlternativeInternalCodec',UseAlternativeInternalCodec);
   IniFile.WriteBool('Misc','LavVHwNone',LavVHwNone);
@@ -1193,6 +1201,9 @@ begin
   // Mod String
   IniFile.WriteString('Misc','ModString',ModString);
 
+  // default for custom JS
+  //IniFile.WriteInteger('Greek typography','Enabled', 0);
+
 end;
 
 //------------------------------------------------------------------------------
@@ -1229,8 +1240,10 @@ begin
   ForceNoDesktopComposition := IniFile.ReadBool('Misc','ForceNoDesktopComposition',ForceNoDesktopComposition);
   PreferVmr7VideoRenderer := IniFile.ReadBool('Misc','PreferVrm7VideoRenderer',PreferVmr7VideoRenderer);
   PreferVmr9VideoRenderer := IniFile.ReadBool('Misc','PreferVrm9VideoRenderer',PreferVmr9VideoRenderer);
+  PreferVmr9VideoRenderer := True;
   UseReclockAudioRenderer := IniFile.ReadBool('Misc','UseReclockAudioRenderer',UseReclockAudioRenderer);
   SpaceKeyMoveAfterSmartButtonIsUsed := IniFile.ReadInteger('Misc','SpaceKeyMoveAfterSmartButtonIsUsed',SpaceKeyMoveAfterSmartButtonIsUsed);
+  SubtitlePreviewDelay := IniFile.ReadInteger('Misc','SubtitlePreviewDelay',SubtitlePreviewDelay);
   UseDefaultInternalCodec := IniFile.ReadBool('Misc','UseDefaultInternalCodec',UseDefaultInternalCodec);
   UseAlternativeInternalCodec := IniFile.ReadBool('Misc','UseAlternativeInternalCodec',UseAlternativeInternalCodec);
   LavVHwNone := IniFile.ReadBool('Misc','LavVHwNone',LavVHwNone);
@@ -1523,6 +1536,7 @@ begin
   ChkPreferVmr9VideoRenderer.Checked := Config.PreferVmr9VideoRenderer;
   ChkUseReclockAudioRenderer.Checked := Config.UseReclockAudioRenderer;
   UpDownMoveAfterSmartButtonIsUsed.Position := Config.SpaceKeyMoveAfterSmartButtonIsUsed;
+  UpDownSubtitlePreviewDelay.Position := Config.SubtitlePreviewDelay;
   ChkMoveAfterSmartButtonIsUsed.Checked := Config.AutoPlaySmartButtonIsUsed;
   ChkDefaultInternalCodec.Checked := Config.UseDefaultInternalCodec;
   {$IFDEF enhanced}
@@ -1736,6 +1750,7 @@ begin
   Config.PreferVmr9VideoRenderer := ChkPreferVmr9VideoRenderer.Checked;
   Config.UseReclockAudioRenderer := ChkUseReclockAudioRenderer.Checked;
   Config.SpaceKeyMoveAfterSmartButtonIsUsed := UpDownMoveAfterSmartButtonIsUsed.Position;
+  Config.SubtitlePreviewDelay := UpDownSubtitlePreviewDelay.Position;
   Config.AutoPlaySmartButtonIsUsed := ChkMoveAfterSmartButtonIsUsed.Checked;
   Config.DesynchToolsAutoReset := ChkDesynchToolsAutoReset.Checked;
   Config.DesynchUseColorsForSubtitles := ChkDesynchUseColorsForSubtitles.Checked;
@@ -2459,7 +2474,7 @@ end;
 
 procedure TPreferencesForm.ChkUseInternalFiltersClick(Sender: TObject);
 begin
- ChkPreferVmr7VideoRenderer.Enabled := True;
+ //ChkPreferVmr7VideoRenderer.Enabled := True;
  ChkPreferVmr9VideoRenderer.Enabled := True;
  ChkDefaultInternalCodec.Enabled := True;
  ChkAlternativeInternalCodec.Enabled := True;

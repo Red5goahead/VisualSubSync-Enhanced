@@ -6,7 +6,7 @@ object AboutForm: TAboutForm
   BorderStyle = bsSingle
   BorderWidth = 4
   Caption = 'About...'
-  ClientHeight = 420
+  ClientHeight = 426
   ClientWidth = 345
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -82,9 +82,9 @@ object AboutForm: TAboutForm
   end
   object Bevel2: TBevel
     Left = 0
-    Top = 381
+    Top = 387
     Width = 345
-    Height = 9
+    Height = 10
     Shape = bsBottomLine
   end
   object TntLabel4: TTntLabel
@@ -344,9 +344,24 @@ object AboutForm: TAboutForm
     ParentFont = False
     Transparent = True
   end
+  object TntLabel7: TTntLabel
+    Left = 6
+    Top = 372
+    Width = 287
+    Height = 14
+    AutoSize = False
+    Caption = '- Subtitle Edit (http://www.nikse.dk/subtitleedit)'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Arial'
+    Font.Style = []
+    ParentFont = False
+    Transparent = True
+  end
   object bttOk: TTntButton
     Left = 8
-    Top = 395
+    Top = 401
     Width = 329
     Height = 25
     Caption = 'OK'

@@ -28,7 +28,7 @@ object PreferencesForm: TPreferencesForm
     Top = 0
     Width = 746
     Height = 507
-    ActivePage = tsGeneral
+    ActivePage = TsPlayback
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTntTabSheet
@@ -125,7 +125,7 @@ object PreferencesForm: TPreferencesForm
         end
         object LblDefaultPath: TTntLabel
           Left = 106
-          Top = 183
+          Top = 181
           Width = 481
           Height = 17
           AutoSize = False
@@ -159,7 +159,7 @@ object PreferencesForm: TPreferencesForm
         end
         object chkAssociateExtSRT: TCheckBox
           Left = 16
-          Top = 47
+          Top = 49
           Width = 209
           Height = 17
           Caption = 'Associate .SRT file with VisualSubSync'
@@ -168,7 +168,7 @@ object PreferencesForm: TPreferencesForm
         end
         object chkAssociateExtSSA: TCheckBox
           Left = 232
-          Top = 47
+          Top = 49
           Width = 217
           Height = 17
           Caption = 'Associate .SSA file with VisualSubSync'
@@ -177,7 +177,7 @@ object PreferencesForm: TPreferencesForm
         end
         object chkAssociateExtASS: TCheckBox
           Left = 451
-          Top = 47
+          Top = 49
           Width = 210
           Height = 17
           Caption = 'Associate .ASS file with VisualSubSync'
@@ -231,7 +231,7 @@ object PreferencesForm: TPreferencesForm
         end
         object ChkDefaultPath: TTntCheckBox
           Left = 16
-          Top = 182
+          Top = 181
           Width = 89
           Height = 17
           Caption = 'Default Path:'
@@ -240,7 +240,7 @@ object PreferencesForm: TPreferencesForm
         end
         object ChkForceDefaultPath: TTntCheckBox
           Left = 37
-          Top = 202
+          Top = 201
           Width = 188
           Height = 17
           Caption = 'Always use the default path'
@@ -249,7 +249,7 @@ object PreferencesForm: TPreferencesForm
         end
         object chkUTF8AsDefault: TCheckBox
           Left = 16
-          Top = 235
+          Top = 226
           Width = 207
           Height = 17
           Caption = 'Set UTF-8 project creation as default'
@@ -257,7 +257,7 @@ object PreferencesForm: TPreferencesForm
         end
         object ChkUpdates: TCheckBox
           Left = 16
-          Top = 290
+          Top = 281
           Width = 145
           Height = 17
           Caption = 'Check for updates on start'
@@ -267,7 +267,7 @@ object PreferencesForm: TPreferencesForm
         end
         object chkAccentsAssistant: TCheckBox
           Left = 16
-          Top = 261
+          Top = 252
           Width = 285
           Height = 20
           Caption = 'Accents/uppercase assistant (only for Italian dictionary)'
@@ -385,9 +385,9 @@ object PreferencesForm: TPreferencesForm
         object labelMessagePlaybackAvailable: TLabel
           Left = 8
           Top = 456
-          Width = 253
+          Width = 349
           Height = 13
-          Caption = '** Only available when your project is closed'
+          Caption = '** Most options are only available when your project is closed'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
@@ -395,6 +395,21 @@ object PreferencesForm: TPreferencesForm
           Font.Style = [fsBold]
           ParentFont = False
           Visible = False
+        end
+        object TntLabelDelayPreviewVideo: TTntLabel
+          Left = 269
+          Top = 423
+          Width = 142
+          Height = 13
+          Caption = 'Set subtitle preview delay (ms)'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = False
         end
         object ChkUseInternalFilters: TCheckBox
           Left = 10
@@ -620,6 +635,7 @@ object PreferencesForm: TPreferencesForm
             Width = 170
             Height = 17
             Caption = 'Video Mixing Filter 7 (VMR-7)'
+            Enabled = False
             TabOrder = 0
           end
         end
@@ -630,6 +646,30 @@ object PreferencesForm: TPreferencesForm
           Height = 17
           Caption = 'Force auto scroll/wav display starting playback'
           TabOrder = 15
+        end
+        object EditSubtitlePreviewDelay: TTntEdit
+          Left = 420
+          Top = 420
+          Width = 41
+          Height = 21
+          Hint = 
+            'Writing into subtitle edit box the result will be updated every ' +
+            'N milliseconds according '
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 16
+          Text = '750'
+        end
+        object UpDownSubtitlePreviewDelay: TTntUpDown
+          Left = 461
+          Top = 420
+          Width = 16
+          Height = 21
+          Associate = EditSubtitlePreviewDelay
+          Max = 2000
+          Increment = 50
+          Position = 750
+          TabOrder = 17
         end
       end
     end
@@ -924,7 +964,7 @@ object PreferencesForm: TPreferencesForm
           item
             Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
             Position = 1
-            Width = 294
+            Width = 298
             WideText = 'Value'
           end
           item
@@ -1906,7 +1946,6 @@ object PreferencesForm: TPreferencesForm
           ParentShowHint = False
           ShowHint = True
           TabOrder = 5
-          Visible = False
         end
         object chkOnLineSearchDict4: TCheckBox
           Left = 15
@@ -2339,11 +2378,11 @@ object PreferencesForm: TPreferencesForm
     Font.Style = []
     Options = [fdAnsiOnly, fdEffects, fdNoVectorFonts, fdScalableOnly]
     Left = 532
-    Top = 440
+    Top = 288
   end
   object pmErrorChecking: TPopupMenu
     Left = 679
-    Top = 440
+    Top = 288
     object pmiSelectAll: TMenuItem
       Caption = 'Select all'
       OnClick = pmiSelectAllClick
@@ -2355,13 +2394,13 @@ object PreferencesForm: TPreferencesForm
   end
   object ColorDialog1: TColorDialog
     Left = 601
-    Top = 440
+    Top = 288
   end
   object TimerCheckCodec: TTimer
     Interval = 250
     OnTimer = TimerCheckCodecTimer
     Left = 454
-    Top = 440
+    Top = 288
   end
   object TntRestoreConfigurationOpenDialog: TTntOpenDialog
     DefaultExt = '*.saved'

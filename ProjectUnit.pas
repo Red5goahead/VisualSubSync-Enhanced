@@ -192,7 +192,7 @@ implementation
 {$R *.dfm}
 
 uses WAVExtractFormUnit, TntSysUtils, MiscToolsUnit, TntIniFiles, TntWindows, MediaInfoDll, CursorManager,ShellApi,
-     MD5,ClipBrd, main, SourceFileOperationCancel, Types;
+     MD5,ClipBrd, Main, SourceFileOperationCancel, Types;
 
 function GetFileSizeEx(hFile: THandle; var FileSize: Int64): BOOL; stdcall;
   external kernel32;
@@ -750,20 +750,42 @@ begin
   TntOpenDialogBrowseGenericFile.FileName := EditSubtitleFilename.Text;
   TntOpenDialogBrowseGenericFile.Filter := 'SRT files (*.srt)|*.SRT' + '|' +
     'SSA/ASS files (*.ssa,*.ass)|*.SSA;*.ASS' + '|' +
+    'NetflixTimedText (*.dfxp)|*.DFXP' + '|' +
+    'YouTubeSbv (*.sbv)|*.SBV' + '|' +
+    'WebVTT (*.vtt)|*.VTT' + '|' +
     'All files (*.*)|*.*';
-    
+
   Ext := WideLowerCase(WideExtractFileExt(EditSubtitleFilename.Text));
   if (Ext = '.srt') then
     TntOpenDialogBrowseGenericFile.FilterIndex := 1
   else if (Ext = '.ssa') or (Ext = '.ass') then
     TntOpenDialogBrowseGenericFile.FilterIndex := 2
   else
-    TntOpenDialogBrowseGenericFile.FilterIndex := 3;
-  
+    TntOpenDialogBrowseGenericFile.FilterIndex := 6;
+
   SetOpenDialogPath(TntOpenDialogBrowseGenericFile);
   if TntOpenDialogBrowseGenericFile.Execute then
   begin
-    EditSubtitleFilename.Text := TntOpenDialogBrowseGenericFile.FileName;
+
+    if (TntOpenDialogBrowseGenericFile.FilterIndex = 3) OR
+       (TntOpenDialogBrowseGenericFile.FilterIndex = 4) OR
+       (TntOpenDialogBrowseGenericFile.FilterIndex = 5) then
+    begin
+
+      if not NetFramework4Installed() then
+      begin
+        MessageDlg('Selected format requires the .NET Framework 4 to be installed in the system', mtWarning,[mbOk],0);
+        exit;
+      end;
+
+      MainForm.ConvertFromSupportedFormat(TntOpenDialogBrowseGenericFile.FileName,
+        EditSubtitleFilename.Text, cbSubtitleFormat.Text);
+    end
+    else
+    begin
+      EditSubtitleFilename.Text := TntOpenDialogBrowseGenericFile.FileName;
+    end;
+
     chkLaunchTraslateActionOnCreate.Enabled := true;
     UpdateFormatCombobox;
     if Trim(EditProjectFilename.Text) = '' then

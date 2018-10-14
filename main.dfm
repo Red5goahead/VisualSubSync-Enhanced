@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 253
-  Top = 62
+  Left = 414
+  Top = 83
   Width = 1083
   Height = 755
   Caption = 'VisualSubSync'
@@ -1735,7 +1735,7 @@ object MainForm: TMainForm
                 Width = 230
                 Height = 21
                 Style = csDropDownList
-                ItemHeight = 0
+                ItemHeight = 13
                 TabOrder = 6
                 OnSelect = ComboBoxSilentZoneSelect
               end
@@ -2031,11 +2031,11 @@ object MainForm: TMainForm
         Left = 418
         Top = 0
         Width = 473
-        Height = 394
+        Height = 420
         Align = alLeft
         TabOrder = 0
         ControlData = {
-          4C000000E3300000B92800000000000000000000000000000000000000000000
+          4C000000E3300000692B00000000000000000000000000000000000000000000
           000000004C000000000000000000000001000000E0D057007335CF11AE690800
           2B2E12620A000000000000004C0000000114020000000000C000000000000046
           8000000000000000000000000000000000000000000000000000000000000000
@@ -2045,11 +2045,11 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 418
-        Height = 394
+        Height = 420
         Align = alLeft
         TabOrder = 1
         ControlData = {
-          4C000000342B0000B92800000000000000000000000000000000000000000000
+          4C000000342B0000692B00000000000000000000000000000000000000000000
           000000004C000000000000000000000001000000E0D057007335CF11AE690800
           2B2E12620A000000000000004C0000000114020000000000C000000000000046
           8000000000000000000000000000000000000000000000000000000000000000
@@ -2063,12 +2063,12 @@ object MainForm: TMainForm
       object WebBrowserTheFreeDictionary: TWebBrowser
         Left = 0
         Top = 0
-        Width = 1026
-        Height = 394
+        Width = 1059
+        Height = 420
         Align = alClient
         TabOrder = 0
         ControlData = {
-          4C0000000A6A0000B92800000000000000000000000000000000000000000000
+          4C000000736D0000692B00000000000000000000000000000000000000000000
           000000004C000000000000000000000001000000E0D057007335CF11AE690800
           2B2E12620A000000000000004C0000000114020000000000C000000000000046
           8000000000000000000000000000000000000000000000000000000000000000
@@ -2082,12 +2082,12 @@ object MainForm: TMainForm
       object WebBrowserWordNet: TWebBrowser
         Left = 0
         Top = 0
-        Width = 1026
-        Height = 394
+        Width = 1059
+        Height = 420
         Align = alClient
         TabOrder = 0
         ControlData = {
-          4C0000000A6A0000B92800000000000000000000000000000000000000000000
+          4C000000736D0000692B00000000000000000000000000000000000000000000
           000000004C000000000000000000000001000000E0D057007335CF11AE690800
           2B2E12620A000000000000004C0000000114020000000000C000000000000046
           8000000000000000000000000000000000000000000000000000000000000000
@@ -2098,19 +2098,15 @@ object MainForm: TMainForm
       Caption = 'Urban dictionary'
       ImageIndex = 1
       TabVisible = False
-      object WebBrowserUrbanDictionary: TWebBrowser
+      object RichEditUrbanDictionary: TTntRichEdit
         Left = 0
         Top = 0
-        Width = 1026
-        Height = 394
+        Width = 1059
+        Height = 420
         Align = alClient
+        ReadOnly = True
+        ScrollBars = ssVertical
         TabOrder = 0
-        ControlData = {
-          4C0000000A6A0000B92800000000000000000000000000000000000000000000
-          000000004C000000000000000000000001000000E0D057007335CF11AE690800
-          2B2E12620A000000000000004C0000000114020000000000C000000000000046
-          8000000000000000000000000000000000000000000000000000000000000000
-          00000000000000000100000000000000000000000000000000000000}
       end
     end
     object TabSheetOneLook: TTabSheet
@@ -2120,12 +2116,12 @@ object MainForm: TMainForm
       object WebBrowserOneLook: TWebBrowser
         Left = 0
         Top = 0
-        Width = 1026
-        Height = 394
+        Width = 1059
+        Height = 420
         Align = alClient
         TabOrder = 0
         ControlData = {
-          4C0000000A6A0000B92800000000000000000000000000000000000000000000
+          4C000000736D0000692B00000000000000000000000000000000000000000000
           000000004C000000000000000000000001000000E0D057007335CF11AE690800
           2B2E12620A000000000000004C0000000114020000000000C000000000000046
           8000000000000000000000000000000000000000000000000000000000000000
@@ -2253,7 +2249,7 @@ object MainForm: TMainForm
       object SubMenuItemErrorChecking: TTntMenuItem
         Caption = 'Error checking'
         ImageIndex = 27
-        object MenuItemCheckErrors: TTntMenuItem
+        object Checkerrors1: TTntMenuItem
           Action = ActionCheckErrors
         end
         object MenuItemShowErrorReport: TTntMenuItem
@@ -2262,6 +2258,20 @@ object MainForm: TMainForm
         object MenuItemErrorCheckingPreferences: TTntMenuItem
           Action = ActionErrorPreferences
           Caption = 'Preferences...'
+        end
+        object N33: TTntMenuItem
+          Caption = '-'
+        end
+        object MenuItemRemoveTextForHi: TTntMenuItem
+          Action = ActionRemoveTextForHi
+        end
+        object MenuItemFixCommonErrors: TTntMenuItem
+          Action = ActionFixCommonErrors
+        end
+        object MenuItemSEFix: TTntMenuItem
+          Caption = 'All fix options above'
+          ImageIndex = 22
+          OnClick = MenuItemSEFixClick
         end
       end
       object SubMenuItemSpellcheck: TTntMenuItem
@@ -2767,6 +2777,7 @@ object MainForm: TMainForm
       OnExecute = ActionSaveSelectedAsExecute
     end
     object ActionSaveAs: TTntAction
+      Tag = 1
       Caption = 'Save As'
       ImageIndex = 14
       OnExecute = ActionSaveAsExecute
@@ -2790,6 +2801,20 @@ object MainForm: TMainForm
       Hint = 'Check errors'
       ImageIndex = 19
       OnExecute = ActionCheckErrorsExecute
+    end
+    object ActionFixCommonErrors: TTntAction
+      Tag = 1
+      Caption = 'Fix common errors'
+      Hint = 'Fix common errors'
+      ImageIndex = 22
+      OnExecute = ActionFixCommonErrorsExecute
+    end
+    object ActionRemoveTextForHi: TTntAction
+      Tag = 1
+      Caption = 'Remove text for hearing impareid'
+      Hint = 'Remove text for hearing impareid'
+      ImageIndex = 22
+      OnExecute = ActionRemoveTextForHiExecute
     end
     object ActionDelay: TTntAction
       Tag = 1
@@ -7940,5 +7965,12 @@ object MainForm: TMainForm
     OnTimer = TimerChkUpdatesTimer
     Left = 384
     Top = 491
+  end
+  object TimerSubtitlePreview: TTimer
+    Enabled = False
+    Interval = 750
+    OnTimer = TimerSubtitlePreviewTimer
+    Left = 436
+    Top = 397
   end
 end
