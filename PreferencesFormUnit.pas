@@ -442,6 +442,8 @@ type
     EditSubtitlePreviewDelay: TTntEdit;
     TntLabelDelayPreviewVideo: TTntLabel;
     UpDownSubtitlePreviewDelay: TTntUpDown;
+    TntLabelSC: TTntLabel;
+    ShapeSC: TTntShape;
     procedure bttOkClick(Sender: TObject);
     procedure bttCancelClick(Sender: TObject);
     procedure ListErrorCheckingClick(Sender: TObject);
@@ -866,6 +868,7 @@ begin
   WavColors.RANGE_COLOR_2 := $00FF8000;
   WavColors.RANGE_COLOR_NOT_EDITABLE := $00C0C0C0;
   WavColors.CURSOR_COLOR := clYellow;
+  WavColors.SC_COLOR := $0036C9FF;
 
   // Web server
   ServerPort := 80;
@@ -1094,6 +1097,7 @@ begin
   IniFile.WriteInteger('Misc','WavColorsRC2', WavColors.RANGE_COLOR_2);
   IniFile.WriteInteger('Misc','WavColorsRCNE',WavColors.RANGE_COLOR_NOT_EDITABLE);
   IniFile.WriteInteger('Misc','WavColorsCC',  WavColors.CURSOR_COLOR);
+  IniFile.WriteInteger('Misc','WavColorsSC',  WavColors.SC_COLOR);
 
   // Silent Zone parameters
   IniFile.WriteInteger('Misc','SilentZoneThreshold',SilentZoneThreshold);
@@ -1279,6 +1283,7 @@ begin
   WavColors.RANGE_COLOR_2           := IniFile.ReadInteger('Misc','WavColorsRC2', WavColors.RANGE_COLOR_2);
   WavColors.RANGE_COLOR_NOT_EDITABLE:= IniFile.ReadInteger('Misc','WavColorsRCNE',WavColors.RANGE_COLOR_NOT_EDITABLE);
   WavColors.CURSOR_COLOR            := IniFile.ReadInteger('Misc','WavColorsCC',  WavColors.CURSOR_COLOR);
+  WavColors.SC_COLOR                := IniFile.ReadInteger('Misc','WavColorsSC',  WavColors.SC_COLOR);
 
   SilentZoneThreshold := IniFile.ReadInteger('Misc','SilentZoneThreshold',SilentZoneThreshold);
   SilentZoneDuration := IniFile.ReadInteger('Misc','SilentZoneDuration',SilentZoneDuration);
@@ -1592,6 +1597,7 @@ begin
   ShapeRC1.Brush.Color  := Config.WavColors.RANGE_COLOR_1;
   ShapeRC2.Brush.Color  := Config.WavColors.RANGE_COLOR_2;
   ShapeRCNE.Brush.Color := Config.WavColors.RANGE_COLOR_NOT_EDITABLE;
+  ShapeSC.Brush.Color   := Config.WavColors.SC_COLOR;
 
   ChkDesynchToolsAutoReset.Checked := Config.DesynchToolsAutoReset;
   ChkDesynchUseColorsForSubtitles.Checked := Config.DesynchUseColorsForSubtitles;
@@ -1878,6 +1884,7 @@ begin
   Config.WavColors.RANGE_COLOR_1            := ShapeRC1.Brush.Color;
   Config.WavColors.RANGE_COLOR_2            := ShapeRC2.Brush.Color;
   Config.WavColors.RANGE_COLOR_NOT_EDITABLE := ShapeRCNE.Brush.Color;
+  Config.WavColors.SC_COLOR                 := ShapeSC.Brush.Color;
 end;
 
 //------------------------------------------------------------------------------
@@ -2694,6 +2701,7 @@ begin
   ShapeRC1.Brush.Color  := $003333FF;
   ShapeRC2.Brush.Color  := $00FF8000;
   ShapeRCNE.Brush.Color := $00C0C0C0;
+  ShapeSC.Brush.Color   := $0036C9FF;
   MainForm.WAVDisplayer1UpdateColors(nil);
 end;
 
