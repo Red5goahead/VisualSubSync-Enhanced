@@ -3612,6 +3612,11 @@ object MainForm: TMainForm
       Caption = 'Zip Subtitle...'
       OnExecute = ActionZipSubtitleExecute
     end
+    object ActionWrapAroundSC: TAction
+      Tag = 1
+      Caption = 'Wrap around Scenechange'
+      OnExecute = ActionWrapAroundSCExecute
+    end
   end
   object ImageList1: TImageList
     BkColor = clFuchsia
@@ -6318,6 +6323,9 @@ object MainForm: TMainForm
     object pmiWAVDispCreateFromVO: TTntMenuItem
       Caption = 'Create from VO'
       OnClick = pmiWAVDispCreateFromVOClick
+    end
+    object pmiWrapAroundSC: TMenuItem
+      Action = ActionWrapAroundSC
     end
     object N24: TTntMenuItem
       Caption = '-'
