@@ -4171,6 +4171,8 @@ end;
 procedure TMainForm.ActionProjectPropertiesExecute(Sender: TObject);
 var ProjectHasChanged, VideoHasChanged, SubtitleFileHasChanged : Boolean;
     PreviousSubtitlesFile : WideString;
+    SceneChangeFileName : WideString;
+    SCArray : TIntegerDynArray;
 begin
   // TODO : test this more
 
@@ -4334,6 +4336,10 @@ begin
           ActionShowHideVideo.Execute;
       end;
       g_GlobalContext.WavAverageBytePerSecond := WAVDisplayer.GetWAVAverageBytePerSecond;
+      //update schene-change
+      SceneChangeFileName := WideChangeFileExt(CurrentProject.VideoSource, '.scenechange');
+      LoadSceneChange(SceneChangeFileName, SCArray);
+      WAVDisplayer.SetSceneChangeList(SCArray);
     finally
       g_WebRWSynchro.EndWrite;
     end;

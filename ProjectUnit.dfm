@@ -4,7 +4,7 @@ object ProjectForm: TProjectForm
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'New Project'
-  ClientHeight = 587
+  ClientHeight = 624
   ClientWidth = 714
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,7 +20,7 @@ object ProjectForm: TProjectForm
   TextHeight = 13
   object bttCreateNewProject: TTntButton
     Left = 489
-    Top = 550
+    Top = 586
     Width = 131
     Height = 27
     Caption = 'Create new project'
@@ -29,7 +29,7 @@ object ProjectForm: TProjectForm
   end
   object bttCancel: TTntButton
     Left = 625
-    Top = 550
+    Top = 586
     Width = 75
     Height = 27
     Caption = 'Cancel'
@@ -38,9 +38,9 @@ object ProjectForm: TProjectForm
   end
   object gbVideoFile: TTntGroupBox
     Left = 6
-    Top = 8
+    Top = 4
     Width = 695
-    Height = 236
+    Height = 269
     Caption = ' Video source file (optional) : '
     TabOrder = 0
     object bttBrowseVideoFile: TSpeedButton
@@ -60,7 +60,7 @@ object ProjectForm: TProjectForm
     end
     object bttExtractWAVFromVideo: TTntButton
       Left = 17
-      Top = 203
+      Top = 233
       Width = 621
       Height = 24
       Caption = 'Extract WAV/Peak file from video (legacy)'
@@ -71,7 +71,7 @@ object ProjectForm: TProjectForm
       Left = 8
       Top = 42
       Width = 636
-      Height = 154
+      Height = 183
       Caption = 'Available operations on video source file'
       TabOrder = 2
       object VideoSourceOperationRemux: TTntRadioButton
@@ -163,7 +163,7 @@ object ProjectForm: TProjectForm
       end
       object VideoSourceOperationExecute: TTntButton
         Left = 10
-        Top = 120
+        Top = 144
         Width = 619
         Height = 24
         Caption = 'Start selected operation on video source file'
@@ -234,11 +234,24 @@ object ProjectForm: TProjectForm
         TabOrder = 11
         OnClick = VideoSourceOperationNoneClick
       end
+      object VideoSourceOperationSceneChange: TTntRadioButton
+        Left = 7
+        Top = 116
+        Width = 170
+        Height = 17
+        Hint = 'Extract precise scene change based on video analisys'
+        Caption = 'Extract precise scene change'
+        Enabled = False
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 12
+        OnClick = VideoSourceOperationGeneratePeakFileClick
+      end
     end
   end
   object gbWAVFile: TTntGroupBox
     Left = 6
-    Top = 252
+    Top = 288
     Width = 695
     Height = 107
     Caption = ' Audio waveform / Audio only preview (optional) : '
@@ -328,7 +341,7 @@ object ProjectForm: TProjectForm
   end
   object gbSubtitleFile: TTntGroupBox
     Left = 6
-    Top = 369
+    Top = 405
     Width = 695
     Height = 67
     Caption = ' Subtitle file : '
@@ -387,7 +400,7 @@ object ProjectForm: TProjectForm
   end
   object gbProjectFile: TTntGroupBox
     Left = 6
-    Top = 495
+    Top = 531
     Width = 695
     Height = 51
     Caption = ' Project file : '
@@ -410,7 +423,7 @@ object ProjectForm: TProjectForm
   end
   object bttOk: TTntButton
     Left = 546
-    Top = 550
+    Top = 586
     Width = 75
     Height = 27
     Caption = 'OK'
@@ -420,7 +433,7 @@ object ProjectForm: TProjectForm
   end
   object gbVO: TTntGroupBox
     Left = 6
-    Top = 440
+    Top = 476
     Width = 695
     Height = 51
     Caption = 'Reference VO/Other : '
@@ -443,6 +456,6 @@ object ProjectForm: TProjectForm
   end
   object TntOpenDialogBrowseGenericFile: TTntOpenDialog
     Left = 264
-    Top = 369
+    Top = 405
   end
 end
