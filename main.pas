@@ -553,6 +553,8 @@ type
     ActionRemoveTextForHi: TTntAction;
     MenuItemFixCommonErrors: TTntMenuItem;
     MenuItemSEFix: TTntMenuItem;
+    pmiWrapAroundSC: TMenuItem;
+    ActionWrapAroundSC: TAction;
     procedure FormCreate(Sender: TObject);
 
     procedure WAVDisplayer1CursorChange(Sender: TObject);
@@ -844,6 +846,7 @@ type
     procedure ActionFixCommonErrorsExecute(Sender: TObject);
     procedure ActionRemoveTextForHiExecute(Sender: TObject);
     procedure MenuItemSEFixClick(Sender: TObject);
+    procedure ActionWrapAroundSCExecute(Sender: TObject);
 
   private
 
@@ -4166,6 +4169,8 @@ end;
 procedure TMainForm.ActionProjectPropertiesExecute(Sender: TObject);
 var ProjectHasChanged, VideoHasChanged, SubtitleFileHasChanged : Boolean;
     PreviousSubtitlesFile : WideString;
+    SceneChangeFileName : WideString;
+    SCArray : TIntegerDynArray;
 begin
   // TODO : test this more
 
@@ -4329,6 +4334,10 @@ begin
           ActionShowHideVideo.Execute;
       end;
       g_GlobalContext.WavAverageBytePerSecond := WAVDisplayer.GetWAVAverageBytePerSecond;
+      //update schene-change
+      SceneChangeFileName := WideChangeFileExt(CurrentProject.VideoSource, '.scenechange');
+      LoadSceneChange(SceneChangeFileName, SCArray);
+      WAVDisplayer.SetSceneChangeList(SCArray);
     finally
       g_WebRWSynchro.EndWrite;
     end;
@@ -13767,6 +13776,59 @@ begin
    begin
     ActionSubtitleEdit(True, True);
    end;
+end;
+
+procedure TMainForm.ActionWrapAroundSCExecute(Sender: TObject);
+var SelStart, SelStop, Idx, SC : Integer;
+    ChangeSubData : TChangeSubData;
+    MultiChangeTask : TUndoableMultiChangeTask;
+begin
+
+  if (WAVDisplayer.SelectionIsEmpty) then
+    Exit;
+  SelStart := WavDisplayer.Selection.StartTime;
+  SelStop := WavDisplayer.Selection.StopTime;
+  if ( (SelStart = 0) and (SelStop = 0) ) then
+  begin
+    SelStart := WavDisplayer.GetCursorPos;
+    SelStop := WavDisplayer.GetCursorPos;
+  end;
+
+  if (not g_SceneChangeWrapper.Contains(SelStart, SelStop)) then
+    Exit;
+  SC := g_SceneChangeWrapper.GetNext(SelStart);
+
+  Idx := WAVDisplayer.RangeList.GetRangeIdxAt(SelStart);
+
+  MultiChangeTask := TUndoableMultiChangeTask.Create;
+
+  if (Idx > -1) then
+  begin
+    ChangeSubData := TChangeSubData.Create( Idx );
+    ChangeSubData.OldStart := WavDisplayer.RangeList[Idx].StartTime;
+    ChangeSubData.OldStop := WavDisplayer.RangeList[Idx].StopTime;
+    ChangeSubData.NewStart := WavDisplayer.RangeList[Idx].StartTime;
+    ChangeSubData.NewStop := SC - WAVDisplayer.MinimumBlank;
+    MultiChangeTask.AddData( ChangeSubData );
+  end;
+
+  if (Idx < 0)
+  then Idx := WAVDisplayer.RangeList.GetRangeIdxAt(SelStop)
+  else Idx := Idx+1;
+
+  if (Idx > -1) and (Idx < WAVDisplayer.RangeList.Count) and (WavDisplayer.RangeList[Idx].StartTime < SelStop) then
+  begin
+    ChangeSubData := TChangeSubData.Create( Idx );
+    ChangeSubData.OldStart := WavDisplayer.RangeList[Idx].StartTime;
+    ChangeSubData.OldStop := WavDisplayer.RangeList[Idx].StopTime;
+    ChangeSubData.NewStart := SC;
+    ChangeSubData.NewStop := WavDisplayer.RangeList[Idx].StopTime;
+    MultiChangeTask.AddData( ChangeSubData );
+  end;
+
+  MultiChangeTask.DoTask;
+  PushUndoableTask(MultiChangeTask);
+
 end;
 
 end.

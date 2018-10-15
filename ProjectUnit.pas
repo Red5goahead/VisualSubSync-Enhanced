@@ -134,6 +134,7 @@ type
     cbbVideoSourceOperationAudioTracks: TTntComboBox;
     VideoSourceOperationAudioTracksOnlyCenter: TTntCheckBox;
     VideoSourceOperationNone: TTntRadioButton;
+    VideoSourceOperationSceneChange: TTntRadioButton;
     procedure bttCreateNewProjectClick(Sender: TObject);
     procedure bttCancelClick(Sender: TObject);
     procedure bttBrowseVideoFileClick(Sender: TObject);
@@ -721,6 +722,9 @@ begin
      VideoSourceOperationMD5.Enabled := True;
      VideoSourceOperationMD5.Checked :=False;
 
+     VideoSourceOperationSceneChange.Enabled := True;
+     VideoSourceOperationSceneChange.Checked := False;
+
      bttCreateNewProject.Enabled := True;
 
    end;
@@ -1144,6 +1148,7 @@ var
     Language, Title, CodecID, StreamOrder : String;
     ExitCode: DWORD;
     NewVideoFileName, NewAudioWavFileName, ParameterF : String;
+    TempSCFileName, TempFileLine : String;
     MkvMergePath, MkvMergePathCommand: String;
     MkvExtractPath, MkvExtractPathCommand, NewSubtitleFile, TextStreamCount: String;
     MediaInfoHandle : Cardinal;
@@ -1155,6 +1160,11 @@ var
     Duration : String;
     DurationMs : LongWord;
     HH,MM,SS : Integer;
+    SC_temp, SC_final : TextFile;
+    SC_time : TDateTime;
+    SC_current, SC_prev, score_current, score_prev : Extended;
+    SC_FS : TFormatSettings;
+    ep : Integer;
 begin
 
  VideoSourceOperationExecute.Enabled := False;
@@ -1479,6 +1489,113 @@ begin
       Screen.Cursor:=crHourglass;
     end;
   end;
+
+  if VideoSourceOperationSceneChange.Checked then
+  begin
+    try
+      VideoSourceOperationExecute.Enabled := False;
+      FFMpegPath := uppercase(ExtractFileDir(ParamStr(0)) + '\mkvtoolnix\ffmpeg.exe');
+      TempSCFileName := ExtractFileName(ChangeFileExt(EditVideoFilename.Text, '')) + '.scenechange.temp';
+      FFMpegPathCommand := Format('-i "%s" -vf select=''gt(scene,0.1)'',metadata=print:file="%s" -an -f null -',
+                                  [EditVideoFilename.Text, TempSCFileName]);
+
+      MediaInfoHandle := 0;
+      if (MediaInfoDLL_Load('MediaInfo.dll') = true) then
+      begin
+        MediaInfoHandle := MediaInfo_New();
+        MediaInfo_Open(MediaInfoHandle, PWideChar(EditVideoFilename.Text));
+        //using TextStreamCount instead of creating a new variable (intended as VideoStreamCount)
+        TextStreamCount := MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'StreamCount', Info_Text, Info_Name);
+        MediaInfo_Close(MediaInfoHandle);
+        if (TextStreamCount <> '') and (StrToInt(TextStreamCount) > 0) then
+        begin
+          Screen.Cursor := crHourglass;
+          SourceFileOperationCancel := TSourceFileOperationCancel.Create(self);
+          SourceFileOperationCancel.FFMpegPath := FFMpegPath;
+          SourceFileOperationCancel.FFMpegPathCommand := FFMpegPathCommand;
+          SourceFileOperationCancel.DurationMs := DurationMs;
+          SourceFileOperationCancel.ShowModal;
+
+          if SourceFileOperationCancel.ExitForced then
+            ExitForced := True;
+
+          SourceFileOperationCancel.Free;
+        end
+        else
+        begin
+          ExitForced := True;
+          MessageBoxW(Handle,
+            PWideChar(WideString('No video stream found in this file. Scene-change can''t be generated.')),
+            PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
+        end;
+      end;
+
+      if not ExitForced and FileExists(TempSCFileName) then
+      begin
+        TempSCFileName := ChangeFileExt(TempSCFileName, '');
+
+        if FileExists(TempSCFileName) then
+          DeleteFile(TempSCFileName);
+
+        AssignFile(SC_temp, TempSCFileName + '.temp');
+        AssignFile(SC_final, TempSCFileName);
+        Reset(SC_temp);
+        ReWrite(SC_final);
+        WriteLn(SC_final, 'SceneChangeFormatVersion=1');
+
+        SC_FS.DecimalSeparator := '.';
+        score_prev := -1;
+        SC_prev := -1;
+        while not Eof(SC_temp) do
+        begin
+          ReadLn(SC_temp, TempFileLine);
+          ep := AnsiPos('pts_time:', TempFileLine);
+          if ep > 0 then
+          begin
+            TempFileLine := Trim(Copy(TempFileLine, ep + 9, Length(TempFileLine)));
+            SC_current := StrToFloat(TempFileLine, SC_FS);
+
+            ReadLn(SC_temp, TempFileLine);
+            ep := AnsiPos('scene_score=', TempFileLine);
+            if ep > 0 then
+            begin
+              TempFileLine := Trim(Copy(TempFileLine, ep + 12, Length(TempFileLine)));
+              score_current := StrToFloat(TempFileLine, SC_FS);
+
+              //a bit of cleaning of very close scenechange
+              //based on the scene_score value to determine
+              //which one to keep
+              if (SC_current - 0.1) < SC_prev then
+              begin
+                if score_current < score_prev then
+                begin
+                  SC_time := SC_prev / SecsPerDay;
+                  WriteLn(SC_final, formatdatetime('hh:nn:ss.zzz', SC_time));
+                end;
+                Continue;
+              end;
+              SC_time := SC_prev / SecsPerDay;
+              WriteLn(SC_final, formatdatetime('hh:nn:ss.zzz', SC_time));
+              SC_prev := SC_current;
+              score_prev := score_current;
+            end;
+          end;
+        end;
+
+        CloseFile(SC_temp);
+        CloseFile(SC_final);
+
+        if FileExists(TempSCFileName + '.temp') then
+          DeleteFile(TempSCFileName + '.temp');
+
+        MessageBoxW(Handle,
+          PWideChar(WideString('Operation complete. A scene-change file has been generated.')),
+          PWideChar(WideString('Information')), MB_OK or MB_ICONINFORMATION);
+      end;
+      Screen.Cursor := crDefault;
+    except
+    end;
+  end;
 
  VideoSourceOperationNone.Checked := True;
  VideoSourceOperationNoneClick(Nil);
