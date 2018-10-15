@@ -41,7 +41,6 @@ type
   procedure CheckBackupDirectory;
   procedure CheckDictDirectory;
   procedure Deploy;
-  Function ItaliansubsAuthorization(User: String; Password : String): boolean;
 
 var
   ApplicationName : string = 'VisualSubSync';
@@ -59,7 +58,6 @@ var
   g_WavExtractorGraphDebugInfo : WideString;
   g_VideoGraphDebugInfo : WideString;
   g_AudioGraphDebugInfo : WideString;
-  g_ItaliansubsAuthorization : Boolean;
   // enhanced Flag
   IsEnhanced : Boolean = False;
   // universal app enviroment
@@ -154,50 +152,6 @@ begin
 end;
 {$ENDIF}
 
-Function ItaliansubsAuthorization(User: String; Password : String): boolean;
-var
-  HTTP: THTTPSend;
-  UrlItasa, LoginParam : string;
-begin
-  if (User = 'Your Username') OR (Password = 'Your Password') OR
-     (User = '') OR (Password = '') then
-  begin
-    Result := False;
-    Exit;
-  end;
-
-  if g_ItaliansubsAuthorization then
-  begin
-   Result := true;
-   Exit;
-  end;
-
-  HTTP := THTTPSend.Create;
-  UrlItasa := 'http://www.italiansubs.net/index.php';
-  LoginParam :='username='+User
-              +'&passwd='+Password
-              +'&option=com_user&Submit=Login&task=login';
-  try
-    HTTP.Document.Write(Pointer(LoginParam)^, Length(LoginParam));
-    HTTP.MimeType := 'application/x-www-form-urlencoded';
-    HTTP.HTTPMethod('POST', UrlItasa);
-    if Pos('SMFCookie', HTTP.Cookies.Text) > 0
-    then
-    begin
-     g_ItaliansubsAuthorization := True;
-     Result := True;
-    end
-    else
-    begin
-     g_ItaliansubsAuthorization := False;
-     Result := False;
-    end;
-  finally
-    HTTP.Free;
-  end;
-
-end;
-
 function IsPortable : Boolean;
 var ApplicationPath, IniFilename : WideString;
 begin
@@ -274,7 +228,6 @@ initialization
   end;
   {$ENDIF}
   CheckDictDirectory;
-  g_ItaliansubsAuthorization := False;
 
 finalization
   g_WebRWSynchro.Free;

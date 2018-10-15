@@ -175,12 +175,6 @@ type
     DisableVOShowTextInWAVDisplay : Boolean;
     EnableShowVideoForNewProject : Boolean;
     EnableDetachedVideoForNewProject : Boolean;
-    //Itasa
-    Username : String;
-    Passwd : String;
-    Msg : TStringList;
-    ZipPath: String;
-    ZipPathOnlyForCP:Boolean;
     //Default Path
     DefaultPath: WideString;
     ForceDefaultPath:Boolean;
@@ -329,16 +323,6 @@ type
     ChkDesynchAssumeFirstSubtitleSynched: TCheckBox;
     ChkDesynchLog: TCheckBox;
     chkEnableCompression: TCheckBox;
-    tsItasa: TTntTabSheet;
-    TntGroupBox8: TTntGroupBox;
-    TntLabel15: TTntLabel;
-    TntLabel16: TTntLabel;
-    TntEditUsername: TTntEdit;
-    TntEditPasswd: TTntEdit;
-    TntLabel17: TTntLabel;
-    TntSpeedButtonCheckLogin: TTntSpeedButton;
-    ImgLoginKO: TTntImage;
-    ImgLoginOK: TTntImage;
     chkShowSpecialTagSubs: TCheckBox;
     ChkCustomText: TTntCheckBox;
     EditCustomText: TTntEdit;
@@ -425,16 +409,6 @@ type
     bttResetAllHotkeys: TButton;
     ChkUpdates: TCheckBox;
     chkAccentsAssistant: TCheckBox;
-    ItaliansubsOptionsGroupBox: TGroupBox;
-    TntLabel18: TTntLabel;
-    TntMemoMsg: TTntMemo;
-    ButtonBold: TTntButton;
-    ButtonItalic: TTntButton;
-    ButtonUnderline: TTntButton;
-    TntMemo1: TTntMemo;
-    ChkZipPath: TCheckBox;
-    LabelZipPath: TTntLabel;
-    ChkZipOnlyCP: TCheckBox;
     bttBackupConfiguration: TButton;
     bttRestoreConfiguration: TButton;
     TntRestoreConfigurationOpenDialog: TTntOpenDialog;
@@ -481,19 +455,10 @@ type
     procedure FormActivate(Sender: TObject);
     procedure ChkDefaultInternalCodecClick(Sender: TObject);
     procedure ChkAlternativeInternalCodecClick(Sender: TObject);
-    procedure TntSpeedButtonCheckLoginClick(Sender: TObject);
-    procedure AddTag(var Msg: string; tag:string; ids, len:Integer);
-    procedure ButtonBoldClick(Sender: TObject);
-    procedure ButtonItalicClick(Sender: TObject);
-    procedure ButtonUnderlineClick(Sender: TObject);
     procedure ChkCustomTextClick(Sender: TObject);
     procedure ShapeWCMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure ButtonDefaultWavColoursClick(Sender: TObject);
-    procedure LabelZipPathClick(Sender: TObject);
-    procedure LabelZipPathMouseEnter(Sender: TObject);
-    procedure LabelZipPathMouseLeave(Sender: TObject);
-    procedure ChkZipPathClick(Sender: TObject);
     procedure ChkDoNotUseInternalFiltersOnCreateProjectClick(
       Sender: TObject);
     procedure ChkUseDefaultCodecOnCreateProjectClick(Sender: TObject);
@@ -904,28 +869,6 @@ begin
   SceneChangeFilterOffset := 250;
   EnableShowVideoForNewProject := True;
   EnableDetachedVideoForNewProject := False;
-  // Itasa
-  Username := 'Your Username';
-  Passwd := 'Your Password';
-  if not Assigned(Msg) then
-    Msg := TStringList.Create
-  else
-    Msg.Clear;
-  Msg.Add('In allegato il file :');
-  Msg.Add('');
-  Msg.Add('[b]#sub1#[/b]');
-  Msg.Add('');
-  Msg.Add('Versione file video:');
-  Msg.Add('');
-  Msg.Add('[b]#video#[/b]');
-  Msg.Add('');
-  Msg.Add(':ciao:');
-  Msg.Add('');
-  Msg.Add('**spedito da VisualSubSync for Italiansubs');
-
-  ZipPath:=ZIP_PATH;
-  ZipPathOnlyForCP:=False;
-
   //Default Path
   DefaultPath:=DEF_PATH;
   ForceDefaultPath:=False;
@@ -1182,16 +1125,6 @@ begin
   IniFile.WriteBool('DesynchTools','DesynchAssumeFirstSubtitleSynched',DesynchAssumeFirstSubtitleSynched);
   IniFile.WriteBool('DesynchTools','DesynchLog',DesynchLog);
 
-  // Itasa
-  IniFile.WriteString('ItasaUser','Username',Username);
-
-  IniFile.WriteString('ItasaUser','Passwd','@@@'+ASCIIEncrypt(Passwd,DSiGetDiskSerial('C'))+'@@@');
-  IniFile.WriteInteger('ItasaUser','MsgLines', Msg.Count);
-  for i := 0 to Msg.Count-1 do
-    IniFile.WriteString('ItasaUser','MsgLine_'+IntToStr(i), Msg.Strings[i]);
-  IniFile.WriteString('ItasaUser','ZipPath',ZipPath);
-  IniFile.WriteBool('ItasaUser','ZipPathOnlyForCP',ZipPathOnlyForCP);
-
   //Default Path
   IniFile.WriteString('Misc','DefaultPath',DefaultPath);
   IniFile.WriteBool('Misc','ForceDefaultPath',ForceDefaultPath);
@@ -1408,20 +1341,6 @@ begin
   DesynchAssumeFirstSubtitleSynched := IniFile.ReadBool('DesynchTools', 'DesynchAssumeFirstSubtitleSynched', DesynchAssumeFirstSubtitleSynched);
   DesynchLog := IniFile.ReadBool('DesynchTools', 'DesynchLog', DesynchLog);
 
-  // Itasa
-  Username := IniFile.ReadString('ItasaUser','Username',Username);
-  Passwd := IniFile.ReadString('ItasaUser','Passwd',Passwd);
-  if (Copy(Passwd,1,3)='@@@') then
-    Passwd := Copy(Passwd,4,Length(Passwd)-6);
-  Passwd := ASCIIEncrypt(Passwd,DSiGetDiskSerial('C'));
-  //Passwd := ASCIIEncrypt(IniFile.ReadString('ItasaUser','Passwd',Passwd),DSiGetDiskSerial('C'));
-
-  Msg.Clear;
-  j := IniFile.ReadInteger('ItasaUser','MsgLines', 1);
-  for i := 0 to j-1 do
-    Msg.Add(IniFile.ReadString('ItasaUser','MsgLine_'+IntToStr(i), '#sub1# :ciao:'));
-  ZipPath:=IniFile.ReadString('ItasaUser','ZipPath',ZipPath);
-  ZipPathOnlyForCP:=IniFile.ReadBool('ItasaUser','ZipPathOnlyForCP',ZipPathOnlyForCP);
   //Default Path
   DefaultPath:=IniFile.ReadString('Misc','DefaultPath',DefaultPath);
   ForceDefaultPath:=IniFile.ReadBool('Misc','ForceDefaultPath',ForceDefaultPath);
@@ -1683,26 +1602,6 @@ begin
   chkEnableShowVideoForNewProject.Checked := Config.EnableShowVideoForNewProject;
   chkEnableDetachedVideoForNewProject.Checked := Config.EnableDetachedVideoForNewProject;
 
-  // Itasa
-  TntEditUsername.Text := Config.Username;
-  TntEditPasswd.Text := Config.Passwd;
-  if ItaliansubsAuthorization(TntEditUsername.Text,TntEditPasswd.Text) then
-  begin
-     ImgLoginOK.Visible := True;
-     ItaliansubsOptionsGroupBox.Visible:=True;
-  end;
-  TntMemoMsg.Text := Config.Msg.Text;
-  LabelZipPath.Caption := Config.ZipPath;
-  if Config.ZipPath <> ZIP_PATH then
-  begin
-    ChkZipPath.Checked:=True;
-    LabelZipPath.Enabled:=True;
-    LabelZipPath.Caption:=Config.ZipPath;
-    LabelZipPath.Hint:=Config.ZipPath;
-    ChkZipOnlyCP.Enabled:=True;
-    ChkZipOnlyCP.Checked:=Config.ZipPathOnlyForCP;
-  end;
-
   //Default Path
   LblDefaultPath.Caption:=Config.DefaultPath;
   if Config.DefaultPath <> DEF_PATH then
@@ -1843,19 +1742,6 @@ begin
   Config.DisableVOShowTextInWAVDisplay := chkDisableVOShowTextInWAVDisplay.Checked;
   Config.EnableShowVideoForNewProject := chkEnableShowVideoForNewProject.Checked;
   Config.EnableDetachedVideoForNewProject := chkEnableDetachedVideoForNewProject.Checked;
-
-
-  // Itasa
-  Config.Username := TntEditUsername.Text;
-  Config.Passwd := TntEditPasswd.Text;
-  Config.Msg.Text := TntMemoMsg.Text;
-  if ChkZipPath.Checked and
-    (LabelZipPath.Hint <> ZIP_PATH) then
-  begin
-    Config.ZipPath := LabelZipPath.Hint;
-    Config.ZipPathOnlyForCP := ChkZipOnlyCP.Checked;
-  end
-  else Config.ZipPath := ZIP_PATH;
 
   //Default Path
   if ChkDefaultPath.Checked and
@@ -2533,7 +2419,6 @@ begin
   ListPluginParam.TreeOptions.MiscOptions := ListPluginParam.TreeOptions.MiscOptions
     + [toEditOnDblClick] - [toToggleOnDblClick];
   EditLavPreferredLanguages.Hint := 'Enter your preferred languages as their 3-letter language codes, comma separated. ' + #13+ #10+ '(example: eng,ger,fre) http://en.wikipedia.org/wiki/List_of_ISO_639-2_codes';
-  tsItasa.TabVisible := (lowercase(MainForm.ConfigObject.ModString) = 'for italiansubs');
 end;
 
 procedure TPreferencesForm.FormActivate(Sender: TObject);
@@ -2620,57 +2505,6 @@ begin
   end;
 end;
 
-procedure TPreferencesForm.TntSpeedButtonCheckLoginClick(Sender: TObject);
-begin
-  g_ItaliansubsAuthorization := False;
-  ImgLoginOK.Visible := False;
-  ImgLoginKO.Visible := False;
-
-  if ItaliansubsAuthorization(TntEditUsername.Text,TntEditPasswd.Text) then
-  begin
-     ImgLoginOK.Visible := True;
-     ItaliansubsOptionsGroupBox.Visible:=True;
-  end
-  else
-  begin
-      ImgLoginKO.Visible := True;
-      ItaliansubsOptionsGroupBox.Visible:=False;
-  end;
-end;
-
-procedure TPreferencesForm.AddTag(var Msg: string; tag:string; ids, len:Integer);
-var
-  tmsg:string;
-begin
-  tmsg:= Copy( Msg, 1, ids) + '['+tag+']'
-       + Copy( Msg, ids + 1, len) + '[/'+tag+']'
-       + Copy( Msg, ids + len + 1, Length(Msg));
-  Msg:=tmsg;
-end;
-
-procedure TPreferencesForm.ButtonBoldClick(Sender: TObject);
-var tmsg : string;
-begin
-  tmsg:=TntMemoMsg.Text;
-  AddTag(tmsg,'b',TntMemoMsg.SelStart,TntMemoMsg.SelLength);
-  TntMemoMsg.Text:=tmsg;
-end;
-
-procedure TPreferencesForm.ButtonItalicClick(Sender: TObject);
-var tmsg : string;
-begin
-  tmsg:=TntMemoMsg.Text;
-  AddTag(tmsg,'i',TntMemoMsg.SelStart,TntMemoMsg.SelLength);
-  TntMemoMsg.Text:=tmsg;
-end;
-
-procedure TPreferencesForm.ButtonUnderlineClick(Sender: TObject);
-var tmsg : string;
-begin
-  tmsg:=TntMemoMsg.Text;
-  AddTag(tmsg,'u',TntMemoMsg.SelStart,TntMemoMsg.SelLength);
-  TntMemoMsg.Text:=tmsg;
-end;
 
 procedure TPreferencesForm.ChkCustomTextClick(Sender: TObject);
 begin
@@ -2695,41 +2529,6 @@ begin
   ShapeRC2.Brush.Color  := $00FF8000;
   ShapeRCNE.Brush.Color := $00C0C0C0;
   MainForm.WAVDisplayer1UpdateColors(nil);
-end;
-
-procedure TPreferencesForm.LabelZipPathClick(Sender: TObject);
-var seldir:String;
-begin
-  if SelectDirectory(ZIP_PATH,'',seldir) then
-  begin
-    LabelZipPath.Caption := seldir;
-    LabelZipPath.Hint := seldir;
-  end;
-end;
-
-procedure TPreferencesForm.LabelZipPathMouseEnter(Sender: TObject);
-begin
-  TTntLabel(Sender).Font.Style:=TTntLabel(Sender).Font.Style + [fsUnderline];
-end;
-
-procedure TPreferencesForm.LabelZipPathMouseLeave(Sender: TObject);
-begin
-  TTntLabel(Sender).Font.Style:=TTntLabel(Sender).Font.Style - [fsUnderline];
-end;
-
-procedure TPreferencesForm.ChkZipPathClick(Sender: TObject);
-begin
-  if ChkZipPath.Checked then
-  begin
-    LabelZipPath.Enabled:=True;
-    LabelZipPath.Caption:=ZIP_PATH;
-    ChkZipOnlyCP.Enabled:=True;
-  end
-  else
-  begin
-    LabelZipPath.Enabled:=False;
-    ChkZipOnlyCP.Enabled:=False;
-  end;
 end;
 
 procedure TPreferencesForm.ChkDoNotUseInternalFiltersOnCreateProjectClick(

@@ -497,8 +497,6 @@ type
     ActionDiffSubFiles: TTntAction;
     DiffFile: TTntMenuItem;
     XPManifest1: TXPManifest;
-    ActionSendToItasa: TTntAction;
-    bttSendToItasa: TSpeedButton;
     SourceforgeRssFeedXml: TXMLDocument;
     WebBrowserWordReferenceThesaurus: TWebBrowser;
     TabSheetTheFreeDictionary: TTabSheet;
@@ -815,7 +813,6 @@ type
     procedure MenuItemSetVideoResolutionTo33PercClick(Sender: TObject);
     procedure MenuItemSetVideoResolutionTo25PercClick(Sender: TObject);
     procedure ActionDiffSubFilesExecute(Sender: TObject);
-    procedure ActionSendToItasaExecute(Sender: TObject);
     procedure ChangeFpsTrueCinemaToPalClick(Sender: TObject);
     procedure ChangeFpsPalToTrueCinemaClick(Sender: TObject);
     procedure MenuItemKeepDurationIntactClick(Sender: TObject);
@@ -1173,7 +1170,7 @@ uses ActiveX, Math, StrUtils, FindFormUnit, AboutFormUnit,
   TntIniFiles, TntGraphics, TntSystem, TntRichEditCustomUndoUnit, RGBHSLColorUnit,
   SceneChangeUnit, SilentZoneFormUnit, RegExpr, SRTParserUnit, ShellAPI,
   VSSClipboardUnit, BgThreadTaskUnit, SpellCheckFormUnit, TntClipBrd, DeCAL,MediaInfoDll,
-  ResynchToolFormUnit, DSiWin32, DiffSubsFormUnit, SendToItasaFormUnit, SendToItasaMiscUnit,
+  ResynchToolFormUnit, DSiWin32, DiffSubsFormUnit,
   SubtitleTimingFormUnit, KAZip, mshtml, ClipBrd, uLkJSON, WinINet,
   SourceFileOperationCancel;
 
@@ -2121,8 +2118,6 @@ begin
   ActionShowHideVideo.Enabled := Enable AND (CurrentProject.VideoStreamCount > '');
   ActionDetachVideo.Enabled := Enable;
   ActionProjectProperties.Enabled := Enable;
-  ActionSendToItasa.Enabled := Enable AND ItaliansubsAuthorization(MainForm.ConfigObject.Username,
-    MainForm.ConfigObject.Passwd);
   ActionReload.Enabled := Enable;
   ActionSaveAs.Enabled := Enable;
   ActionZipSubtitle.Enabled := Enable;
@@ -12432,19 +12427,6 @@ begin
  DiffSubsForm.ShowModal;
 end;
 
-procedure TMainForm.ActionSendToItasaExecute(Sender: TObject);
-begin
-  if CurrentProject.IsDirty then
-  begin
-    SaveSubtitles(CurrentProject.SubtitlesFile, '', CurrentProject.IsUTF8, False, nil, False);
-    SaveProject(CurrentProject, False);
-  end;
-
-  if SendToItasaForm.Inizializza(CurrentProject.SubtitlesFile) then
-    SendToItasaForm.ShowModal;
-
-end;
-
 function TMainForm.GetUTF8Default : boolean;
 begin
  Result := ConfigObject.UTF8AsDefault;
@@ -12920,7 +12902,7 @@ begin
 end;
 
 procedure TMainForm.ActionZipSubtitleExecute(Sender: TObject);
-var NomeFile: TNomeFile;
+var
     zip: TKAZip;
     i: Integer;
     tmp : string;
@@ -12931,47 +12913,22 @@ begin
     SaveSubtitles(CurrentProject.SubtitlesFile, '', CurrentProject.IsUTF8, False, nil, False);
     SaveProject(CurrentProject, False);
   end;
-  if ItaliansubsAuthorization(MainForm.ConfigObject.Username, MainForm.ConfigObject.Passwd) then
-  begin
-    NomeFile := TNomeFile.Create;
-    NomeFile.NewFile(ChangeFileExt(ExtractFileName(CurrentProject.SubtitlesFile),''));
-    skip:=False;
-    if not NomeFile.Valid then
-    begin
-      tmp := 'Filename not valid for Italiansubs Filename Rules.'+ #13#10 +
-             'Zip anyway?';
-      case Application.MessageBox(PAnsiChar(tmp),
-             'Zip Subtitle...',
-             MB_ICONQUESTION or MB_YESNO or MB_DEFBUTTON1) of
-        IDYES: skip := True;
-        IDNO: Exit;
-      end;
-    end;
-  end
-  else Skip := True;
-  if skip or (not skip and NomeFile.FixSeriesName) then
-  begin
+
     try
       zip := TKAZip.Create(nil);
       i := 0;
-      if skip then
-        tmp:=ChangeFileExt(CurrentProject.SubtitlesFile,'.zip')
-      else
-        tmp:=ExtractFilePath(CurrentProject.SubtitlesFile) + NomeFile.ZipFileName + '.zip';
+      tmp:=ChangeFileExt(CurrentProject.SubtitlesFile,'.zip');
       if FileExists(tmp) then
         while not RenameFile(tmp, ChangeFileExt(tmp,'.bak' + IntToStr(i) + '.zip')) do
           i := i + 1;
       zip.CreateZip(tmp);
       zip.Open(tmp);
-      if skip then
-        zip.AddFile(CurrentProject.SubtitlesFile, ExtractFileName(CurrentProject.SubtitlesFile))
-      else
-        zip.AddFile(CurrentProject.SubtitlesFile, NomeFile.GetFileName + ExtractFileExt(CurrentProject.SubtitlesFile));
+      zip.AddFile(CurrentProject.SubtitlesFile, ExtractFileName(CurrentProject.SubtitlesFile));
       zip.Close;
     finally
       zip.Free;
     end;
-  end;
+
 end;
 
 procedure TMainForm.pmUndoTPClick(Sender: TObject);
