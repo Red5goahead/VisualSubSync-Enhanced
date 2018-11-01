@@ -125,7 +125,7 @@ object MainForm: TMainForm
   end
   object StatusBarMainPanel: TPanel
     Left = 0
-    Top = 678
+    Top = 677
     Width = 1067
     Height = 19
     Align = alBottom
@@ -156,7 +156,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 229
     Width = 1067
-    Height = 449
+    Height = 448
     ActivePage = TabSheetSub
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
@@ -171,7 +171,7 @@ object MainForm: TMainForm
       Caption = 'Subtitle'
       object Splitter1: TSplitter
         Left = 0
-        Top = 313
+        Top = 312
         Width = 1059
         Height = 4
         Cursor = crVSplit
@@ -187,7 +187,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 1059
-        Height = 313
+        Height = 312
         Align = alClient
         BevelOuter = bvNone
         FullRepaint = False
@@ -196,7 +196,7 @@ object MainForm: TMainForm
           Left = 0
           Top = 88
           Width = 1059
-          Height = 225
+          Height = 224
           Align = alClient
           Colors.UnfocusedSelectionColor = clGradientInactiveCaption
           Font.Charset = DEFAULT_CHARSET
@@ -1690,7 +1690,7 @@ object MainForm: TMainForm
                 Width = 230
                 Height = 21
                 Style = csDropDownList
-                ItemHeight = 13
+                ItemHeight = 0
                 TabOrder = 6
                 OnSelect = ComboBoxSilentZoneSelect
               end
@@ -1898,7 +1898,7 @@ object MainForm: TMainForm
       end
       object PanelBottom: TPanel
         Left = 0
-        Top = 317
+        Top = 316
         Width = 1059
         Height = 104
         Align = alBottom
@@ -3562,8 +3562,7 @@ object MainForm: TMainForm
       Caption = 'Zip Subtitle...'
       OnExecute = ActionZipSubtitleExecute
     end
-    object ActionWrapAroundSC: TAction
-      Tag = 1
+    object ActionWrapAroundSC: TTntAction
       Caption = 'Wrap around Scenechange'
       OnExecute = ActionWrapAroundSCExecute
     end

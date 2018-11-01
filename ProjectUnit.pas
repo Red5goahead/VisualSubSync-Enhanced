@@ -922,6 +922,7 @@ begin
   cbbVideoSourceOperationTextTracks.Enabled:=False;
   cbbVideoSourceOperationTextTracks.Visible:= False;
   VideoSourceOperationExecute.Enabled:=False;
+  VideoSourceOperationSceneChange.Enabled:=False;
   Self.Clear;
 end;
 
@@ -1177,7 +1178,7 @@ begin
     MediaInfoHandle := MediaInfo_New();
     MediaInfo_Open(MediaInfoHandle, PWideChar(EditVideoFilename.Text));
     Duration := MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'Duration/String3', Info_Text, Info_Name);
-    if (Duration = '') then               
+    if (Duration = '') then
       Duration := MediaInfo_Get(MediaInfoHandle, Stream_Audio, 0, 'Duration/String3', Info_Text, Info_Name);
     HH := StrToInt(copy(Duration,1,2));
     MM := StrToInt(copy(Duration,4,2));
@@ -1192,10 +1193,10 @@ begin
    FFMpegPath := uppercase(ExtractFileDir(ParamStr(0))+'\mkvtoolnix\ffmpeg.exe');
    NewAudioWavFileName := ChangeFileExt(EditVideoFilename.Text,'') + '.wav';
 
-   FFMpegPathCommand := Format('-y -i "%s" -map_metadata -1 -ac 1 -ar 8k "%s"',[EditVideoFilename.Text,NewAudioWavFileName]);
+   FFMpegPathCommand := Format('-y -i "%s" -map 0:a:%s -map_metadata -1 -ac 1 -ar 8k "%s"',[EditVideoFilename.Text,IntToStr(StrToInt(copy(cbbVideoSourceOperationAudioTracks.Text,1,2))-1),NewAudioWavFileName]);
    if VideoSourceOperationAudioTracksOnlyCenter.checked then
    begin
-    FFMpegPathCommand := Format('-y -i "%s" -map_metadata -1 -af "pan=mono|c0=FC" -ac 1 -ar 8k "%s"',[EditVideoFilename.Text,NewAudioWavFileName]);
+    FFMpegPathCommand := Format('-y -i "%s" -map 0:a:%s -map_metadata -1 -af "pan=mono|c0=FC" -ac 1 -ar 8k "%s"',[EditVideoFilename.Text,IntToStr(StrToInt(copy(cbbVideoSourceOperationAudioTracks.Text,1,2))-1),NewAudioWavFileName]);
    end;
 
    Screen.Cursor:=crHourglass;

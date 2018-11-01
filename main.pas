@@ -554,7 +554,7 @@ type
     MenuItemFixCommonErrors: TTntMenuItem;
     MenuItemSEFix: TTntMenuItem;
     pmiWrapAroundSC: TMenuItem;
-    ActionWrapAroundSC: TAction;
+    ActionWrapAroundSC: TTntAction;
     procedure FormCreate(Sender: TObject);
 
     procedure WAVDisplayer1CursorChange(Sender: TObject);
