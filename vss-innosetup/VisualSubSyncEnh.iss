@@ -3,7 +3,7 @@
 
 #define MyAppName "VisualSubSync Enhanced"
 #define MyAppDefaultDir "VisualSubSyncEnh"
-#define MyAppVersion "1.2.27.0"
+#define MyAppVersion "1.2.29.0"
 #define MyAppPublisher "VisualSubSync Team"
 #define MyAppURL "https://red5goahead.github.io/VisualSubSync-Enhanced/"
 #define MyAppExeName "VisualSubSyncEnh.exe"
@@ -50,16 +50,16 @@ Source: "vss-innosetup\vss-release\libhunspell.dll"; DestDir: "{app}"; Flags: ig
 Source: "vss-innosetup\vss-release\MediaInfo.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\VSSCustomVSFilterV2a.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\WavWriter.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "vss-innosetup\vss-release\codecLav\avcodec-lav-57.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
-Source: "vss-innosetup\vss-release\codecLav\avfilter-lav-6.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
-Source: "vss-innosetup\vss-release\codecLav\avformat-lav-57.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
-Source: "vss-innosetup\vss-release\codecLav\avresample-lav-3.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
-Source: "vss-innosetup\vss-release\codecLav\avutil-lav-55.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
+Source: "vss-innosetup\vss-release\codecLav\avcodec-lav-58.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
+Source: "vss-innosetup\vss-release\codecLav\avfilter-lav-7.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
+Source: "vss-innosetup\vss-release\codecLav\avformat-lav-58.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
+Source: "vss-innosetup\vss-release\codecLav\avresample-lav-4.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
+Source: "vss-innosetup\vss-release\codecLav\avutil-lav-56.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\codecLav\IntelQuickSyncDecoder.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\codecLav\LAVAudio.ax"; DestDir: "{app}\codecLav"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\codecLav\LAVVideo.ax"; DestDir: "{app}\codecLav"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\codecLav\libbluray.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
-Source: "vss-innosetup\vss-release\codecLav\swscale-lav-4.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
+Source: "vss-innosetup\vss-release\codecLav\swscale-lav-5.dll"; DestDir: "{app}\codecLav"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\codecLav\LAVFilters.Dependencies.manifest"; DestDir: "{app}\codecLav"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\jsplugin\greek_typo.js"; DestDir: "{app}\jsplugin"; Flags: ignoreversion
 Source: "vss-innosetup\vss-release\jsplugin\duration.js"; DestDir: "{app}\jsplugin"; Flags: ignoreversion

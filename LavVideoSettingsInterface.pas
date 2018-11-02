@@ -1,5 +1,5 @@
 (*
- *      Copyright (C) 2010-2012 Hendrik Leppkes
+ *      Copyright (C) 2010-2018 Hendrik Leppkes
  *      http://www.1f0.de
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -113,6 +113,7 @@ type
     HWAccel_DXVA2,
     HWAccel_DXVA2CopyBack = HWAccel_DXVA2,
     HWAccel_DXVA2Native,
+    HWAccel_D3D11,
     HWAccel_NB);
 
   // Deinterlace algorithms offered by the hardware decoders
@@ -360,6 +361,9 @@ type
    // A setting of FALSE disable MVC decoding temporarily
    // Note that the override cannot force-enable the option if its turned off through SetFormatConfiguration
    Procedure SetH264MVCDecodingOverride(bEnabled : Bool); stdcall;
+
+   //  Enable the creation of the Closed Caption output pin
+   Procedure SetEnableCCOutputPin(bEnabled : Bool); stdcall;
 
   end;
 
