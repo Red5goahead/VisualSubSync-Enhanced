@@ -1443,6 +1443,7 @@ begin
 
               SubtitleParametersCommand := SubtitleParametersCommand + '"';
 
+              Break;
              end;
 
             FFMpegPathCommand := Format('-y -stats -i "%s" -map 0:s:%s "%s"',[EditVideoFilename.Text,IntToStr(OrdinalFFMpeg),NewSubtitleFile]);
