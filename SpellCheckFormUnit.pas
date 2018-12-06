@@ -98,6 +98,7 @@ end;
 
 procedure TSpellCheckForm.Reset;
 begin
+  reSubtitleText.Height := reSubtitleText.Font.Size*5;
   TextToSpellOffset := 1;
   TextToSpellWithTagOffset := 0;
   WordIdx := 0;
