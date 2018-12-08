@@ -693,7 +693,7 @@ begin
             begin
               For I := 0 to StrToInt(TextStreamCount)-1 do
                begin
-                OrdinalSub := I + 1;
+                OrdinalSub := I;
                 Format := MediaInfo_Get(MediaInfoHandle, Stream_Text, I, 'Format', Info_Text, Info_Name);
                 if (Format = 'ASS') Or
                    (Format = 'UTF-8') then
@@ -1146,7 +1146,7 @@ end;
 procedure TProjectForm.VideoSourceOperation(Silent : Boolean);
 var
     SourceFileOperationCancel : TSourceFileOperationCancel;
-    Language, Title, CodecID, StreamOrder : String;
+    Language, Title, CodecID, StreamID, StreamOrder : String;
     ExitCode: DWORD;
     NewVideoFileName, NewAudioWavFileName, ParameterF : String;
     TempSCFileName, TempFileLine : String;
@@ -1405,19 +1405,20 @@ begin
               OrdinalSub := I + 1;
               OrdinalFFMpeg := I;
 
-              if RightPad(IntToStr(OrdinalSub),'0',2) <> Copy(cbbVideoSourceOperationTextTracks.Text,1,2) Then
+              if RightPad(IntToStr(OrdinalFFMpeg),'0',2) <> Copy(cbbVideoSourceOperationTextTracks.Text,1,2) Then
                 Continue;
 
-              StreamOrder := MediaInfo_Get(MediaInfoHandle, Stream_Text, I, 'StreamOrder', Info_Text, Info_Name);
-              CodecID := MediaInfo_Get(MediaInfoHandle, Stream_Text, I, 'CodecID', Info_Text, Info_Name);
-              Language := MediaInfo_Get(MediaInfoHandle, Stream_Text, I, 'Language/String', Info_Text, Info_Name);
-              Title := MediaInfo_Get(MediaInfoHandle, Stream_Text, I, 'Title', Info_Text, Info_Name);
+              StreamOrder := MediaInfo_Get(MediaInfoHandle, Stream_Text, OrdinalFFMpeg, 'StreamOrder', Info_Text, Info_Name);
+              StreamID := MediaInfo_Get(MediaInfoHandle, Stream_Text, OrdinalFFMpeg, 'ID', Info_Text, Info_Name);
+              CodecID := MediaInfo_Get(MediaInfoHandle, Stream_Text, OrdinalFFMpeg, 'CodecID', Info_Text, Info_Name);
+              Language := MediaInfo_Get(MediaInfoHandle, Stream_Text, OrdinalFFMpeg, 'Language/String', Info_Text, Info_Name);
+              Title := MediaInfo_Get(MediaInfoHandle, Stream_Text, OrdinalFFMpeg, 'Title', Info_Text, Info_Name);
 
               if I > 0 then SubtitleParametersCommand := SubtitleParametersCommand + ' ';
               SubtitleParametersCommand := SubtitleParametersCommand + StreamOrder + ':"' +
                 ChangeFileExt(EditVideoFilename.Text,'') + '-subtitle' + RightPad(IntToStr(OrdinalSub),'0',2);
 
-              NewSubtitleFile := ChangeFileExt(EditVideoFilename.Text,'') + '-subtitle' + RightPad(IntToStr(OrdinalSub),'0',2);
+              NewSubtitleFile := ChangeFileExt(EditVideoFilename.Text,'') + '-subtitle_';
 
               if Title <> '' then
                 begin
@@ -1443,7 +1444,8 @@ begin
 
               SubtitleParametersCommand := SubtitleParametersCommand + '"';
 
-              Break;
+              break;
+
              end;
 
             FFMpegPathCommand := Format('-y -stats -i "%s" -map 0:s:%s "%s"',[EditVideoFilename.Text,IntToStr(OrdinalFFMpeg),NewSubtitleFile]);
