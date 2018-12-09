@@ -28,7 +28,7 @@ object PreferencesForm: TPreferencesForm
     Top = 0
     Width = 746
     Height = 507
-    ActivePage = tsGeneral
+    ActivePage = TsPlayback
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTntTabSheet
@@ -682,7 +682,7 @@ object PreferencesForm: TPreferencesForm
         TabOrder = 0
         DesignSize = (
           738
-          480)
+          479)
         object TntLabel8: TTntLabel
           Left = 16
           Top = 164
@@ -856,7 +856,7 @@ object PreferencesForm: TPreferencesForm
       end
       object Panel2: TPanel
         Left = 0
-        Top = 272
+        Top = 271
         Width = 730
         Height = 88
         Align = alBottom
@@ -924,7 +924,7 @@ object PreferencesForm: TPreferencesForm
       end
       object ListPluginParam: TVirtualStringTree
         Left = 0
-        Top = 360
+        Top = 359
         Width = 730
         Height = 112
         Align = alBottom
@@ -962,7 +962,7 @@ object PreferencesForm: TPreferencesForm
           item
             Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
             Position = 1
-            Width = 294
+            Width = 298
             WideText = 'Value'
           end
           item
@@ -978,7 +978,7 @@ object PreferencesForm: TPreferencesForm
       Caption = 'Hotkeys'
       object Bevel9: TBevel
         Left = 0
-        Top = 433
+        Top = 432
         Width = 730
         Height = 4
         Align = alBottom
@@ -988,7 +988,7 @@ object PreferencesForm: TPreferencesForm
         Left = 0
         Top = 0
         Width = 730
-        Height = 433
+        Height = 432
         Align = alClient
         Columns = <
           item
@@ -1015,7 +1015,7 @@ object PreferencesForm: TPreferencesForm
       end
       object PanelHotKey: TPanel
         Left = 0
-        Top = 437
+        Top = 436
         Width = 730
         Height = 35
         Align = alBottom
@@ -1225,7 +1225,7 @@ object PreferencesForm: TPreferencesForm
         Left = 0
         Top = 125
         Width = 730
-        Height = 347
+        Height = 346
         Align = alClient
         Caption = ' Misc : '
         TabOrder = 1
@@ -1338,13 +1338,13 @@ object PreferencesForm: TPreferencesForm
         Left = 0
         Top = 185
         Width = 730
-        Height = 287
+        Height = 286
         Align = alClient
         Caption = ' Subtitles video : '
         TabOrder = 2
         DesignSize = (
           730
-          287)
+          286)
         object TntLabel25: TTntLabel
           Left = 16
           Top = 128
@@ -2047,7 +2047,7 @@ object PreferencesForm: TPreferencesForm
   end
   object Panel1: TPanel
     Left = 0
-    Top = 508
+    Top = 507
     Width = 746
     Height = 36
     Align = alBottom
