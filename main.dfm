@@ -3563,6 +3563,7 @@ object MainForm: TMainForm
       OnExecute = ActionZipSubtitleExecute
     end
     object ActionWrapAroundSC: TTntAction
+      Tag = 1
       Caption = 'Wrap around Scenechange'
       OnExecute = ActionWrapAroundSCExecute
     end
