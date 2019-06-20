@@ -4338,6 +4338,7 @@ begin
       SceneChangeFileName := WideChangeFileExt(CurrentProject.VideoSource, '.scenechange');
       LoadSceneChange(SceneChangeFileName, SCArray);
       WAVDisplayer.SetSceneChangeList(SCArray);
+      g_SceneChangeWrapper.SetSceneChangeList(SCArray);
     finally
       g_WebRWSynchro.EndWrite;
     end;
