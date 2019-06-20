@@ -1632,6 +1632,14 @@ begin
         CustomDrawRect.Left := x1;
         CustomDrawRect.Right := x2;
         CustomDrawRect.Bottom := y2;
+
+        //if subs contains a position tag change the text position
+        if (copy(TSubtitleRange(r).Text,1,1) = '{') And (pos('}',TSubtitleRange(r).Text) > -1) then
+        begin
+          if (rangeTop < CanvasHeight div 2) then CustomDrawRect.Top := CustomDrawRect.Top + ACanvas.Font.Size*4;
+          if (rangeBottom-1 > CanvasHeight div 2) then CustomDrawRect.Bottom := CustomDrawRect.Bottom - ACanvas.Font.Size*4;
+        end;
+
         FOnCustomDrawRange(Self, ACanvas, r, CustomDrawRect);
       end;
 
