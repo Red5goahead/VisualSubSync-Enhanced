@@ -1514,14 +1514,19 @@ procedure TWAVDisplayer.PaintRange(ACanvas : TCanvas; ARangeList : TRangeList;
 var i, j : Integer;
     r : TRange;
     x1, x2, y1, y2 : Integer;
+    yy1, yy2 : Integer;
     ShowStart, ShowStop, FullHLines : Boolean;
     CanvasHeightDiv10 : Integer;
+    CanvasHeight : Integer;
     CustomDrawRect : TRect;
     Bitmap : TBitMap;
 begin
+  CanvasHeight := GetWavCanvasHeight;
   CanvasHeightDiv10 := (rangeBottom - rangeTop) div 10;
   y1 := rangeTop + CanvasHeightDiv10;
   y2 := rangeBottom - CanvasHeightDiv10;
+  yy1 := rangeTop;
+  yy2 := rangeBottom;
 
   // TODO improvement : this is very slow when lot's of range are on screen
   // We should do this in 2 pass to group ranges, and use another color
@@ -1563,6 +1568,13 @@ begin
       ACanvas.Pen.Color := RANGE_COLOR_NOT_EDITABLE;
     end;
 
+    //set the coordinates properly if scenechange is displayed
+    if SceneChangeEnabled and (System.Length(FSceneChangeList) > 0) then
+    begin
+      if (rangeTop < CanvasHeight div 2) then yy1:=y1;
+      if (rangeBottom-1 > CanvasHeight div 2) then yy2:=y2;
+    end;
+
     // Paint start time
     if ShowStart then
     begin
@@ -1570,8 +1582,8 @@ begin
         ACanvas.Pen.Style := psSolid
       else
         ACanvas.Pen.Style := psDot;
-      ACanvas.MoveTo(x1, rangeTop);
-      ACanvas.LineTo(x1, rangeBottom);
+      ACanvas.MoveTo(x1, yy1);
+      ACanvas.LineTo(x1, yy2);
     end;
 
     // Paint stop time
@@ -1581,8 +1593,8 @@ begin
         ACanvas.Pen.Style := psSolid
       else
         ACanvas.Pen.Style := psDot;
-      ACanvas.MoveTo(x2, rangeTop);
-      ACanvas.LineTo(x2, rangeBottom);
+      ACanvas.MoveTo(x2, yy1);
+      ACanvas.LineTo(x2, yy2);
     end;
 
     // Draw the top and bottom horizontal lines
