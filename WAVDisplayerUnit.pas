@@ -1575,6 +1575,15 @@ begin
       if (rangeBottom-1 > CanvasHeight div 2) then yy2:=y2;
     end;
 
+    //if subs contains a position tag change the top / bottom line
+    if (copy(TSubtitleRange(r).Text,1,1) = '{') And (pos('}',TSubtitleRange(r).Text) > -1) then
+    begin
+      y1 := y1 + 3;
+      y2 := y2 - 3;
+      yy1 := yy1 + 3;
+      yy2 := yy2 - 3;
+    end;
+
     // Paint start time
     if ShowStart then
     begin
@@ -1696,7 +1705,13 @@ begin
          Bitmap.Free;
         end;
       end;
+    end;
 
+    //restore y if subs contains a position tag
+    if (copy(TSubtitleRange(r).Text,1,1) = '{') And (pos('}',TSubtitleRange(r).Text) > -1) then
+    begin
+      y1 := y1 - 3;
+      y2 := y2 + 3;
     end;
   end;
 end;
