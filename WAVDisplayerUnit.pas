@@ -1712,6 +1712,8 @@ begin
     begin
       y1 := y1 - 3;
       y2 := y2 + 3;
+      yy1 := yy1 - 3;
+      yy2 := yy2 + 3;
     end;
   end;
 end;
