@@ -4338,6 +4338,7 @@ begin
       SceneChangeFileName := WideChangeFileExt(CurrentProject.VideoSource, '.scenechange');
       LoadSceneChange(SceneChangeFileName, SCArray);
       WAVDisplayer.SetSceneChangeList(SCArray);
+      g_SceneChangeWrapper.SetSceneChangeList(SCArray);
     finally
       g_WebRWSynchro.EndWrite;
     end;
@@ -12687,6 +12688,8 @@ var Cursor : PVirtualNode;
     ChangeSubData : TChangeSubData;
     TaggedText : WideString;
     SubtitleRange : TSubtitleRange;
+    i : Integer;
+    WordArray : TWideStringDynArray;
 begin
   MultiChangeTask := TUndoableMultiChangeTask.Create;
   Cursor := vtvSubsList.GetFirstSelected;
@@ -12694,7 +12697,14 @@ begin
   begin
     NodeData := vtvSubsList.GetNodeData(Cursor);
     SubtitleRange := NodeData.Range;
-    TaggedText := LowerCase(SubtitleRange.Text);
+    TagSplit(SubtitleRange.Text, WordArray);
+    TaggedText := '';
+    for i:=0 to Length(WordArray)-1 do
+    begin
+      if (i mod 2) = 0
+      then TaggedText := TaggedText + AnsiLowerCase(WordArray[i])
+      else TaggedText := TaggedText + WordArray[i];
+    end;
     if (TaggedText <> SubtitleRange.Text) then
     begin
       ChangeSubData := TChangeSubData.Create(Cursor.Index);
@@ -12727,6 +12737,8 @@ var Cursor : PVirtualNode;
     ChangeSubData : TChangeSubData;
     TaggedText : WideString;
     SubtitleRange : TSubtitleRange;
+    i : Integer;
+    WordArray : TWideStringDynArray;
 begin
   MultiChangeTask := TUndoableMultiChangeTask.Create;
   Cursor := vtvSubsList.GetFirstSelected;
@@ -12734,7 +12746,14 @@ begin
   begin
     NodeData := vtvSubsList.GetNodeData(Cursor);
     SubtitleRange := NodeData.Range;
-    TaggedText := UpperCase(SubtitleRange.Text);
+    TagSplit(SubtitleRange.Text, WordArray);
+    TaggedText := '';
+    for i:=0 to Length(WordArray)-1 do
+    begin
+      if (i mod 2) = 0
+      then TaggedText := TaggedText + AnsiUpperCase(WordArray[i])
+      else TaggedText := TaggedText + WordArray[i];
+    end;
     if (TaggedText <> SubtitleRange.Text) then
     begin
       ChangeSubData := TChangeSubData.Create(Cursor.Index);
@@ -12767,31 +12786,41 @@ var Cursor : PVirtualNode;
     ChangeSubData : TChangeSubData;
     TaggedText : WideString;
     SubtitleRange : TSubtitleRange;
- FUNCTION Capitalize (CONST s: STRING): STRING;
-  VAR
-  flag: BOOLEAN;
-  i : Byte;
-  t : STRING;
-  BEGIN
-  flag := TRUE;
-  t := '';
-  FOR i := 1 TO LENGTH(s) DO
-  BEGIN
-  IF flag
-  THEN AppendStr(t, UpCase(s[i]))
-  ELSE AppendStr(t, s[i]);
-  flag := (s[i] = ' ')
-  END;
-  RESULT := t
-  END {Capitalize};
+    i : Integer;
+    WordArray : TWideStringDynArray;
+
+  function Capitalize(const s: String): String;
+  var flag: Boolean;
+      i : Byte;
+      t : String;
+  begin
+    flag := true;
+    t := '';
+    for i := 1 to Length(s) do
+    begin
+      if flag
+      then AppendStr(t, AnsiUpperCase(s[i]))
+      else AppendStr(t, s[i]);
+      flag := (s[i] = ' ')
+    end;
+    Result := t
+  end; {Capitalize}
 begin
+  extinlowercaseClick(Sender);
   MultiChangeTask := TUndoableMultiChangeTask.Create;
   Cursor := vtvSubsList.GetFirstSelected;
   while (Cursor <> nil) do
   begin
     NodeData := vtvSubsList.GetNodeData(Cursor);
     SubtitleRange := NodeData.Range;
-    TaggedText := Capitalize(SubtitleRange.Text);
+    TagSplit(SubtitleRange.Text, WordArray);
+    TaggedText := '';
+    for i:=0 to Length(WordArray)-1 do
+    begin
+      if (i mod 2) = 0
+      then TaggedText := TaggedText + Capitalize(WordArray[i])
+      else TaggedText := TaggedText + WordArray[i];
+    end;
     if (TaggedText <> SubtitleRange.Text) then
     begin
       ChangeSubData := TChangeSubData.Create(Cursor.Index);
