@@ -243,9 +243,9 @@ begin
 
     VideoStreamCount := MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'StreamCount', Info_Text, Info_Name);
     Stream_Video0:= 'Video: ' + MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'Width', Info_Text, Info_Name) + 'x' +
-        MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'Height', Info_Text, Info_Name) + ' ' +
-        MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'FrameRate/String', Info_Text, Info_Name) + ' ' +
-       MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'Codec/String', Info_Text, Info_Name) + ' ' +
+       MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'Height', Info_Text, Info_Name) + ' ' +
+       MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'FrameRate/String', Info_Text, Info_Name) + ' ' +
+       MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'CodecID', Info_Text, Info_Name) + ' ' +
        MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'DisplayAspectRatio/String', Info_Text, Info_Name) + ' (' +
        MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'Duration/String2', Info_Text, Info_Name) + ')';
     if VideoStreamCount > '' then
