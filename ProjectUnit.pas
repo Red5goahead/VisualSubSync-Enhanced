@@ -1166,6 +1166,7 @@ var
     SC_current, SC_prev, score_current, score_prev : Extended;
     SC_FS : TFormatSettings;
     ep : Integer;
+    FrameCorrection : Extended;
 begin
 
  VideoSourceOperationExecute.Enabled := False;
@@ -1510,6 +1511,19 @@ begin
         MediaInfo_Open(MediaInfoHandle, PWideChar(EditVideoFilename.Text));
         //using TextStreamCount instead of creating a new variable (intended as VideoStreamCount)
         TextStreamCount := MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'StreamCount', Info_Text, Info_Name);
+
+        //get single frame time from fps
+        // xvid encoded videos get pts_time shifted by 1 frame
+        // probably video stream xvid start at frame 1, x264 start at frame 0 ???
+        // so a correction of pts_time is necessary if xvid is found
+        FrameCorrection := 0;
+        if (WideLowerCase(MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'Codec/String', Info_Text, Info_Name)) = 'xvid') then
+        begin
+          SC_FS.DecimalSeparator := '.';
+          FrameCorrection := StrToFloat(MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'FrameRate', Info_Text, Info_Name), SC_FS);
+          FrameCorrection := 1 / FrameCorrection;
+        end;
+
         MediaInfo_Close(MediaInfoHandle);
         if (TextStreamCount <> '') and (StrToInt(TextStreamCount) > 0) then
         begin
@@ -1557,7 +1571,7 @@ begin
           if ep > 0 then
           begin
             TempFileLine := Trim(Copy(TempFileLine, ep + 9, Length(TempFileLine)));
-            SC_current := StrToFloat(TempFileLine, SC_FS);
+            SC_current := StrToFloat(TempFileLine, SC_FS) - FrameCorrection ;
 
             ReadLn(SC_temp, TempFileLine);
             ep := AnsiPos('scene_score=', TempFileLine);
