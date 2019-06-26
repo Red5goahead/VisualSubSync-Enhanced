@@ -1411,7 +1411,7 @@ begin
 
               StreamOrder := MediaInfo_Get(MediaInfoHandle, Stream_Text, OrdinalFFMpeg, 'StreamOrder', Info_Text, Info_Name);
               StreamID := MediaInfo_Get(MediaInfoHandle, Stream_Text, OrdinalFFMpeg, 'ID', Info_Text, Info_Name);
-              CodecID := MediaInfo_Get(MediaInfoHandle, Stream_Text, OrdinalFFMpeg, 'CodecID', Info_Text, Info_Name);
+              CodecID := MediaInfo_Get(MediaInfoHandle, Stream_Text, OrdinalFFMpeg, 'CodecID/Hint', Info_Text, Info_Name);
               Language := MediaInfo_Get(MediaInfoHandle, Stream_Text, OrdinalFFMpeg, 'Language/String', Info_Text, Info_Name);
               Title := MediaInfo_Get(MediaInfoHandle, Stream_Text, OrdinalFFMpeg, 'Title', Info_Text, Info_Name);
 
