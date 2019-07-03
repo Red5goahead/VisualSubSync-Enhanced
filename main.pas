@@ -3453,7 +3453,7 @@ begin
       CurrentProject.VideoWidth := MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'Width', Info_Text, Info_Name);
       CurrentProject.VideoHeight := MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'Height', Info_Text, Info_Name);
       CurrentProject.VideoFrameRate := MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'FrameRate/String', Info_Text, Info_Name);
-      CurrentProject.VideoFormat := MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'Codec/String', Info_Text, Info_Name);
+      CurrentProject.VideoFormat := MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'CodecID/Hint', Info_Text, Info_Name);
       CurrentProject.VideoCodecProfile := MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'Codec_Profile', Info_Text, Info_Name);
       CurrentProject.AudioStreamCount := MediaInfo_Get(MediaInfoHandle, Stream_Audio, 0, 'StreamCount', Info_Text, Info_Name);
       CurrentProject.AudioFormat := MediaInfo_Get(MediaInfoHandle, Stream_Audio, CurrentProject.SelectedAudioTrackOnExtract - 1, 'Format', Info_Text, Info_Name);
