@@ -1517,7 +1517,7 @@ begin
         // probably video stream xvid start at frame 1, x264 start at frame 0 ???
         // so a correction of pts_time is necessary if xvid is found
         FrameCorrection := 0;
-        if (WideLowerCase(MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'Codec/String', Info_Text, Info_Name)) = 'xvid') then
+        if (WideLowerCase(MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'CodecID/Hint', Info_Text, Info_Name)) = 'xvid') then
         begin
           SC_FS.DecimalSeparator := '.';
           FrameCorrection := StrToFloat(MediaInfo_Get(MediaInfoHandle, Stream_Video, 0, 'FrameRate', Info_Text, Info_Name), SC_FS);
