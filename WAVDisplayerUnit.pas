@@ -1569,14 +1569,17 @@ begin
     end;
 
     //set the coordinates properly if scenechange is displayed
-    if SceneChangeEnabled and (System.Length(FSceneChangeList) > 0) then
+    if SceneChangeEnabled and (System.Length(FSceneChangeList) > 0) and
+       MainForm.ConfigObject.ImproveVisibilitySC then
     begin
       if (rangeTop < CanvasHeight div 2) then yy1:=y1;
       if (rangeBottom-1 > CanvasHeight div 2) then yy2:=y2;
     end;
 
     //if subs contains a position tag change the top / bottom line
-    if (copy(TSubtitleRange(r).Text,1,1) = '{') And (pos('}',TSubtitleRange(r).Text) > -1) then
+    if (AnsiPos('{\a', TSubtitleRange(r).Text) > 0) and
+       (AnsiPos('}', TSubtitleRange(r).Text) > 0) and
+       MainForm.ConfigObject.ImproveReadabilityTag then
     begin
       y1 := y1 + 3;
       y2 := y2 - 3;
@@ -1643,7 +1646,9 @@ begin
         CustomDrawRect.Bottom := y2;
 
         //if subs contains a position tag change the text position
-        if (copy(TSubtitleRange(r).Text,1,1) = '{') And (pos('}',TSubtitleRange(r).Text) > -1) then
+        if (AnsiPos('{\a', TSubtitleRange(r).Text) > 0) and
+           (AnsiPos('}', TSubtitleRange(r).Text) > 0) and
+            MainForm.ConfigObject.ImproveReadabilityTag then
         begin
           if (rangeTop < CanvasHeight div 2) then CustomDrawRect.Top := CustomDrawRect.Top + ACanvas.Font.Size*4;
           if (rangeBottom-1 > CanvasHeight div 2) then CustomDrawRect.Bottom := CustomDrawRect.Bottom - ACanvas.Font.Size*4;
@@ -1708,7 +1713,9 @@ begin
     end;
 
     //restore y if subs contains a position tag
-    if (copy(TSubtitleRange(r).Text,1,1) = '{') And (pos('}',TSubtitleRange(r).Text) > -1) then
+    if (AnsiPos('{\a', TSubtitleRange(r).Text) > 0) and
+       (AnsiPos('}', TSubtitleRange(r).Text) > 0) and
+       MainForm.ConfigObject.ImproveReadabilityTag then
     begin
       y1 := y1 - 3;
       y2 := y2 + 3;

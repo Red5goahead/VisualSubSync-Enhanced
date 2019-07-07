@@ -28,7 +28,7 @@ object PreferencesForm: TPreferencesForm
     Top = 0
     Width = 746
     Height = 507
-    ActivePage = TsPlayback
+    ActivePage = tsGeneral
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTntTabSheet
@@ -1730,6 +1730,22 @@ object PreferencesForm: TPreferencesForm
           Height = 17
           Caption = 'Enable detach video (default for new project)'
           TabOrder = 5
+        end
+        object chkImpoveReadabilityTag: TCheckBox
+          Left = 264
+          Top = 64
+          Width = 240
+          Height = 17
+          Caption = 'Improve readability for tagged subs'
+          TabOrder = 6
+        end
+        object chkImproveVisibilitySC: TCheckBox
+          Left = 264
+          Top = 84
+          Width = 240
+          Height = 17
+          Caption = 'Improve visibility of scene changes'
+          TabOrder = 7
         end
       end
       object TntGroupBox9: TTntGroupBox
