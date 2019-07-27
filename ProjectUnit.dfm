@@ -15,6 +15,7 @@ object ProjectForm: TProjectForm
   KeyPreview = True
   OldCreateOrder = False
   Position = poOwnerFormCenter
+  OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 13

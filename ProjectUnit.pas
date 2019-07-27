@@ -162,6 +162,7 @@ type
     procedure cbbVideoSourceOperationAudioTracksSelect(Sender: TObject);
     procedure VideoSourceOperationExecuteClick(Sender: TObject);
     procedure VideoSourceOperationNoneClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
     procedure WAVSelectMode(WavMode : TProjectWAVMode);
@@ -1771,6 +1772,17 @@ begin
  if VideoSourceOperationSetSubtitleFile.Checked Or VideoSourceOperationSetSubtitleVO.Checked Then
   begin
     cbbVideoSourceOperationTextTracks.Visible:= True;
+  end;
+end;
+
+procedure TProjectForm.FormCreate(Sender: TObject);
+begin
+  if Screen.WorkAreaHeight < ProjectForm.Height then
+  begin
+    ProjectForm.Height := Screen.WorkAreaHeight;
+    //to avoid orizontal scroll-bars 
+    ProjectForm.Width := ProjectForm.Width + 20;
+    ProjectForm.BorderStyle := bsSizeable;
   end;
 end;
 
