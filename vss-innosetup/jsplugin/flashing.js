@@ -36,7 +36,7 @@ VSSPlugin = {
         if ((sc1 > 0) && ((sc1 - stt) < mrg) && (sc1 - mb != stt) && (sc1 != stt)) {
             if (msg != "") msg += " + ";
             msg += "fix stop >>>";
-        } else if ((sc2 > 0) && ((stt - sc2) < mrg) && (sc2 - mb != stt) && (sc2 != stt)) {
+        } else if ((sc2 > 0) && ((stt - sc2) < mrg) && (sc2 - mb != stt)) {
             if (msg != "") msg += " + ";
             msg += "fix stop <<<";
         }
@@ -46,11 +46,10 @@ VSSPlugin = {
 
     FixError: function(CurrentSub, PreviousSub, NextSub) {
         var mb = VSSCore.MinimumBlank;
-        var mrg = this.ParamStrictMargin.Value;
+        var mrg = this.ParamStrictMargin.Value - mb;
         var stt = CurrentSub.Start;
         var sc1 = SceneChange.GetNext(stt);
         var sc2 = SceneChange.GetPrevious(stt);
-
         if (((sc1 - stt) < mrg) && (sc1 != stt)) {
             CurrentSub.Start = sc1;
         } else if (((stt - sc2) < mrg) && (sc2 != stt)) {
@@ -62,7 +61,7 @@ VSSPlugin = {
         var sc2 = SceneChange.GetPrevious(stt);
         if (((sc1 - stt) < mrg) && (sc1 != stt)) {
             CurrentSub.Stop = sc1 - mb;
-        } else if (((stt - sc2) < mrg) && (sc2 != stt)) {
+        } else if ((stt - sc2) < mrg) {
             CurrentSub.Stop = sc2 - mb;
         }
     }
