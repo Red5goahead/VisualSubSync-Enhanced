@@ -1514,14 +1514,19 @@ procedure TWAVDisplayer.PaintRange(ACanvas : TCanvas; ARangeList : TRangeList;
 var i, j : Integer;
     r : TRange;
     x1, x2, y1, y2 : Integer;
+    yy1, yy2 : Integer;
     ShowStart, ShowStop, FullHLines : Boolean;
     CanvasHeightDiv10 : Integer;
+    CanvasHeight : Integer;
     CustomDrawRect : TRect;
     Bitmap : TBitMap;
 begin
+  CanvasHeight := GetWavCanvasHeight;
   CanvasHeightDiv10 := (rangeBottom - rangeTop) div 10;
   y1 := rangeTop + CanvasHeightDiv10;
   y2 := rangeBottom - CanvasHeightDiv10;
+  yy1 := rangeTop;
+  yy2 := rangeBottom;
 
   // TODO improvement : this is very slow when lot's of range are on screen
   // We should do this in 2 pass to group ranges, and use another color
@@ -1563,6 +1568,25 @@ begin
       ACanvas.Pen.Color := RANGE_COLOR_NOT_EDITABLE;
     end;
 
+    //set the coordinates properly if scenechange is displayed
+    if SceneChangeEnabled and (System.Length(FSceneChangeList) > 0) and
+       MainForm.ConfigObject.ImproveVisibilitySC then
+    begin
+      if (rangeTop < CanvasHeight div 2) then yy1:=y1;
+      if (rangeBottom-1 > CanvasHeight div 2) then yy2:=y2;
+    end;
+
+    //if subs contains a position tag change the top / bottom line
+    if (AnsiPos('{\a', TSubtitleRange(r).Text) > 0) and
+       (AnsiPos('}', TSubtitleRange(r).Text) > 0) and
+       MainForm.ConfigObject.ImproveReadabilityTag then
+    begin
+      y1 := y1 + 3;
+      y2 := y2 - 3;
+      yy1 := yy1 + 3;
+      yy2 := yy2 - 3;
+    end;
+
     // Paint start time
     if ShowStart then
     begin
@@ -1570,8 +1594,8 @@ begin
         ACanvas.Pen.Style := psSolid
       else
         ACanvas.Pen.Style := psDot;
-      ACanvas.MoveTo(x1, rangeTop);
-      ACanvas.LineTo(x1, rangeBottom);
+      ACanvas.MoveTo(x1, yy1);
+      ACanvas.LineTo(x1, yy2);
     end;
 
     // Paint stop time
@@ -1581,8 +1605,8 @@ begin
         ACanvas.Pen.Style := psSolid
       else
         ACanvas.Pen.Style := psDot;
-      ACanvas.MoveTo(x2, rangeTop);
-      ACanvas.LineTo(x2, rangeBottom);
+      ACanvas.MoveTo(x2, yy1);
+      ACanvas.LineTo(x2, yy2);
     end;
 
     // Draw the top and bottom horizontal lines
@@ -1620,6 +1644,16 @@ begin
         CustomDrawRect.Left := x1;
         CustomDrawRect.Right := x2;
         CustomDrawRect.Bottom := y2;
+
+        //if subs contains a position tag change the text position
+        if (AnsiPos('{\a', TSubtitleRange(r).Text) > 0) and
+           (AnsiPos('}', TSubtitleRange(r).Text) > 0) and
+            MainForm.ConfigObject.ImproveReadabilityTag then
+        begin
+          if (rangeTop < CanvasHeight div 2) then CustomDrawRect.Top := CustomDrawRect.Top + ACanvas.Font.Size*4;
+          if (rangeBottom-1 > CanvasHeight div 2) then CustomDrawRect.Bottom := CustomDrawRect.Bottom - ACanvas.Font.Size*4;
+        end;
+
         FOnCustomDrawRange(Self, ACanvas, r, CustomDrawRect);
       end;
 
@@ -1676,7 +1710,17 @@ begin
          Bitmap.Free;
         end;
       end;
+    end;
 
+    //restore y if subs contains a position tag
+    if (AnsiPos('{\a', TSubtitleRange(r).Text) > 0) and
+       (AnsiPos('}', TSubtitleRange(r).Text) > 0) and
+       MainForm.ConfigObject.ImproveReadabilityTag then
+    begin
+      y1 := y1 - 3;
+      y2 := y2 + 3;
+      yy1 := yy1 - 3;
+      yy2 := yy2 + 3;
     end;
   end;
 end;

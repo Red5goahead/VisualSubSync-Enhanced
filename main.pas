@@ -12801,7 +12801,7 @@ var Cursor : PVirtualNode;
       if flag
       then AppendStr(t, AnsiUpperCase(s[i]))
       else AppendStr(t, s[i]);
-      flag := (s[i] = ' ')
+      flag := (s[i] = ' ') or (s[i] = #13) or (s[i] = #10);
     end;
     Result := t
   end; {Capitalize}

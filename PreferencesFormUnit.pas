@@ -175,6 +175,8 @@ type
     DisableVOShowTextInWAVDisplay : Boolean;
     EnableShowVideoForNewProject : Boolean;
     EnableDetachedVideoForNewProject : Boolean;
+    ImproveReadabilityTag : Boolean;
+    ImproveVisibilitySC : Boolean;
     //Default Path
     DefaultPath: WideString;
     ForceDefaultPath:Boolean;
@@ -418,6 +420,8 @@ type
     UpDownSubtitlePreviewDelay: TTntUpDown;
     TntLabelSC: TTntLabel;
     ShapeSC: TTntShape;
+    chkImpoveReadabilityTag: TCheckBox;
+    chkImproveVisibilitySC: TCheckBox;
     procedure bttOkClick(Sender: TObject);
     procedure bttCancelClick(Sender: TObject);
     procedure ListErrorCheckingClick(Sender: TObject);
@@ -872,6 +876,8 @@ begin
   SceneChangeFilterOffset := 250;
   EnableShowVideoForNewProject := True;
   EnableDetachedVideoForNewProject := False;
+  ImproveReadabilityTag := True;
+  ImproveVisibilitySC := True;
   //Default Path
   DefaultPath:=DEF_PATH;
   ForceDefaultPath:=False;
@@ -1121,6 +1127,8 @@ begin
   IniFile.WriteBool('WAVDisplay', 'DisableVOShowTextInWAVDisplay', DisableVOShowTextInWAVDisplay);
   IniFile.WriteBool('WAVDisplay', 'EnableShowVideoForNewProject', EnableShowVideoForNewProject);
   IniFile.WriteBool('WAVDisplay', 'EnableDetachedVideoForNewProject', EnableDetachedVideoForNewProject);
+  IniFile.WriteBool('WAVDisplay', 'ImproveReadabilityTag', ImproveReadabilityTag);
+  IniFile.WriteBool('WAVDisplay', 'ImproveVisibilitySC', ImproveVisibilitySC);
 
   // Desynch tools
   IniFile.WriteBool('DesynchTools','DesynchToolsAutoReset',DesynchToolsAutoReset);
@@ -1338,6 +1346,8 @@ begin
   DisableVOShowTextInWAVDisplay := IniFile.ReadBool('WAVDisplay', 'DisableVOShowTextInWAVDisplay', DisableVOShowTextInWAVDisplay);
   EnableShowVideoForNewProject := IniFile.ReadBool('WAVDisplay', 'EnableShowVideoForNewProject', EnableShowVideoForNewProject);
   EnableDetachedVideoForNewProject := IniFile.ReadBool('WAVDisplay', 'EnableDetachedVideoForNewProject', EnableDetachedVideoForNewProject);
+  ImproveReadabilityTag := IniFile.ReadBool('WAVDisplay', 'ImproveReadabilityTag', ImproveReadabilityTag);
+  ImproveVisibilitySC := IniFile.ReadBool('WAVDisplay', 'ImproveVisibilitySC', ImproveVisibilitySC);
 
   // Desynch tools
   DesynchToolsAutoReset := IniFile.ReadBool('DesynchTools', 'DesynchToolsAutoReset', DesynchToolsAutoReset);
@@ -1607,6 +1617,8 @@ begin
   chkDisableVOShowTextInWAVDisplay.Checked := Config.DisableVOShowTextInWAVDisplay;
   chkEnableShowVideoForNewProject.Checked := Config.EnableShowVideoForNewProject;
   chkEnableDetachedVideoForNewProject.Checked := Config.EnableDetachedVideoForNewProject;
+  chkImpoveReadabilityTag.Checked := Config.ImproveReadabilityTag;
+  chkImproveVisibilitySC.Checked := Config.ImproveVisibilitySC;
 
   //Default Path
   LblDefaultPath.Caption:=Config.DefaultPath;
@@ -1748,6 +1760,8 @@ begin
   Config.DisableVOShowTextInWAVDisplay := chkDisableVOShowTextInWAVDisplay.Checked;
   Config.EnableShowVideoForNewProject := chkEnableShowVideoForNewProject.Checked;
   Config.EnableDetachedVideoForNewProject := chkEnableDetachedVideoForNewProject.Checked;
+  Config.ImproveReadabilityTag := chkImpoveReadabilityTag.Checked;
+  Config.ImproveVisibilitySC := chkImproveVisibilitySC.Checked;
 
   //Default Path
   if ChkDefaultPath.Checked and
