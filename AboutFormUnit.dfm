@@ -251,7 +251,7 @@ object AboutForm: TAboutForm
     Height = 14
     AutoSize = False
     Caption = 
-      '- Lav Filter 0.69 (https://github.com/Nevcairiel/LAVFilters/rele' +
+      '- Lav Filter 0.75 (https://github.com/Nevcairiel/LAVFilters/rele' +
       'ases)'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
